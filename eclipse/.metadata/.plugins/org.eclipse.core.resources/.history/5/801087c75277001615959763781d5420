@@ -1,8 +1,0 @@
-package xyz.vsngamer.elevator.blocks;
-
-import net.minecraft.block.Block;
-import net.minecraft.block.ITileEntityProvider;
-
-public class BlockElevatorYellow extends Block implements ITileEntityProvider{
-
-}

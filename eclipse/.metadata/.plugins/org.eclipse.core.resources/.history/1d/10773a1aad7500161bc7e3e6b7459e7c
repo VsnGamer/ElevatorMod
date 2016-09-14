@@ -1,7 +1,0 @@
-package xyz.vsngamer.elevator.tileentity;
-
-import net.minecraft.tileentity.TileEntity;
-
-public class TileEntityElevator extends TileEntity{
-
-}

@@ -1,7 +1,0 @@
-package xyz.vsngamer.elevator.init;
-
-import net.minecraftforge.common.config.Configuration;
-
-public class ModConfig extends Configuration{
-	
-}
