@@ -1,0 +1,16 @@
+package xyz.vsngamer.elevator.blocks;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import xyz.vsngamer.elevator.Ref;
+
+public class BlockElevator extends Block {
+
+	public BlockElevator() {
+		super(Material.CLOTH);
+		setUnlocalizedName(Ref.EBlocks.ELEVATOR.getUnlocalizedName());
+		setRegistryName(Ref.EBlocks.ELEVATOR.getRegistryName());
+		setHardness(0.8F);
+	}
+
+}

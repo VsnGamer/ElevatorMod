@@ -1,0 +1,5 @@
+package xyz.vsngamer.elevator.blocks;
+
+public class BlockElevatorBlack {
+
+}

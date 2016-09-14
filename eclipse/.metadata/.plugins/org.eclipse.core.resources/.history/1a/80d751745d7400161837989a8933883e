@@ -1,0 +1,7 @@
+package xyz.vsngamer.elevator.blocks;
+
+import net.minecraft.block.Block;
+
+public class BlockElevator extends Block {
+
+}

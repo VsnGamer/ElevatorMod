@@ -1,0 +1,21 @@
+package xyz.vsngamer.elevator.init;
+
+import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter.Red;
+
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import xyz.vsngamer.elevator.Ref;
+
+public class ModSounds {
+	public static SoundEvent teleport;
+
+	public static void registerSounds() {
+		teleport = registerSound("record.solaris");
+	}
+
+	private static SoundEvent registerSound(String soundName) {
+		final ResourceLocation soundID = new ResourceLocation(Ref.MOD_ID, soundName);
+		return GameRegistry.register(new SoundEvent(soundID).setRegistryName(soundID));
+	}
+}

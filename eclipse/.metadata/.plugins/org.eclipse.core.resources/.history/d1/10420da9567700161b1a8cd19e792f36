@@ -1,0 +1,14 @@
+package xyz.vsngamer.elevator.init;
+
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+
+public class ModCrafting {
+
+	public static void register() {
+			GameRegistry.addShapedRecipe(new ItemStack(ModBlocks.elevator_white), "WWW", "WPW", "WWW", 'W',new ItemStack(Blocks.WOOL, 1, 0), 'P', Items.ENDER_PEARL);
+		
+	}
+}

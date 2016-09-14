@@ -1,0 +1,30 @@
+package xyz.vsngamer.elevator.init;
+
+import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import xyz.vsngamer.elevator.blocks.BlockElevator;
+
+public class ModBlocks {
+	
+	public static Block elevator;
+
+	public static void init() {
+		elevator = new BlockElevator();
+	}
+
+	public static void register() {
+		GameRegistry.register(elevator);
+	}
+
+	public static void registerRenders() {
+		registerRender(elevator);
+	}
+
+	private static void registerRender(Block block) {
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0,
+				new ModelResourceLocation(block.getRegistryName(), "inventory"));
+	}
+}

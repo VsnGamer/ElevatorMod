@@ -1,0 +1,21 @@
+package assets.elevatorid.textures.blocks;
+
+public class Snippet {
+	wool_colored_black.png
+	wool_colored_blue.png
+	wool_colored_brown.png
+	wool_colored_cyan.png
+	wool_colored_gray.png
+	wool_colored_green.png
+	wool_colored_light_blue.png
+	wool_colored_lime.png
+	wool_colored_magenta.png
+	wool_colored_orange.png
+	wool_colored_pink.png
+	wool_colored_purple.png
+	wool_colored_red.png
+	wool_colored_silver.png
+	wool_colored_white.png
+	wool_colored_yellow.png
+}
+

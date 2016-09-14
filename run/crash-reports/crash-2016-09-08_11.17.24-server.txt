@@ -1,0 +1,85 @@
+---- Minecraft Crash Report ----
+// On the bright side, I bought you a teddy bear!
+
+Time: 08-09-2016 11:17
+Description: Ticking block entity
+
+java.lang.IndexOutOfBoundsException: Index: 0, Size: 0
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at xyz.vsngamer.elevator.tileentity.TileEntityElevator.checkPlayer(TileEntityElevator.java:24)
+	at xyz.vsngamer.elevator.tileentity.TileEntityElevator.update(TileEntityElevator.java:17)
+	at net.minecraft.world.World.updateEntities(World.java:1942)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:645)
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:783)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:687)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:156)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:536)
+	at java.lang.Thread.run(Unknown Source)
+
+
+A detailed walkthrough of the error, its code path and all known details is as follows:
+---------------------------------------------------------------------------------------
+
+-- Head --
+Thread: Server thread
+Stacktrace:
+	at java.util.ArrayList.rangeCheck(Unknown Source)
+	at java.util.ArrayList.get(Unknown Source)
+	at xyz.vsngamer.elevator.tileentity.TileEntityElevator.checkPlayer(TileEntityElevator.java:24)
+	at xyz.vsngamer.elevator.tileentity.TileEntityElevator.update(TileEntityElevator.java:17)
+
+-- Block entity being ticked --
+Details:
+	Name: elevatoridTileEntityElevator // xyz.vsngamer.elevator.tileentity.TileEntityElevator
+	Block type: ID #218 (tile.elevator // xyz.vsngamer.elevator.blocks.BlockElevator)
+	Block data value: 0 / 0x0 / 0b0000
+	Block location: World: (1543,4,521), Chunk: (at 7,0,9 in 96,32; contains blocks 1536,0,512 to 1551,255,527), Region: (3,1; contains chunks 96,32 to 127,63, blocks 1536,0,512 to 2047,255,1023)
+	Actual block type: ID #218 (tile.elevator // xyz.vsngamer.elevator.blocks.BlockElevator)
+	Actual block data value: 0 / 0x0 / 0b0000
+Stacktrace:
+	at net.minecraft.world.World.updateEntities(World.java:1942)
+	at net.minecraft.world.WorldServer.updateEntities(WorldServer.java:645)
+
+-- Affected level --
+Details:
+	Level name: New World
+	All players: 1 total; [EntityPlayerMP['Player409'/16, l='New World', x=1541,69, y=4,00, z=521,88]]
+	Chunk stats: ServerChunkCache: 625 Drop: 0
+	Level seed: -8108086360088527783
+	Level generator: ID 01 - flat, ver 0. Features enabled: true
+	Level generator options: 
+	Level spawn location: World: (1547,4,531), Chunk: (at 11,0,3 in 96,33; contains blocks 1536,0,528 to 1551,255,543), Region: (3,1; contains chunks 96,32 to 127,63, blocks 1536,0,512 to 2047,255,1023)
+	Level time: 305311 game time, 0 day time
+	Level dimension: 0
+	Level storage version: 0x04ABD - Anvil
+	Level weather: Rain time: 1 (now: false), thunder time: 1 (now: false)
+	Level game mode: Game mode: creative (ID 1). Hardcore: false. Cheats: true
+Stacktrace:
+	at net.minecraft.server.MinecraftServer.updateTimeLightAndEntities(MinecraftServer.java:783)
+	at net.minecraft.server.MinecraftServer.tick(MinecraftServer.java:687)
+	at net.minecraft.server.integrated.IntegratedServer.tick(IntegratedServer.java:156)
+	at net.minecraft.server.MinecraftServer.run(MinecraftServer.java:536)
+	at java.lang.Thread.run(Unknown Source)
+
+-- System Details --
+Details:
+	Minecraft Version: 1.10.2
+	Operating System: Windows 7 (amd64) version 6.1
+	Java Version: 1.8.0_101, Oracle Corporation
+	Java VM Version: Java HotSpot(TM) 64-Bit Server VM (mixed mode), Oracle Corporation
+	Memory: 763572352 bytes (728 MB) / 1037959168 bytes (989 MB) up to 1037959168 bytes (989 MB)
+	JVM Flags: 3 total; -Xincgc -Xmx1024M -Xms1024M
+	IntCache: cache: 0, tcache: 0, allocated: 0, tallocated: 0
+	FML: MCP 9.32 Powered by Forge 12.18.1.2076 4 mods loaded, 4 mods active
+	States: 'U' = Unloaded 'L' = Loaded 'C' = Constructed 'H' = Pre-initialized 'I' = Initialized 'J' = Post-initialized 'A' = Available 'D' = Disabled 'E' = Errored
+	UCHIJAAAA	mcp{9.19} [Minecraft Coder Pack] (minecraft.jar) 
+	UCHIJAAAA	FML{8.0.99.99} [Forge Mod Loader] (forgeSrc-1.10.2-12.18.1.2076.jar) 
+	UCHIJAAAA	Forge{12.18.1.2076} [Minecraft Forge] (forgeSrc-1.10.2-12.18.1.2076.jar) 
+	UCHIJAAAA	elevatorid{1.0.0} [Elevator Mod] (bin) 
+	Loaded coremods (and transformers): 
+	GL info: ~~ERROR~~ RuntimeException: No OpenGL context found in the current thread.
+	Profiler Position: N/A (disabled)
+	Player Count: 1 / 8; [EntityPlayerMP['Player409'/16, l='New World', x=1541,69, y=4,00, z=521,88]]
+	Type: Integrated Server (map_client.txt)
+	Is Modded: Definitely; Client brand changed to 'fml,forge'
