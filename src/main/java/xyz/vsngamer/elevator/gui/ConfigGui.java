@@ -15,7 +15,7 @@ public class ConfigGui extends GuiConfig{
 	public ConfigGui(GuiScreen parentScreen) {
 		super(parentScreen, getConfigElements(parentScreen), Ref.MOD_ID, false, false, Ref.NAME);
 	}
-	
+
 	private static List<IConfigElement> getConfigElements(GuiScreen parentScreen){
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
 		
@@ -23,5 +23,5 @@ public class ConfigGui extends GuiConfig{
 		
 		return list;
 	}
-	
+
 }

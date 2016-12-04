@@ -1,11 +1,11 @@
 package xyz.vsngamer.elevator;
 
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
-import xyz.vsngamer.elevator.init.ModBlocks;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.vsngamer.elevator.init.ModItems;
 
 public class ElevatorModTab extends CreativeTabs{
 
@@ -14,9 +14,9 @@ public class ElevatorModTab extends CreativeTabs{
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Item getTabIconItem() {
-		ItemStack iStack = new ItemStack(ModBlocks.elevator);
-		return iStack.getItem();
+		return ModItems.elevators.get(EnumDyeColor.WHITE);
 	}
 
 }
