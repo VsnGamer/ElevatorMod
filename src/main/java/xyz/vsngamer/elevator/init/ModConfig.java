@@ -14,7 +14,8 @@ public class ModConfig {
 	public static Configuration config;
 
 	public static boolean mobSpawn;
-	
+	public static boolean precisionTarget;
+
 	@SubscribeEvent
 	public void configChanged(ConfigChangedEvent event){
 		if(event.getModID().equals(Ref.MOD_ID)){
@@ -32,6 +33,7 @@ public class ModConfig {
 		String category = "General";
 		
 		mobSpawn = config.getBoolean("mobSpawn", category, true, "Can mobs spawn in elevators ?");
+		precisionTarget = config.getBoolean("precisionTarget", category, true, "Realign players after teleporting to the center of elevator ?");
 
 		if (config.hasChanged()) {
 			config.save();

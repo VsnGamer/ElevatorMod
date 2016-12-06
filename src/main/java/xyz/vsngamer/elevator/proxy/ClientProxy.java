@@ -1,14 +1,16 @@
 package xyz.vsngamer.elevator.proxy;
 
-import xyz.vsngamer.elevator.init.ModBlocks;
-import xyz.vsngamer.elevator.init.ModSounds;
+import net.minecraftforge.common.MinecraftForge;
+import xyz.vsngamer.elevator.ElevatorHandler;
+import xyz.vsngamer.elevator.init.ModItems;
 
-public class ClientProxy implements CommonProxy{
+public class ClientProxy implements CommonProxy {
 
-	@Override
-	public void preInit() {
-		ModBlocks.registerRenders();
+    @Override
+    public void preInit() {
+        ModItems.registerRenders();
 
-	}
+        MinecraftForge.EVENT_BUS.register(new ElevatorHandler());
+    }
 
 }
