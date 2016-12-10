@@ -16,7 +16,7 @@ import xyz.vsngamer.elevator.proxy.CommonProxy;
 
 import java.io.File;
 
-@Mod(modid = Ref.MOD_ID, name = Ref.NAME, version = Ref.VERSION, acceptedMinecraftVersions = Ref.ACCPEPTED_VERSIONS, guiFactory = Ref.GUI_FACTORY)
+@Mod(modid = Ref.MOD_ID, name = Ref.NAME, version = Ref.VERSION, acceptedMinecraftVersions = Ref.ACCPEPTED_VERSIONS, guiFactory = Ref.GUI_FACTORY, updateJSON = Ref.UPDATE_JSON)
 public class ElevatorMod {
 
     @Instance

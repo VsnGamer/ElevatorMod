@@ -11,5 +11,7 @@ public class Ref {
 	public static final String SERVER_PROXY_CLASS = "xyz.vsngamer.elevator.proxy.ServerProxy";
 	
 	public static final String GUI_FACTORY = "xyz.vsngamer.elevator.gui.GuiFactory";
+	
+	public static final String UPDATE_JSON ="https://github.com/VsnGamer/ElevatorMod/tree/1.11/src/main/resources/update.json";
 
 }
