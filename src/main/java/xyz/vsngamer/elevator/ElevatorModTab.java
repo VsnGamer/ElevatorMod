@@ -18,7 +18,7 @@ public class ElevatorModTab extends CreativeTabs {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ItemStack getTabIconItem() {
-		return ModItems.elevators.get(EnumDyeColor.WHITE).func_190903_i();
+		return new ItemStack(ModItems.elevators.get(EnumDyeColor.WHITE));
 	}
 	
 	@Override
