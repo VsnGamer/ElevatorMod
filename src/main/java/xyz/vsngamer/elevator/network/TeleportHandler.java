@@ -18,7 +18,7 @@ public class TeleportHandler implements IMessageHandler<TeleportRequest, IMessag
     @Override
     public IMessage onMessage(TeleportRequest message, MessageContext ctx) {
         EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-        World world = player.worldObj;
+        World world = player.world;
         BlockPos from = message.getFrom(), to = message.getTo();
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) return null;
         IBlockState fromState = world.getBlockState(from);

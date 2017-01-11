@@ -21,7 +21,7 @@ public class ElevatorHandler {
 
     @SubscribeEvent
     public void onInput(InputEvent inputEvent) {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        EntityPlayer player = Minecraft.getMinecraft().player;
         boolean sneaking = player.isSneaking();
         if (lastSneaking != sneaking) {
             lastSneaking = sneaking;
@@ -35,7 +35,7 @@ public class ElevatorHandler {
     }
 
     private static void tryTeleport(EntityPlayer player, EnumFacing facing) {
-        World world = player.worldObj;
+        World world = player.world;
         IBlockState fromState = null, toState;
         BlockPos fromPos = new BlockPos(player.posX, player.posY + 0.5f, player.posZ);
         boolean elevator = false;
