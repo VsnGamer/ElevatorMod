@@ -1,18 +1,12 @@
 package xyz.vsngamer.elevator.init;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import java.util.EnumMap;
+
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import xyz.vsngamer.elevator.ElevatorMod;
 import xyz.vsngamer.elevator.Ref;
 import xyz.vsngamer.elevator.blocks.BlockElevator;
-
-import java.util.EnumMap;
 
 public class ModBlocks {
 
