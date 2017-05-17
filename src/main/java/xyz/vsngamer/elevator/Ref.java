@@ -12,6 +12,6 @@ public class Ref {
 	
 	public static final String GUI_FACTORY = "xyz.vsngamer.elevator.gui.GuiFactory";
 	
-	public static final String UPDATE_JSON ="https://github.com/VsnGamer/ElevatorMod/tree/1.11/src/main/resources/update.json";
+	public static final String UPDATE_JSON ="https://raw.githubusercontent.com/VsnGamer/ElevatorMod/1.11.2/src/main/resources/update.json";
 
 }
