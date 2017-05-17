@@ -8,9 +8,9 @@
         "1.10.2-latest": "1.3.0",
         "1.10.2-recommended": "1.3.0"
     },
-	"1.11.2": {
-		"1.3.1": "Fix spam in log"
-        "1.3.0": "Update to 1.11.2"
+    "1.11.2": {
+        "1.3.1": "Fix spam in log",
+        "1.3.0" : "Update to 1.11.2"
     },
     "1.11": {
         "1.3.0": "Code cleanup and optimization (Prototik)."
