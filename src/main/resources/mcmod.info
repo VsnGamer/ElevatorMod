@@ -2,10 +2,10 @@
 {
   "modid": "elevatorid",
   "name": "Elevator Mod",
-  "description": "OpenBlocks´ Elevator Block",
+  "description": "OpenBlocks' Elevator Block",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://minecraft.curseforge.com/projects/openblocks-elevator",
   "updateUrl": "",
   "authorList": ["VsnGamer"],
   "credits": "OpenBlocks Team",
