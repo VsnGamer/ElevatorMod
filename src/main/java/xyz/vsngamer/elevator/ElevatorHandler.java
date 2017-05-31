@@ -48,7 +48,7 @@ public class ElevatorHandler {
         BlockPos.MutableBlockPos toPos = new BlockPos.MutableBlockPos(fromPos);
         while (true) {
             toPos.setY(toPos.getY() + facing.getFrontOffsetY());
-            if (toPos.getY() < 0 || toPos.getY() >= 256) break;
+            if (Math.abs(toPos.getY() - fromPos.getY()) > 256) break;
             toState = world.getBlockState(toPos);
             if (toState.getBlock() == fromState.getBlock()) {
                 if (TeleportHandler.validateTarget(world, toPos)) {
