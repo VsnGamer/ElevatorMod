@@ -17,7 +17,7 @@ import xyz.vsngamer.elevator.init.ModSounds;
 public class TeleportHandler implements IMessageHandler<TeleportRequest, IMessage> {
     @Override
     public IMessage onMessage(TeleportRequest message, MessageContext ctx) {
-        EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+        EntityPlayerMP player = ctx.getServerHandler().player;
         World world = player.world;
         BlockPos from = message.getFrom(), to = message.getTo();
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) return null;

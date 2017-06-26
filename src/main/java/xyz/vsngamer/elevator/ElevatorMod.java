@@ -2,20 +2,20 @@ package xyz.vsngamer.elevator;
 
 import java.io.File;
 
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import xyz.vsngamer.elevator.init.ModBlocks;
 import xyz.vsngamer.elevator.init.ModConfig;
-import xyz.vsngamer.elevator.init.ModItems;
-import xyz.vsngamer.elevator.init.ModSounds;
+import xyz.vsngamer.elevator.init.Registry;
 import xyz.vsngamer.elevator.network.NetworkHandler;
 import xyz.vsngamer.elevator.proxy.CommonProxy;
 
@@ -32,10 +32,7 @@ public class ElevatorMod {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		ModBlocks.init();
-		ModItems.init();
 		proxy.preInit();
-		ModSounds.registerSounds();
 
 		NetworkHandler.init();
 
@@ -43,19 +40,25 @@ public class ElevatorMod {
 		ModConfig.init(new File(configDir, "ElevatorMod.cfg"));
 
 		MinecraftForge.EVENT_BUS.register(new ModConfig());
+
 	}
 
 	@EventHandler
-	public void init(FMLInitializationEvent event) {}
+	public void init(FMLInitializationEvent event) {
 
+	}
+	
+	
+	
+	
 	@EventHandler
-	public void onMissingMappings(FMLMissingMappingsEvent event) {
-		for (FMLMissingMappingsEvent.MissingMapping mapping : event.get()) {
+	public void onMissingMappingsI(RegistryEvent.MissingMappings<Item> event) {
+		for (RegistryEvent.MissingMappings.Mapping<Item> missing : event.getMappings()) {
 			EnumDyeColor color = null;
-			if (mapping.name.equals(Ref.MOD_ID + ":BlockElevator")) {
+			if (missing.key.getResourceDomain().equals(Ref.MOD_ID + ":BlockElevator")) {
 				color = EnumDyeColor.WHITE;
-			} else if (mapping.name.startsWith(Ref.MOD_ID + ":BlockElevator")) {
-				String name = mapping.name.substring((Ref.MOD_ID + ":BlockElevator").length());
+			} else if (missing.key.getResourceDomain().startsWith(Ref.MOD_ID + ":BlockElevator")) {
+				String name = missing.key.getResourceDomain().substring((Ref.MOD_ID + ":BlockElevator").length());
 				for (EnumDyeColor candidate : EnumDyeColor.values()) {
 					if (candidate.getUnlocalizedName().equalsIgnoreCase(name)) {
 						color = candidate;
@@ -64,14 +67,30 @@ public class ElevatorMod {
 				}
 			}
 			if (color != null) {
-				switch (mapping.type) {
-				case BLOCK:
-					mapping.remap(ModBlocks.elevators.get(color));
-					break;
-				case ITEM:
-					mapping.remap(ModItems.elevators.get(color));
-					break;
+				missing.remap(Registry.elevatorsItems.get(color));
+				break;
+			}
+		}
+	}
+
+	@EventHandler
+	public void onMissingMappingsB(RegistryEvent.MissingMappings<Block> event) {
+		for (RegistryEvent.MissingMappings.Mapping<Block> missing : event.getMappings()) {
+			EnumDyeColor color = null;
+			if (missing.key.getResourceDomain().equals(Ref.MOD_ID + ":BlockElevator")) {
+				color = EnumDyeColor.WHITE;
+			} else if (missing.key.getResourceDomain().startsWith(Ref.MOD_ID + ":BlockElevator")) {
+				String name = missing.key.getResourceDomain().substring((Ref.MOD_ID + ":BlockElevator").length());
+				for (EnumDyeColor candidate : EnumDyeColor.values()) {
+					if (candidate.getUnlocalizedName().equalsIgnoreCase(name)) {
+						color = candidate;
+						break;
+					}
 				}
+			}
+			if (color != null) {
+				missing.remap(Registry.elevatorsBlocks.get(color));
+				break;
 			}
 		}
 	}

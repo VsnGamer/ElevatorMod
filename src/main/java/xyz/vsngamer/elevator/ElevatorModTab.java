@@ -2,11 +2,10 @@ package xyz.vsngamer.elevator;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import xyz.vsngamer.elevator.init.ModItems;
+import xyz.vsngamer.elevator.init.Registry;
 
 public class ElevatorModTab extends CreativeTabs {
 
@@ -18,9 +17,9 @@ public class ElevatorModTab extends CreativeTabs {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ItemStack getTabIconItem() {
-		return new ItemStack(ModItems.elevators.get(EnumDyeColor.WHITE));
+		return new ItemStack(Registry.elevatorsItems.get(EnumDyeColor.WHITE));
 	}
-	
+
 	@Override
 	public boolean hasSearchBar() {
 		return true;
