@@ -1,0 +1,91 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "cube_all",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "color": {
+      "white": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_white"
+        }
+      },
+      "orange": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_orange"
+        }
+      },
+      "magenta": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_magenta"
+        }
+      },
+      "light_blue": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_light_blue"
+        }
+      },
+      "yellow": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_yellow"
+        }
+      },
+      "lime": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_lime"
+        }
+      },
+      "pink": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_pink"
+        }
+      },
+      "gray": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_gray"
+        }
+      },
+      "silver": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_silver"
+        }
+      },
+      "cyan": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_cyan"
+        }
+      },
+      "purple": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_purple"
+        }
+      },
+      "blue": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_blue"
+        }
+      },
+      "brown": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_brown"
+        }
+      },
+      "green": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_green"
+        }
+      },
+      "red": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_red"
+        }
+      },
+      "black": {
+        "textures": {
+          "all": "elevatorid:blocks/elevator_black"
+        }
+      }
+    }
+  }
+}

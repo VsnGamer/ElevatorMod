@@ -1,39 +1,20 @@
 package xyz.vsngamer.elevator.gui;
 
-import java.util.Set;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.client.IModGuiFactory;
+import net.minecraftforge.fml.client.DefaultGuiFactory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class GuiFactory implements IModGuiFactory{
+public class GuiFactory extends DefaultGuiFactory {
 
-	@Override
-	public void initialize(Minecraft minecraftInstance) {
-	}
+    protected GuiFactory(String modid, String title) {
+        super(modid, title);
+    }
 
-	@Override
-	public Class<? extends ConfigGui> mainConfigGuiClass() {
-		return ConfigGui.class;
-	}
-
-	@Override
-	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-		return null;
-	}
-	
-	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element){
-		return null;
-	}
-
-	@Override
-	public boolean hasConfigGui() {
-		return true;
-	}
-
-	@Override
-	public GuiScreen createConfigGui(GuiScreen parentScreen) {
-		return new ConfigGui(parentScreen);
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiScreen createConfigGui(GuiScreen parentScreen) {
+        return new ConfigGui(parentScreen);
+    }
 
 }

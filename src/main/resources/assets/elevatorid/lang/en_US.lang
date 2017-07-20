@@ -1,20 +1,16 @@
-tile.elevator_white.name=White Elevator
-tile.elevator_black.name=Black Elevator
-tile.elevator_blue.name=Blue Elevator
-tile.elevator_brown.name=Brown Elevator
-tile.elevator_cyan.name=Cyan Elevator
-tile.elevator_gray.name=Gray Elevator
-tile.elevator_green.name=Green Elevator
-tile.elevator_light_blue.name=Light Blue Elevator
-tile.elevator_lime.name=Lime Elevator
-tile.elevator_magenta.name=Magenta Elevator
-tile.elevator_orange.name=Orange Elevator
-tile.elevator_pink.name=Pink Elevator
-tile.elevator_purple.name=Purple Elevator
-tile.elevator_red.name=Red Elevator
-tile.elevator_silver.name=Light Gray Elevator
-tile.elevator_yellow.name=Yellow Elevator
-
-elevatorid.subtitle.teleport=Elevator Use
-
-itemGroup.tabElevators=Elevator Mod
+tile.elevatorid.elevator.white.name=White Elevator
+tile.elevatorid.elevator.black.name=Black Elevator
+tile.elevatorid.elevator.blue.name=Blue Elevator
+tile.elevatorid.elevator.brown.name=Brown Elevator
+tile.elevatorid.elevator.cyan.name=Cyan Elevator
+tile.elevatorid.elevator.gray.name=Gray Elevator
+tile.elevatorid.elevator.green.name=Green Elevator
+tile.elevatorid.elevator.light_blue.name=Light Blue Elevator
+tile.elevatorid.elevator.lime.name=Lime Elevator
+tile.elevatorid.elevator.magenta.name=Magenta Elevator
+tile.elevatorid.elevator.orange.name=Orange Elevator
+tile.elevatorid.elevator.pink.name=Pink Elevator
+tile.elevatorid.elevator.purple.name=Purple Elevator
+tile.elevatorid.elevator.red.name=Red Elevator
+tile.elevatorid.elevator.silver.name=Light Gray Elevator
+tile.elevatorid.elevator.yellow.name=Yellow Elevator

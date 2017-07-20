@@ -14,10 +14,11 @@ out
 .idea
 
 # gradle
-build
+build/
 .gradle
 
 # other
 eclipse
-run
+run/
 README.txt
+classes/

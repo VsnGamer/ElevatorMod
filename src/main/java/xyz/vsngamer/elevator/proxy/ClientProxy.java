@@ -1,16 +1,26 @@
 package xyz.vsngamer.elevator.proxy;
 
-import net.minecraftforge.common.MinecraftForge;
-import xyz.vsngamer.elevator.ElevatorHandler;
-import xyz.vsngamer.elevator.init.Registry;
+import cofh.core.render.IModelRegister;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ClientProxy implements CommonProxy {
+import java.util.ArrayList;
 
-	@Override
-	public void preInit() {
-		Registry.registerRenders();
+@SideOnly(Side.CLIENT)
+public class ClientProxy extends CommonProxy {
+    private static ArrayList<IModelRegister> modelList = new ArrayList<>();
 
-		MinecraftForge.EVENT_BUS.register(new ElevatorHandler());
-	}
+    @Override
+    public void preInit(FMLPreInitializationEvent event) {
+        super.preInit(event);
 
+        for (IModelRegister register : modelList) {
+            register.registerModels();
+        }
+    }
+
+    public boolean addIModelRegister(IModelRegister modelRegister) {
+        return modelList.add(modelRegister);
+    }
 }

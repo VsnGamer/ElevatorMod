@@ -13,12 +13,30 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 group = 'xyz.vsngamer'
 version = '1.12-1.3.3'
 
-sourceCompatibility = targetCompatibility = "1.8"
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+compileJava {
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 minecraft {
-    version = "1.12-14.21.0.2363"
-    runDir = "run"    
-    mappings = "snapshot_20170624"
+    version = "1.12-14.21.1.2415"
+    runDir = "run"
+    mappings = "snapshot_20170719"
+}
+
+repositories {
+    maven {
+        name = "Covers Maven"
+        url = "http://maven.covers1624.net"
+    }
+    maven {
+        name = "JEI Maven"
+        url = "http://dvs1.progwml6.com/files/maven"
+    }
+}
+
+dependencies {
+    compile "cofh:CoFHCore:1.12-4.3.3.+:deobf"
 }
 
 processResources {
@@ -26,10 +44,10 @@ processResources {
     inputs.property "mcversion", project.minecraft.version
 
     from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'                
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
-        
+
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
@@ -37,6 +55,6 @@ processResources {
 
 jar {
     manifest {
-        attributes FMLAT: 'elevator_at.cfg'
+        attributes['FMLAT'] = 'elevator_at.cfg'
     }
 }

@@ -1,9 +1,11 @@
 package xyz.vsngamer.elevator.proxy;
 
-public class ServerProxy implements CommonProxy {
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-    @Override
-    public void preInit() {
-    }
-
+/**
+ * @author Mitchell Skaggs
+ */
+@SideOnly(Side.SERVER)
+public class ServerProxy extends CommonProxy {
 }
