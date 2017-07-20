@@ -1,43 +1,30 @@
 package xyz.vsngamer.elevator.network;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 public class TeleportRequest implements IMessage {
-    private BlockPos from, to;
+    private EnumFacing facing;
 
     public TeleportRequest() {
-
     }
 
-    public TeleportRequest(BlockPos from, BlockPos to) {
-        this.from = from;
-        this.to = to;
+    public TeleportRequest(EnumFacing facing) {
+        this.facing = facing;
     }
 
-    public BlockPos getFrom() {
-        return from;
-    }
-
-    public BlockPos getTo() {
-        return to;
+    public EnumFacing getFacing() {
+        return facing;
     }
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        from = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-        to = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
+        this.facing = EnumFacing.values()[buf.readInt()];
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(from.getX());
-        buf.writeInt(from.getY());
-        buf.writeInt(from.getZ());
-
-        buf.writeInt(to.getX());
-        buf.writeInt(to.getY());
-        buf.writeInt(to.getZ());
+        buf.writeInt(facing.ordinal());
     }
 }

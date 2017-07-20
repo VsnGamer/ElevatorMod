@@ -1,6 +1,5 @@
 package xyz.vsngamer.elevator;
 
-import net.minecraft.block.BlockColored;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,8 +14,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.vsngamer.elevator.network.NetworkHandler;
 import xyz.vsngamer.elevator.network.TeleportRequest;
 
-import static xyz.vsngamer.elevator.network.TeleportHandler.isElevator;
-import static xyz.vsngamer.elevator.network.TeleportHandler.isValidTarget;
+import static xyz.vsngamer.elevator.ElevatorUtils.findDestinationElevator;
+import static xyz.vsngamer.elevator.ElevatorUtils.isElevator;
 
 @SideOnly(Side.CLIENT)
 @Mod.EventBusSubscriber(value = {Side.CLIENT}, modid = Ref.MOD_ID)
@@ -32,19 +31,9 @@ public class ElevatorHandler {
         if (!isElevator(fromState))
             return;
 
-        BlockPos toPos = fromPos;
-        while (true) {
-            toPos = toPos.up(facing.getFrontOffsetY());
-            if (Math.abs(toPos.getY() - fromPos.getY()) > 256) break;
-            IBlockState toState = world.getBlockState(toPos);
-
-            if (toState.getBlock() == fromState.getBlock()
-                    && fromState.getValue(BlockColored.COLOR) == toState.getValue(BlockColored.COLOR)
-                    && isValidTarget(world, toPos)) {
-                NetworkHandler.networkWrapper.sendToServer(new TeleportRequest(fromPos, toPos));
-                break;
-            }
-        }
+        BlockPos toPos = findDestinationElevator(world, fromPos, fromState, facing);
+        if (toPos != null)
+            NetworkHandler.networkWrapper.sendToServer(new TeleportRequest(facing));
     }
 
     @SubscribeEvent

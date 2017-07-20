@@ -18,6 +18,7 @@ public class ElevatorConfig {
 
     public static boolean canMobsSpawn;
     public static boolean realignTeleportingPlayers;
+    public static boolean restrictTeleportToSameColor;
 
     public static void syncConfigCommon() {
         canMobsSpawn = ElevatorMod.CONFIG.get(
@@ -31,6 +32,14 @@ public class ElevatorConfig {
                 "realignTeleportingPlayers",
                 true,
                 "Realign players after teleporting to the center of elevator?");
+
+        restrictTeleportToSameColor = ElevatorMod.CONFIG.get(
+                Configuration.CATEGORY_GENERAL,
+                "restrictTeleportToSameColor",
+                true,
+                "Restrict teleports to only lead to the same color?");
+
+        ElevatorMod.CONFIG.save();
     }
 
     @SubscribeEvent
