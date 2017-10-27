@@ -12,7 +12,6 @@ public class GuiFactory implements IModGuiFactory{
 	public void initialize(Minecraft minecraftInstance) {
 	}
 
-	@Override
 	public Class<? extends ConfigGui> mainConfigGuiClass() {
 		return ConfigGui.class;
 	}
@@ -22,9 +21,9 @@ public class GuiFactory implements IModGuiFactory{
 		return null;
 	}
 	
-	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element){
-		return null;
-	}
+//	public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element){
+//		return null;
+//	}
 
 	@Override
 	public boolean hasConfigGui() {
