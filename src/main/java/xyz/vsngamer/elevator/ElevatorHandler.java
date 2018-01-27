@@ -16,47 +16,54 @@ import xyz.vsngamer.elevator.network.TeleportRequest;
 
 @SideOnly(Side.CLIENT)
 public class ElevatorHandler {
-    private static boolean lastSneaking;
-    private static boolean lastJumping;
+	private static boolean lastSneaking;
+	private static boolean lastJumping;
 
-    @SubscribeEvent
-    public void onInput(InputEvent inputEvent) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        boolean sneaking = player.isSneaking();
-        if (lastSneaking != sneaking) {
-            lastSneaking = sneaking;
-            if (sneaking) tryTeleport(player, EnumFacing.DOWN);
-        }
-        boolean jumping = player.isJumping;
-        if (lastJumping != jumping) {
-            lastJumping = jumping;
-            if (jumping) tryTeleport(player, EnumFacing.UP);
-        }
-    }
+	@SubscribeEvent
+	public void onInput(InputEvent inputEvent) {
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		if (!player.isSpectator()) {
+			boolean sneaking = player.isSneaking();
+			if (lastSneaking != sneaking) {
+				lastSneaking = sneaking;
+				if (sneaking)
+					tryTeleport(player, EnumFacing.DOWN);
+			}
+			boolean jumping = player.isJumping;
+			if (lastJumping != jumping) {
+				lastJumping = jumping;
+				if (jumping)
+					tryTeleport(player, EnumFacing.UP);
+			}
+		}
+	}
 
-    private static void tryTeleport(EntityPlayer player, EnumFacing facing) {
-        World world = player.world;
-        IBlockState fromState = null, toState;
-        BlockPos fromPos = new BlockPos(player.posX, player.posY + 0.5f, player.posZ);
-        boolean elevator = false;
-        for (int i = 0; i <= 2; i++) {
-            fromState = world.getBlockState(fromPos);
-            if (elevator = TeleportHandler.isElevator(fromState)) break;
-            fromPos = fromPos.down();
-        }
-        if (!elevator) return;
-        BlockPos.MutableBlockPos toPos = new BlockPos.MutableBlockPos(fromPos);
-        while (true) {
-            toPos.setY(toPos.getY() + facing.getFrontOffsetY());
-            if (Math.abs(toPos.getY() - fromPos.getY()) > 256) break;
-            toState = world.getBlockState(toPos);
-            if (toState.getBlock() == fromState.getBlock()) {
-                if (TeleportHandler.validateTarget(world, toPos)) {
-                    NetworkHandler.networkWrapper.sendToServer(new TeleportRequest(fromPos, toPos));
-                }
-                break;
-            }
-        }
-    }
+	private static void tryTeleport(EntityPlayer player, EnumFacing facing) {
+		World world = player.world;
+		IBlockState fromState = null, toState;
+		BlockPos fromPos = new BlockPos(player.posX, player.posY + 0.5f, player.posZ);
+		boolean elevator = false;
+		for (int i = 0; i <= 2; i++) {
+			fromState = world.getBlockState(fromPos);
+			if (elevator = TeleportHandler.isElevator(fromState))
+				break;
+			fromPos = fromPos.down();
+		}
+		if (!elevator)
+			return;
+		BlockPos.MutableBlockPos toPos = new BlockPos.MutableBlockPos(fromPos);
+		while (true) {
+			toPos.setY(toPos.getY() + facing.getFrontOffsetY());
+			if (Math.abs(toPos.getY() - fromPos.getY()) > 256)
+				break;
+			toState = world.getBlockState(toPos);
+			if (toState.getBlock() == fromState.getBlock()) {
+				if (TeleportHandler.validateTarget(world, toPos)) {
+					NetworkHandler.networkWrapper.sendToServer(new TeleportRequest(fromPos, toPos));
+				}
+				break;
+			}
+		}
+	}
 
 }
