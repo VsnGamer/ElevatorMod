@@ -3,12 +3,11 @@ package xyz.vsngamer.elevator.init;
 import java.util.EnumMap;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
@@ -16,9 +15,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.Array;
 import xyz.vsngamer.elevator.Ref;
 import xyz.vsngamer.elevator.blocks.BlockElevator;
+//import xyz.vsngamer.elevator.tile.ColorCamoElevator;
+import xyz.vsngamer.elevator.tile.ModelCamoElevator;
 
 @Mod.EventBusSubscriber(modid = Ref.MOD_ID)
 public class Registry {
@@ -57,8 +57,26 @@ public class Registry {
 		}
 	}
 	
+	@SideOnly(Side.CLIENT)
+	@SubscribeEvent
+	public static void onModelBake( ModelBakeEvent event){
+		for(ItemBlock itemBlock : elevatorsItems.values()){
+		event.getModelRegistry().putObject(new ModelResourceLocation(itemBlock.getRegistryName(), "normal"), new ModelCamoElevator());
+		
+		}
+	}
+	
 	@SubscribeEvent
 	public static void registerModels(final ModelRegistryEvent e){
 		Registry.registerRenders();
 	}
+
+	
+	
+//	@SideOnly(Side.CLIENT)
+//    public void registerElevatorModel (Block block, String name) {
+//
+//        final Item item = Item.getItemFromBlock(block);
+//        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(name, "inventory"));
+//    }
 }

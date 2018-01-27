@@ -12,14 +12,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import xyz.vsngamer.elevator.init.ModConfig;
 import xyz.vsngamer.elevator.init.Registry;
 import xyz.vsngamer.elevator.network.NetworkHandler;
 import xyz.vsngamer.elevator.proxy.CommonProxy;
+import xyz.vsngamer.elevator.tile.TileElevator;
 
-@Mod(modid = Ref.MOD_ID, name = Ref.NAME, version = Ref.VERSION, acceptedMinecraftVersions = Ref.ACCPEPTED_VERSIONS, guiFactory = Ref.GUI_FACTORY)
+@Mod(modid = Ref.MOD_ID, name = Ref.NAME, version = Ref.VERSION, acceptedMinecraftVersions = Ref.ACCPEPTED_VERSIONS, dependencies = Ref.DEPENDENCIES, guiFactory = Ref.GUI_FACTORY)
 public class ElevatorMod {
 
 	@Instance
@@ -32,7 +33,10 @@ public class ElevatorMod {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+		GameRegistry.registerTileEntity(TileElevator.class, Ref.MOD_ID + "TileElevator");
+
 		proxy.preInit();
+		
 
 		NetworkHandler.init();
 
@@ -40,17 +44,9 @@ public class ElevatorMod {
 		ModConfig.init(new File(configDir, "ElevatorMod.cfg"));
 
 		MinecraftForge.EVENT_BUS.register(new ModConfig());
-
+	
 	}
 
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-
-	}
-	
-	
-	
-	
 	@EventHandler
 	public void onMissingMappingsI(RegistryEvent.MissingMappings<Item> event) {
 		for (RegistryEvent.MissingMappings.Mapping<Item> missing : event.getMappings()) {

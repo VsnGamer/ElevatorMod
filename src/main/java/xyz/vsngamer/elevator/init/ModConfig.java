@@ -2,8 +2,6 @@ package xyz.vsngamer.elevator.init;
 
 import java.io.File;
 
-import com.ibm.icu.util.ULocale.Category;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
