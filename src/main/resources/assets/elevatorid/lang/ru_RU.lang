@@ -1,0 +1,20 @@
+tile.elevator_white.name=Белый лифт
+tile.elevator_black.name=Черный лифт
+tile.elevator_blue.name=Синий лифт
+tile.elevator_brown.name=Коричневый лифт
+tile.elevator_cyan.name=Голубой лифт
+tile.elevator_gray.name=Серый лифт
+tile.elevator_green.name=Зеленый лифт
+tile.elevator_light_blue.name=Светло-синий лифт
+tile.elevator_lime.name=Лаймовый лифт
+tile.elevator_magenta.name=Малиновый лифт
+tile.elevator_orange.name=Оранжевый лифт
+tile.elevator_pink.name=Розовый лифт
+tile.elevator_purple.name=Пурпурный лифт
+tile.elevator_red.name=Красный лифт
+tile.elevator_silver.name=Светло-серый лифт
+tile.elevator_yellow.name=Желтый лифт
+
+elevatorid.subtitle.teleport=Использование лифта
+
+itemGroup.tabElevators=Elevator Mod
