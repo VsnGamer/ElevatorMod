@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import xyz.vsngamer.elevator.init.ModConfig;
 import xyz.vsngamer.elevator.network.NetworkHandler;
 import xyz.vsngamer.elevator.network.TeleportHandler;
 import xyz.vsngamer.elevator.network.TeleportRequest;
@@ -57,12 +58,15 @@ public class ElevatorHandler {
 			if (Math.abs(toPos.getY() - fromPos.getY()) > 256)
 				break;
 			toState = world.getBlockState(toPos);
-			if (toState.getBlock() == fromState.getBlock()) {
-				if (TeleportHandler.validateTarget(world, toPos)) {
-					NetworkHandler.networkWrapper.sendToServer(new TeleportRequest(fromPos, toPos));
+
+			
+				if (TeleportHandler.isElevator(fromState) && TeleportHandler.isElevator(toState)) {
+					if (TeleportHandler.validateTarget(world, toPos)) {
+						NetworkHandler.networkWrapper.sendToServer(new TeleportRequest(fromPos, toPos));
+					}
+					break;
 				}
-				break;
-			}
+			
 		}
 	}
 
