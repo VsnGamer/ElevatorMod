@@ -1,0 +1,20 @@
+tile.elevator_white.name=Beyaz Asansör
+tile.elevator_black.name=Siyah Asansör
+tile.elevator_blue.name=Mavi Asansör
+tile.elevator_brown.name=Kahverengi Asansör
+tile.elevator_cyan.name=Camgöbeği Asansör
+tile.elevator_gray.name=Gri Asansör
+tile.elevator_green.name=Yeşil Asansör
+tile.elevator_light_blue.name=Açık Mavi Asansör
+tile.elevator_lime.name=Açık Yeşil Asansör
+tile.elevator_magenta.name=Pembe Asansör
+tile.elevator_orange.name=Turuncu Asansör
+tile.elevator_pink.name=Eflatun Asansör
+tile.elevator_purple.name=Mor Asansör
+tile.elevator_red.name=Kırmızı Asansör
+tile.elevator_silver.name=Açık Gri Asansör
+tile.elevator_yellow.name=Sarı Asansör
+
+elevatorid.subtitle.teleport=Asansör Kullanımı
+
+itemGroup.tabElevators=Elevator Mod
