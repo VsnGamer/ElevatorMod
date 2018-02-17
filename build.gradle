@@ -11,12 +11,12 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 group = 'xyz.vsngamer'
-version = '1.12.2-1.4.0'
+version = '1.12.2-1.3.5'
 
 sourceCompatibility = targetCompatibility = "1.8"
 
 minecraft {
-    version = "1.12.2-14.23.1.2604"
+    version = "1.12.2-14.23.0.2515"
     runDir = "run"    
     mappings = "snapshot_20171003"
 }
@@ -33,16 +33,6 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-repositories {
-
-    maven { url 'https://maven.mcmoddev.com' }
-}
-
-dependencies {
-
-    deobfCompile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.523"
 }
 
 jar {
