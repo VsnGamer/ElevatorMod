@@ -2,8 +2,6 @@ package xyz.vsngamer.elevator.init;
 
 import java.io.File;
 
-import com.ibm.icu.util.ULocale.Category;
-
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,6 +13,7 @@ public class ModConfig {
 
 	public static boolean mobSpawn;
 	public static boolean precisionTarget;
+	public static boolean sameColor;
 
 	@SubscribeEvent
 	public void configChanged(ConfigChangedEvent event){
@@ -34,6 +33,7 @@ public class ModConfig {
 		
 		mobSpawn = config.getBoolean("mobSpawn", category, true, "Can mobs spawn in elevators ?");
 		precisionTarget = config.getBoolean("precisionTarget", category, true, "Realign players after teleporting to the center of elevator ?");
+		sameColor = config.getBoolean("sameColor", category, true, "Should elevators have the same color to teleport ?");
 
 		if (config.hasChanged()) {
 			config.save();

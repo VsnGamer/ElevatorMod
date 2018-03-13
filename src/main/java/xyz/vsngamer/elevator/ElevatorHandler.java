@@ -63,7 +63,6 @@ public class ElevatorHandler {
 				if (TeleportHandler.validateTarget(world, toPos)) {
 					NetworkHandler.networkWrapper.sendToServer(new TeleportRequest(fromPos, toPos));
 				}
-				break;
 			}
 		}
 	}
