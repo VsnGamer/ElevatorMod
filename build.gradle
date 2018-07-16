@@ -35,6 +35,16 @@ processResources {
     }
 }
 
+repositories {
+
+    maven { url 'https://maven.mcmoddev.com' }
+}
+
+dependencies {
+
+    deobfCompile "net.darkhax.bookshelf:Bookshelf-1.12.2:2.3.523"
+}
+
 jar {
     manifest {
         attributes FMLAT: 'elevator_at.cfg'
