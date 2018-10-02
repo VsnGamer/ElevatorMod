@@ -1,0 +1,20 @@
+tile.elevator_white.name=Elevador Branco
+tile.elevator_black.name=Elevador Preto
+tile.elevator_blue.name=Elevador Azul
+tile.elevator_brown.name=Elevador Marrom
+tile.elevator_cyan.name=Elevador Ciano
+tile.elevator_gray.name=Elevador Cinza
+tile.elevator_green.name=Elevador Verde
+tile.elevator_light_blue.name=Elevador Azul Claro
+tile.elevator_lime.name=Elevador Lima
+tile.elevator_magenta.name=Elevador Magenta
+tile.elevator_orange.name=Elevador Laranja
+tile.elevator_pink.name=Elevador Rosinha
+tile.elevator_purple.name=Elevador Roxo
+tile.elevator_red.name=Elevador Vermelho
+tile.elevator_silver.name=Elevador Cinza Claro
+tile.elevator_yellow.name=Elevador Amarelo
+
+elevatorid.subtitle.teleport=Como Usar
+
+itemGroup.tabElevators=Elevator Mod
