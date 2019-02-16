@@ -8,9 +8,7 @@ public class ClientProxy implements CommonProxy {
 
 	@Override
 	public void preInit() {
-		Registry.registerRenders();
-
+		//Registry.registerRenders();
 		MinecraftForge.EVENT_BUS.register(new ElevatorHandler());
 	}
-
 }

@@ -19,5 +19,4 @@ public class ModSounds {
 		teleport = new SoundEvent(loc).setRegistryName(loc);
 		e.getRegistry().register(teleport);
 	}
-
 }

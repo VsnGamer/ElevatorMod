@@ -7,9 +7,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 public class TeleportRequest implements IMessage {
     private BlockPos from, to;
 
-    public TeleportRequest() {
-
-    }
+    //this is necessary
+    public TeleportRequest() {}
 
     public TeleportRequest(BlockPos from, BlockPos to) {
         this.from = from;

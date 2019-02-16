@@ -9,6 +9,4 @@ public class Ref {
 	
 	public static final String CLIENT_PROXY_CLASS = "xyz.vsngamer.elevator.proxy.ClientProxy";
 	public static final String SERVER_PROXY_CLASS = "xyz.vsngamer.elevator.proxy.ServerProxy";
-	
-	public static final String GUI_FACTORY = "xyz.vsngamer.elevator.gui.GuiFactory";
 }

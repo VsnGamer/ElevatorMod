@@ -23,11 +23,11 @@ public class TeleportHandler implements IMessageHandler<TeleportRequest, IMessag
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) return null;
         IBlockState fromState = world.getBlockState(from);
         IBlockState toState = world.getBlockState(to);
-        //if (fromState.getBlock() != toState.getBlock() || !isElevator(fromState) || !isElevator(toState)) return null;
-        if (player.getDistanceSqToCenter(from) > 9f) return null;
+        if (!isElevator(fromState) || !isElevator(toState)) return null;
+        if (player.getDistanceSqToCenter(from) > 5f) return null;
         if (!validateTarget(world, to)) return null;
         if (ModConfig.sameColor) {
-        	if(fromState.getBlock() != toState.getBlock()) return null;
+            if (fromState.getBlock() != toState.getBlock()) return null;
         }
         if (ModConfig.precisionTarget) {
             player.setPositionAndUpdate(to.getX() + 0.5f, to.getY() + 1, to.getZ() + 0.5f);
