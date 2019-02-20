@@ -6,11 +6,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -18,13 +15,13 @@ import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.network.TeleportHandler;
 import xyz.vsngamer.elevatorid.network.TeleportRequest;
 
-//TODO FIX REGISTRY OF THIS
-@OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
+//@OnlyIn(Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Ref.MOD_ID)
 public class ElevatorHandler {
     private static boolean lastSneaking;
     private static boolean lastJumping;
 
+    //InputEvent not firing because forge did not implement it yet
     @SubscribeEvent
     public static void onInput(InputEvent event) {
         EntityPlayerSP player = Minecraft.getInstance().player;
@@ -43,6 +40,11 @@ public class ElevatorHandler {
             }
         }
     }
+
+//    @SubscribeEvent
+//    public static void test(BlockEvent.BreakEvent e) {
+//        e.getPlayer().sendMessage(new TextComponentString("break " + UUID.randomUUID()));
+//    }
 
     private static void tryTeleport(EntityPlayer player, EnumFacing facing) {
         World world = player.world;

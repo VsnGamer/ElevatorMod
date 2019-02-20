@@ -1,0 +1,22 @@
+{
+  "block.elevatorid.elevator_white": "Белый лифт",
+  "block.elevatorid.elevator_black": "Черный лифт",
+  "block.elevatorid.elevator_blue": "Синий лифт",
+  "block.elevatorid.elevator_brown": "Коричневый лифт",
+  "block.elevatorid.elevator_cyan": "Голубой лифт",
+  "block.elevatorid.elevator_gray": "Серый лифт",
+  "block.elevatorid.elevator_green": "Зеленый лифт",
+  "block.elevatorid.elevator_light_blue": "Светло-синий лифт",
+  "block.elevatorid.elevator_lime": "Лаймовый лифт",
+  "block.elevatorid.elevator_magenta": "Малиновый лифт",
+  "block.elevatorid.elevator_orange": "Оранжевый лифт",
+  "block.elevatorid.elevator_pink": "Розовый лифт",
+  "block.elevatorid.elevator_purple": "Пурпурный лифт",
+  "block.elevatorid.elevator_red": "Красный лифт",
+  "block.elevatorid.elevator_silver": "Светло-серый лифт",
+  "block.elevatorid.elevator_yellow": "Желтый лифт",
+
+  "elevatorid.subtitle.teleport": "Использование лифта",
+
+  "itemGroup.tabElevators": "Elevators"
+}

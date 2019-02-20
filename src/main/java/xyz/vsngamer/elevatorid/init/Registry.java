@@ -13,7 +13,7 @@ import xyz.vsngamer.elevatorid.blocks.BlockElevator;
 
 import java.util.EnumMap;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Ref.MOD_ID,bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registry {
 
     private static EnumMap<EnumDyeColor, BlockElevator> elevatorsBlocks = new EnumMap<>(

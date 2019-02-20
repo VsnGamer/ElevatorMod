@@ -1,0 +1,22 @@
+{
+  "block.elevatorid.elevator_white": "Beyaz Asansör",
+  "block.elevatorid.elevator_black": "Siyah Asansör",
+  "block.elevatorid.elevator_blue": "Mavi Asansör",
+  "block.elevatorid.elevator_brown": "Kahverengi Asansör",
+  "block.elevatorid.elevator_cyan": "Camgöbeği Asansör",
+  "block.elevatorid.elevator_gray": "Gri Asansör",
+  "block.elevatorid.elevator_green": "Yeşil Asansör",
+  "block.elevatorid.elevator_light_blue": "Açık Mavi Asansör",
+  "block.elevatorid.elevator_lime": "Açık Yeşil Asansör",
+  "block.elevatorid.elevator_magenta": "Pembe Asansör",
+  "block.elevatorid.elevator_orange": "Turuncu Asansör",
+  "block.elevatorid.elevator_pink": "Eflatun Asansör",
+  "block.elevatorid.elevator_purple": "Mor Asansör",
+  "block.elevatorid.elevator_red": "Kırmızı Asansör",
+  "block.elevatorid.elevator_silver": "Açık Gri Asansör",
+  "block.elevatorid.elevator_yellow": "Sarı Asansör",
+
+  "elevatorid.subtitle.teleport": "Asansör Kullanımı",
+
+  "itemGroup.tabElevators": "Elevators"
+}

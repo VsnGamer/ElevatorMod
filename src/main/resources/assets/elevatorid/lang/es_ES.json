@@ -1,0 +1,22 @@
+{
+  "block.elevatorid.elevator_white": "Ascensor blanco",
+  "block.elevatorid.elevator_black": "Ascensor negro",
+  "block.elevatorid.elevator_blue": "Ascensor azul",
+  "block.elevatorid.elevator_brown": "Ascensor marrón",
+  "block.elevatorid.elevator_cyan": "Ascensor turquesa",
+  "block.elevatorid.elevator_gray": "Ascensor gris",
+  "block.elevatorid.elevator_green": "Ascensor verde",
+  "block.elevatorid.elevator_light_blue": "Ascensor azul cielo",
+  "block.elevatorid.elevator_lime": "Ascensor verde limón",
+  "block.elevatorid.elevator_magenta": "Ascensor magenta",
+  "block.elevatorid.elevator_orange": "Ascensor naranja",
+  "block.elevatorid.elevator_pink": "Ascensor rosa",
+  "block.elevatorid.elevator_purple": "Ascensor morado",
+  "block.elevatorid.elevator_red": "Ascensor rojo",
+  "block.elevatorid.elevator_silver": "Ascensor plata",
+  "block.elevatorid.elevator_yellow": "Ascensor amarillo",
+
+  "elevatorid.subtitle.teleport": "Uso del ascensor",
+
+  "itemGroup.tabElevators": "Elevators"
+}
