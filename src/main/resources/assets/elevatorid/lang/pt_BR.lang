@@ -15,6 +15,6 @@ tile.elevator_red.name=Elevador Vermelho
 tile.elevator_silver.name=Elevador Cinza Claro
 tile.elevator_yellow.name=Elevador Amarelo
 
-elevatorid.subtitle.teleport=Como Usar
+elevatorid.subtitle.teleport=Elevador usado
 
 itemGroup.tabElevators=Elevator Mod
