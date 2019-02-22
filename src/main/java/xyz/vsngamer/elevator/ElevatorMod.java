@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import xyz.vsngamer.elevator.init.Registry;
 import xyz.vsngamer.elevator.network.NetworkHandler;
 import xyz.vsngamer.elevator.proxy.ClientProxy;
+import xyz.vsngamer.elevator.proxy.IProxy;
 
 @Mod(modid = Ref.MOD_ID, name = Ref.NAME, version = Ref.VERSION, acceptedMinecraftVersions = Ref.ACCPEPTED_VERSIONS)
 public class ElevatorMod {
@@ -20,8 +21,8 @@ public class ElevatorMod {
     @Instance
     public static ElevatorMod instance;
 
-    @SidedProxy(clientSide = Ref.CLIENT_PROXY_CLASS)
-    public static ClientProxy proxy;
+    @SidedProxy(clientSide = Ref.CLIENT_PROXY_CLASS,serverSide = Ref.SERVER_PROXY_CLASS)
+    public static IProxy proxy;
 
     public static final CreativeTabs CREATIVE_TAB = new ElevatorModTab();
 
