@@ -14,20 +14,13 @@ import javax.annotation.Nullable;
 
 public class BlockElevator extends Block {
 
-    //TODO better* PROPERTIES
     public BlockElevator() {
-        super(Block.Properties.create(Material.CLOTH).hardnessAndResistance(0.8F).sound(SoundType.CLOTH));
+        super(Block.Properties.create(Material.CLOTH)
+                .hardnessAndResistance(0.8F)
+                .sound(SoundType.CLOTH));
     }
 
-//    public BlockElevator() {
-//        super(Material.CLOTH);
-//        setHardness(0.8F);
-//        setSoundType(SoundType.CLOTH);
-//        //setCreativeTab(ElevatorMod.CREATIVE_TAB);
-//    }
-
-    //TODO CONFIG
-    @Override
+    @Override //TODO: Fix Config
     public boolean canCreatureSpawn(IBlockState state, IWorldReaderBase world, BlockPos pos, EntitySpawnPlacementRegistry.SpawnPlacementType type, @Nullable EntityType<? extends EntityLiving> entityType) {
         //        return ModConfig.mobSpawn && super.canCreatureSpawn(state, world, pos, type);
         return false;

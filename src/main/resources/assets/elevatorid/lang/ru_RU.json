@@ -13,7 +13,7 @@
   "block.elevatorid.elevator_pink": "Розовый лифт",
   "block.elevatorid.elevator_purple": "Пурпурный лифт",
   "block.elevatorid.elevator_red": "Красный лифт",
-  "block.elevatorid.elevator_silver": "Светло-серый лифт",
+  "block.elevatorid.elevator_light_gray": "Светло-серый лифт",
   "block.elevatorid.elevator_yellow": "Желтый лифт",
 
   "elevatorid.subtitle.teleport": "Использование лифта",

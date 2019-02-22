@@ -31,6 +31,8 @@ public class TeleportHandler {
         if (!isElevator(fromState) || !isElevator(toState)) return;
         if (player.getDistanceSqToCenter(from) > 5f) return;
         if (!validateTarget(world, to)) return;
+
+        //TODO: Config
 //        if (ModConfig.sameColor) {
 //            if (fromState.getBlock() != toState.getBlock()) return;
 //        }

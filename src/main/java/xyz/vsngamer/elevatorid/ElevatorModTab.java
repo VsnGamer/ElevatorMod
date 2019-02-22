@@ -6,18 +6,10 @@ import net.minecraft.item.ItemStack;
 import xyz.vsngamer.elevatorid.init.Registry;
 
 public class ElevatorModTab extends ItemGroup {
-
     ElevatorModTab() {
         super("tabElevators");
-        //use Minecraft's default search bar
-        setBackgroundImageName("item_search.png");
+        setBackgroundImageName("item_search.png"); //use Minecraft's default search bar
     }
-
-//	@Override
-//	@SideOnly(Side.CLIENT)
-//	public ItemStack getTabIconItem() {
-//		return new ItemStack(Registry.elevatorsItems.get(EnumDyeColor.WHITE));
-//	}
 
     @Override
     public ItemStack createIcon() {
@@ -28,5 +20,4 @@ public class ElevatorModTab extends ItemGroup {
     public boolean hasSearchBar() {
         return true;
     }
-
 }

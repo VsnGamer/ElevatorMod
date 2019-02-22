@@ -13,7 +13,7 @@ import xyz.vsngamer.elevatorid.blocks.BlockElevator;
 
 import java.util.EnumMap;
 
-@Mod.EventBusSubscriber(modid = Ref.MOD_ID,bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Ref.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registry {
 
     private static EnumMap<EnumDyeColor, BlockElevator> elevatorsBlocks = new EnumMap<>(
@@ -26,8 +26,7 @@ public class Registry {
         for (EnumDyeColor color : EnumDyeColor.values()) {
             BlockElevator block = new BlockElevator();
             block.setRegistryName(Ref.MOD_ID, "elevator_" + color.getName());
-            //Not needed anymore
-            //block.setUnlocalizedName("elevator_" + color.getName());
+            //block.setUnlocalizedName("elevator_" + color.getName()); //Not needed anymore
             e.getRegistry().register(block);
             elevatorsBlocks.put(color, block);
         }
@@ -44,8 +43,7 @@ public class Registry {
         }
     }
 
-    //this is prob going to be removed (https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#rendering-changes)
-
+    //this is probably going to be removed (https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#rendering-changes)
     //@SideOnly(Side.CLIENT)
 //    public static void registerRenders() {
 //        for (ItemBlock itemBlock : elevatorsItems.values()) {
@@ -59,8 +57,10 @@ public class Registry {
 //        Registry.registerRenders();
 //    }
 
-    //TODO CONFIG
-//    @SubscribeEvent
+
+
+
+//    @SubscribeEvent //TODO: Config
 //    public static void configChanged(ConfigChangedEvent event) {
 //        if (event.getModID().equals(Ref.MOD_ID)) {
 //            ConfigManager.sync(Ref.MOD_ID, Config.Type.INSTANCE);

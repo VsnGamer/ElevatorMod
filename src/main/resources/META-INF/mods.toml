@@ -1,15 +1,15 @@
 modLoader="javafml" 
 loaderVersion="[25,)"
-issueTrackerURL="https://github.com/VsnGamer/ElevatorMod/issues/" 
-displayURL="https://minecraft.curseforge.com/projects/openblocks-elevator/" 
-logoFile="examplemod.png" 
-credits="OpenBlocks Team" 
-authors="VsnGamer" 
-[[mods]] 
-modId="elevatorid" 
-version="${file.jarVersion}" 
-displayName="Elevator Mod" 
-#updateJSONURL="http://myurl.me/" 
+issueTrackerURL="https://github.com/VsnGamer/ElevatorMod/issues/"
+logoFile="icon.png"
+[[mods]]
+modId="elevatorid"
+version="${file.jarVersion}"
+displayName="Elevator Mod"
+#updateJSONURL="http://myurl.me/"
+displayURL="https://minecraft.curseforge.com/projects/openblocks-elevator/"
+credits="OpenBlocks Team"
+authors="VsnGamer"
 description='''
 Simple port of the elevator from OpenBlocks to 1.8+
 '''

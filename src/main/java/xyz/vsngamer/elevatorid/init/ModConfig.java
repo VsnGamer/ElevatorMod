@@ -1,17 +1,25 @@
-//package xyz.vsngamer.elevatorid.init;
-//
-//import net.minecraftforge.common.config.Config;
-//import net.minecraftforge.common.config.ConfigManager;
-//import net.minecraftforge.common.config.Configuration;
-//import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-//import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-//import xyz.vsngamer.elevator.Ref;
-//
-//import java.io.File;
-//
-//@Config(modid = Ref.MOD_ID)
-//public class ModConfig{
-//
+package xyz.vsngamer.elevatorid.init;
+
+import net.minecraftforge.common.ForgeConfigSpec;
+
+public class ModConfig {
+    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    static {
+        new CommonGeneral(BUILDER);
+    }
+
+    public static final ForgeConfigSpec SPEC = BUILDER.build();
+
+    static class CommonGeneral {
+        final ForgeConfigSpec.BooleanValue Test;
+
+        CommonGeneral(ForgeConfigSpec.Builder builder) {
+            builder.push("General");
+            Test = builder.comment("say yay?").define("yay", true);
+            builder.pop();
+        }
+    }
+
 //    @Config.Comment("Can mobs spawn in elevators ?")
 //    public static boolean mobSpawn = true;
 //
@@ -20,5 +28,5 @@
 //
 //    @Config.Comment("Should elevators have the same color to teleport ?")
 //    public static boolean sameColor = true;
-//}
-//TODO CONFIG
+}
+//TODO: This class
