@@ -58,8 +58,6 @@ public class Registry {
 //    }
 
 
-
-
 //    @SubscribeEvent //TODO: Config
 //    public static void configChanged(ConfigChangedEvent event) {
 //        if (event.getModID().equals(Ref.MOD_ID)) {

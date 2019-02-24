@@ -10,17 +10,16 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
 import xyz.vsngamer.elevatorid.blocks.BlockElevator;
+import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.ModSounds;
 
 import java.util.function.Supplier;
-
-//import xyz.vsngamer.elevatorid.init.ModConfig;
 
 public class TeleportHandler {
     static void handle(TeleportRequest message, Supplier<NetworkEvent.Context> ctx) {
         EntityPlayerMP player = ctx.get().getSender();
         if (player == null) {
-            LogManager.getLogger().warn("player null");
+            LogManager.getLogger().error("player null");
             return;
         }
         World world = player.world;
@@ -32,15 +31,14 @@ public class TeleportHandler {
         if (player.getDistanceSqToCenter(from) > 5f) return;
         if (!validateTarget(world, to)) return;
 
-        //TODO: Config
-//        if (ModConfig.sameColor) {
-//            if (fromState.getBlock() != toState.getBlock()) return;
-//        }
-//        if (ModConfig.precisionTarget) {
-        player.setPositionAndUpdate(to.getX() + 0.5f, to.getY() + 1, to.getZ() + 0.5f);
-//        } else {
-//            player.setPositionAndUpdate(to.getX() - from.getX() + player.posX, to.getY() - from.getY() + player.posY, to.getZ() - from.getZ() + player.posZ);
-//        }
+        if (ModConfig.GENERAL.sameColor.get()) {
+            if (fromState.getBlock() != toState.getBlock()) return;
+        }
+        if (ModConfig.GENERAL.precisionTarget.get()) {
+            player.setPositionAndUpdate(to.getX() + 0.5f, to.getY() + 1, to.getZ() + 0.5f);
+        } else {
+            player.setPositionAndUpdate(to.getX() - from.getX() + player.posX, to.getY() - from.getY() + player.posY, to.getZ() - from.getZ() + player.posZ);
+        }
         player.motionY = 0;
         world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
@@ -50,7 +48,8 @@ public class TeleportHandler {
     }
 
     private static boolean validateTarget(IBlockState blockState) {
-        return blockState.getMaterial() == Material.AIR || !blockState.isSolid();
+        final boolean fullC = blockState.isFullCube();
+        return blockState.getMaterial() == Material.AIR || !fullC;
     }
 
     public static boolean isElevator(IBlockState blockState) {

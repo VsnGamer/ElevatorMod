@@ -15,10 +15,9 @@ public class ElevatorMod {
     //@OnlyIn(Dist.CLIENT)
     //private static ClientProxy proxy = new ClientProxy();
 
-
     public ElevatorMod() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, xyz.vsngamer.elevatorid.init.ModConfig.spec);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, xyz.vsngamer.elevatorid.init.ModConfig.SPEC);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

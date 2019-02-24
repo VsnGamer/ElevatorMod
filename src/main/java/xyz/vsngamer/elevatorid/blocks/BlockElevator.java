@@ -9,6 +9,7 @@ import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReaderBase;
+import xyz.vsngamer.elevatorid.init.ModConfig;
 
 import javax.annotation.Nullable;
 
@@ -20,9 +21,8 @@ public class BlockElevator extends Block {
                 .sound(SoundType.CLOTH));
     }
 
-    @Override //TODO: Fix Config
+    @Override
     public boolean canCreatureSpawn(IBlockState state, IWorldReaderBase world, BlockPos pos, EntitySpawnPlacementRegistry.SpawnPlacementType type, @Nullable EntityType<? extends EntityLiving> entityType) {
-        //        return ModConfig.mobSpawn && super.canCreatureSpawn(state, world, pos, type);
-        return false;
+                return ModConfig.GENERAL.mobSpawn.get() && super.canCreatureSpawn(state,world,pos,type,entityType);
     }
 }
