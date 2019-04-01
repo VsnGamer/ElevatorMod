@@ -17,7 +17,7 @@ public class ConfigGui extends GuiConfig{
 	}
 
 	private static List<IConfigElement> getConfigElements(GuiScreen parentScreen){
-		List<IConfigElement> list = new ArrayList<IConfigElement>();
+		List<IConfigElement> list = new ArrayList<>();
 		
 		list.add(new ConfigElement(ModConfig.config.getCategory("General")));
 		

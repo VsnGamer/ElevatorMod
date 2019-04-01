@@ -1,37 +1,68 @@
 package xyz.vsngamer.elevator.tile;
 
-import net.darkhax.bookshelf.block.tileentity.TileEntityBasic;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 
-public class TileElevator extends TileEntityBasic {
+import javax.annotation.Nullable;
 
-	public IBlockState heldState;
+public class TileElevator extends TileEntity {
+    private IBlockState heldState;
 
-	@Override
-	public void readNBT(NBTTagCompound compound) {
-		final Block heldBlock = Block.getBlockFromName(compound.getString("HeldBlockId"));
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+        if (heldState != null) {
+            ResourceLocation regName = heldState.getBlock().getRegistryName();
+            if (regName != null) {
+                compound.setString("held_id", regName.toString());
+                compound.setInteger("held_meta", heldState.getBlock().getMetaFromState(heldState));
+            }
+        }
 
-		if (heldBlock != null) {
-			this.heldState = heldBlock.getStateFromMeta(compound.getInteger("HeldBlockMeta"));
-		}
-	}
+        return super.writeToNBT(compound);
+    }
 
-	@Override
-	public void writeNBT(NBTTagCompound compound) {
-		if (this.heldState != null && this.heldState.getBlock() != null && this.heldState.getBlock().getRegistryName() != null) {
-			compound.setString("HeldBlockId", this.heldState.getBlock().getRegistryName().toString());
-			compound.setInteger("HeldBlockMeta", this.heldState.getBlock().getMetaFromState(this.heldState));
-		}
-	}
+    @Override
+    public void readFromNBT(NBTTagCompound compound) {
+        // Get held_id and held_meta from compound
+        final String held_id = compound.getString("held_id");
+        final int held_meta = compound.getInteger("held_meta");
 
-	@Override
-	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		super.onDataPacket(net, pkt);
-		this.world.markBlockRangeForRenderUpdate(this.pos, this.pos);
-	}
+        // Get block from held_id
+        final Block block = Block.getBlockFromName(held_id);
 
+        heldState = block != null ? block.getStateFromMeta(held_meta) : null;
+
+        super.readFromNBT(compound);
+    }
+
+    @Nullable
+    @Override
+    public SPacketUpdateTileEntity getUpdatePacket() {
+        return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return writeToNBT(new NBTTagCompound());
+    }
+
+    @Override
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
+        handleUpdateTag(pkt.getNbtCompound());
+    }
+
+
+    public IBlockState getCamoState() {
+        return heldState;
+    }
+
+    public void setCamoState(IBlockState state) {
+        heldState = state;
+        markDirty();
+    }
 }

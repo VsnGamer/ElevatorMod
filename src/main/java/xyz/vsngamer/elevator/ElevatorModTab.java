@@ -9,20 +9,20 @@ import xyz.vsngamer.elevator.init.Registry;
 
 public class ElevatorModTab extends CreativeTabs {
 
-	public ElevatorModTab() {
-		super("tabElevators");
-		setBackgroundImageName("item_search.png");
-	}
+    ElevatorModTab() {
+        super("tabElevators");
+        setBackgroundImageName("item_search.png");
+    }
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public ItemStack getTabIconItem() {
-		return new ItemStack(Registry.elevatorsItems.get(EnumDyeColor.WHITE));
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public ItemStack getTabIconItem() {
+        return new ItemStack(Registry.elevatorsItems.get(EnumDyeColor.WHITE));
+    }
 
-	@Override
-	public boolean hasSearchBar() {
-		return true;
-	}
+    @Override
+    public boolean hasSearchBar() {
+        return true;
+    }
 
 }

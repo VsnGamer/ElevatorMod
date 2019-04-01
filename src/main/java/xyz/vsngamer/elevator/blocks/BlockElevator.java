@@ -1,233 +1,247 @@
 package xyz.vsngamer.elevator.blocks;
 
-import net.darkhax.bookshelf.data.Blockstates;
-import net.darkhax.bookshelf.lib.Constants;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import net.minecraftforge.common.property.IUnlistedProperty;
 import xyz.vsngamer.elevator.ElevatorMod;
 import xyz.vsngamer.elevator.init.ModConfig;
+import xyz.vsngamer.elevator.tile.Properties;
 import xyz.vsngamer.elevator.tile.TileElevator;
 
-public class BlockElevator extends BlockContainer implements ITileEntityProvider {
+import javax.annotation.Nullable;
+import java.util.List;
 
-	public BlockElevator() {
-		super(Material.CLOTH);
-		setHardness(0.8F);
-		setSoundType(SoundType.CLOTH);
-		setCreativeTab(ElevatorMod.CREATIVE_TAB);
-		setDefaultState(((IExtendedBlockState) blockState.getBaseState()).withProperty(Blockstates.HELD_STATE, null)
-				.withProperty(Blockstates.BLOCK_ACCESS, null).withProperty(Blockstates.BLOCKPOS, null));
-	}
+public class BlockElevator extends Block {
 
-	@Override
-	public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos,
-			EntityLiving.SpawnPlacementType type) {
-		return ModConfig.mobSpawn && super.canCreatureSpawn(state, world, pos, type);
-	}
+    public BlockElevator() {
+        super(Material.CLOTH);
+        setHardness(0.8F);
+        setSoundType(SoundType.CLOTH);
+        setCreativeTab(ElevatorMod.CREATIVE_TAB);
+    }
 
-	@Override
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
-		return new TileElevator();
-	}
+    @Override
+    public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, EntityLiving.SpawnPlacementType type) {
+        return ModConfig.mobSpawn && super.canCreatureSpawn(state, world, pos, type);
+    }
 
-	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-			EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-		final TileEntity tile = worldIn.getTileEntity(pos);
-		final ItemStack stack = playerIn.getHeldItemMainhand();
+    @Override
+    public boolean hasTileEntity(IBlockState state) {
+        return true;
+    }
 
-		if (tile instanceof TileElevator && !tile.isInvalid()) {
-			final TileElevator tileElevator = (TileElevator) tile;
-			// final Block block = Block.getBlockFromItem(stack.getItem());
-			final IBlockState handState = Block.getBlockFromItem(stack.getItem())
-					.getStateFromMeta(stack.getItemDamage());
-			if (handState != null && isValidBlock(handState) && handState != tileElevator.heldState) {
-				tileElevator.heldState = handState;
-				worldIn.notifyBlockUpdate(pos, state, state, 8);
-				worldIn.playSound(playerIn, pos.getX(), pos.getY(), pos.getZ(), new SoundEvent(new ResourceLocation("minecraft:entity.item.pickup")), null, 1F, 1F);
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state) {
+        return new TileElevator();
+    }
 
-				return true;
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        final ItemStack handStack = playerIn.getHeldItemMainhand();
+        if (!isValidItem(handStack, worldIn, pos)) {
+            return false;
+        }
 
-			} else if (stack.isEmpty() && tileElevator.heldState != null) {
-				tileElevator.heldState = null;
-				worldIn.notifyBlockUpdate(pos, state, state, 8);
-				worldIn.playSound(playerIn, pos.getX(), pos.getY(), pos.getZ(), new SoundEvent(new ResourceLocation("minecraft:entity.item.pickup")), null, 1F, 1F);
+        // #getStateForPlacement is better
+        final IBlockState handState = Block.getBlockFromItem(handStack.getItem()).getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, handStack.getMetadata(), playerIn, null);
 
-			}
-		}
-		return false;
-	}
+        TileElevator tile = this.getTileElevator(worldIn, pos);
+        if (tile == null) {
+            return false;
+        }
 
-	private static boolean isValidBlock(IBlockState state) {
+        final SoundEvent sound = new SoundEvent(new ResourceLocation("minecraft:entity.item.pickup"));
 
-		final Block block = state.getBlock();
-		return (block.isOpaqueCube(state) || block.getRenderType(state) == EnumBlockRenderType.MODEL)
-				&& !block.hasTileEntity(state) && (block.getMaterial(state) != Material.AIR) && (block.isBlockNormalCube(state) || block.getMaterial(state) == Material.GLASS);
-	}
+        if (!handStack.isEmpty() && handState != tile.getCamoState()) {
+            tile.setCamoState(handState);
+            worldIn.notifyBlockUpdate(pos, state, state, 2);
+            worldIn.checkLightFor(EnumSkyBlock.BLOCK, pos);
+            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), sound, SoundCategory.BLOCKS, 1F, 1F);
+            return true;
+        }
 
-	@Override
-	public EnumBlockRenderType getRenderType(IBlockState state) {
+        if (handStack.isEmpty() && tile.getCamoState() != null) {
+            tile.setCamoState(null);
+            worldIn.notifyBlockUpdate(pos, state, state, 2);
+            worldIn.checkLightFor(EnumSkyBlock.BLOCK, pos);
+            worldIn.playSound(null, pos.getX(), pos.getY(), pos.getZ(), sound, SoundCategory.BLOCKS, 1F, 1F);
+            return true;
+        }
+        return false;
+    }
 
-		return EnumBlockRenderType.MODEL;
-	}
+    private boolean isValidItem(ItemStack stack, IBlockAccess world, BlockPos pos) {
+        Item item = stack.getItem();
+        Block block = Block.getBlockFromItem(stack.getItem());
 
-	@Override
-	protected BlockStateContainer createBlockState() {
-		return new ExtendedBlockState(this, new IProperty[] {},
-				new IUnlistedProperty[] { Blockstates.HELD_STATE, Blockstates.BLOCK_ACCESS, Blockstates.BLOCKPOS });
-	}
+        // Empty hand is valid because it's used for removing camouflage
+        if (stack.isEmpty()) {
+            return true;
+        }
 
-	@Override
-	public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        // Don't accept items
+        if (!(item instanceof ItemBlock)) {
+            return false;
+        }
 
-		state = ((IExtendedBlockState) state).withProperty(Blockstates.BLOCK_ACCESS, world)
-				.withProperty(Blockstates.BLOCKPOS, pos);
+        // Don't camo with itself
+        if (block instanceof BlockElevator) {
+            return false;
+        }
 
-		if (world.getTileEntity(pos) instanceof TileElevator) {
-
-			final TileElevator tile = (TileElevator) world.getTileEntity(pos);
-
-			return ((IExtendedBlockState) state).withProperty(Blockstates.HELD_STATE, tile.heldState);
-		} else {
-			return state;
-		}
-	}
-
-	@Override
-	public int getMetaFromState(IBlockState state) {
-
-		return 0;
-
-	}
-
-	@Override
-	public IBlockState getStateFromMeta(int meta) {
-		return this.getDefaultState();
-
-	}
-	
-	@Override
-	public boolean isFullCube(IBlockState state) {
-		return false;
-	}
-	
-	@Override
-	public boolean isOpaqueCube(IBlockState state) {
-		return false;
-	}
-
-	@Override
-	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos,
-			EnumFacing side) {
-		final TileEntity tile = blockAccess.getTileEntity(pos);
-
-        if (tile instanceof TileElevator && !tile.isInvalid()) {
-
-            final TileElevator elevatorTile = (TileElevator) tile;
-
-            if (elevatorTile.heldState != null) {
-
-                if (elevatorTile.heldState.getBlock() == Blocks.GLASS || elevatorTile.heldState.getBlock() == Blocks.GLASS_PANE) {
-
-                    final IBlockState connected = blockAccess.getBlockState(pos.offset(side));
-
-                    if (connected == elevatorTile.heldState) {
-                        return false;
-                    }
-                    else if (connected.getBlock() instanceof BlockElevator) {
-                        return ((TileElevator) blockAccess.getTileEntity(pos.offset(side))).heldState != elevatorTile.heldState;
-                    }
-                }
-                
-                try {
-
-                    return elevatorTile.heldState.shouldSideBeRendered(blockAccess, pos, side);
-                }
-                catch (final Exception e) {
-
-                    Constants.LOG.warn("Issue with shouldSideBeRendered!", e);
-                }
+        // Only full blocks
+        for (EnumFacing face : EnumFacing.values()) {
+            if (block.getDefaultState().getBlockFaceShape(world, pos, face) != BlockFaceShape.SOLID) {
+                return false;
             }
         }
-        return super.shouldSideBeRendered(blockState, blockAccess, pos, side);
-	}
 
-	@Override
-	public boolean canRenderInLayer(IBlockState state, BlockRenderLayer layer) {
+        return true;
+    }
 
-		return true;
-	}
-	
-//	@Override
-//	public boolean addHitEffects(IBlockState state, World worldObj, RayTraceResult target, ParticleManager manager) {
-//		final TileEntity tile = worldObj.getTileEntity(target.getBlockPos());
-//		
-//		if(tile instanceof TileElevator && !tile.isInvalid()){
-//			final TileElevator tileElevator = (TileElevator) tile;
-//			
-//			if(tileElevator.heldState != null){
-//				return ParticleUtils.spawnDigParticles(manager, tileElevator.heldState, worldObj, target.getBlockPos(), target.sideHit);
-//			}
-//		}
-//		return false;
-//	}
-//	
-//	@Override
-//	public boolean addDestroyEffects(World world, BlockPos pos, ParticleManager manager) {
-//		
-//		final TileEntity tile = world.getTileEntity(pos);
-//		
-//		if(tile instanceof TileElevator && !tile.isInvalid()){
-//			final TileElevator tileElevator = (TileElevator) tile;
-//			
-//			if(tileElevator.heldState != null){
-//				return ParticleUtils.spawnBreakParticles(manager, tileElevator.heldState, world, pos);
-//			}
-//		}
-//		
-//		return false;
-//	}
-	
-	
-//	@Override
-//	public boolean addLandingEffects(IBlockState state, WorldServer worldObj, BlockPos blockPosition,
-//			IBlockState iblockstate, EntityLivingBase entity, int numberOfParticles) {
-//		
-//		final TileEntity tile = worldObj.getTileEntity(blockPosition);
-//		
-//		if(tile instanceof TileElevator && !tile.isInvalid()){
-//			
-//			final TileElevator tileElevator = (TileElevator) tile;
-//			
-//			if(tileElevator.heldState != null){
-//				
-//				worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, entity.posX, entity.posY,entity.posZ, numberOfParticles, 0.0D, 0.0D, 0.0D, 0.15000000596046448D, new int[] { Block.getStateId(tileElevator.heldState) });
-//			}
-//		}
-//		
-//		return false;
-//	}
+    @Override
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer.Builder(this).add(Properties.HELD_STATE).build();
+    }
+
+    @Override
+    public IBlockState getExtendedState(IBlockState state, IBlockAccess world, BlockPos pos) {
+        IExtendedBlockState extState = (IExtendedBlockState) state;
+        TileElevator tile = this.getTileElevator(world, pos);
+
+        if (tile != null) {
+            return extState.withProperty(Properties.HELD_STATE, tile.getCamoState());
+        }
+
+        return state;
+    }
+
+    @Override
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.TRANSLUCENT;
+    }
+
+    @Override
+    public boolean isOpaqueCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public boolean isFullCube(IBlockState state) {
+        return false;
+    }
+
+    @Override
+    public boolean doesSideBlockRendering(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing face) {
+        TileElevator tile = this.getTileElevator(world, pos);
+
+        if (tile != null && tile.getCamoState() != null && tile.getCamoState().getBlock().getBlockLayer() != BlockRenderLayer.SOLID) {
+            IBlockState adjacentBlock = world.getBlockState(pos.offset(face));
+            TileElevator adjacentTile = this.getTileElevator(world, pos.offset(face));
+            if (adjacentTile != null) {
+                return adjacentTile.getCamoState() != tile.getCamoState();
+            }
+            return tile.getCamoState() != adjacentBlock;
+        }
+        return super.doesSideBlockRendering(state, world, pos, face);
+    }
+
+    @Override
+    public float getSlipperiness(IBlockState state, IBlockAccess world, BlockPos pos, @Nullable Entity entity) {
+        TileElevator tile = this.getTileElevator(world, pos);
+
+        if (tile != null && tile.getCamoState() != null) {
+            return tile.getCamoState().getBlock().getSlipperiness(state, world, pos, entity);
+        }
+
+        return super.getSlipperiness(state, world, pos, entity);
+    }
+
+    @Override
+    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn) {
+        TileElevator tile = this.getTileElevator(worldIn, pos);
+
+        if (tile != null && tile.getCamoState() != null) {
+            tile.getCamoState().getBlock().onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
+            return;
+        }
+
+        super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, IBlockAccess worldIn, BlockPos pos) {
+        TileElevator tile = this.getTileElevator(worldIn, pos);
+        if (tile != null && tile.getCamoState() != null) {
+            return tile.getCamoState().getCollisionBoundingBox(worldIn, pos);
+        }
+        return super.getCollisionBoundingBox(blockState, worldIn, pos);
+    }
+
+    // only visual
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        TileElevator tile = this.getTileElevator(source, pos);
+        if (tile != null && tile.getCamoState() != null) {
+            return tile.getCamoState().getBoundingBox(source, pos);
+        }
+        return super.getBoundingBox(state, source, pos);
+    }
+
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
+        TileElevator tile = this.getTileElevator(worldIn, pos);
+        if (tile != null && tile.getCamoState() != null) {
+            tile.getCamoState().addCollisionBoxToList(worldIn, pos, entityBox, collidingBoxes, entityIn, isActualState);
+            return;
+        }
+        super.addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, entityIn, isActualState);
+    }
+
+    @Override
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileElevator tile = this.getTileElevator(world, pos);
+        if (tile != null && tile.getCamoState() != null) {
+            return tile.getCamoState().getLightValue(world, pos);
+        }
+        return super.getLightValue(state, world, pos);
+    }
+
+
+    /**
+     * Helper function for getting the TileElevator associated with its block
+     *
+     * @param world the world or an IBlockAccess
+     * @param pos   the block position in the world
+     * @return the TileElevator at pos or null if it doesn't exit
+     */
+    @Nullable
+    public TileElevator getTileElevator(IBlockAccess world, BlockPos pos) {
+        // Get tile at pos
+        TileEntity tile = world.getTileEntity(pos);
+
+        // Check if it exists and is valid
+        if (tile instanceof TileElevator && !tile.isInvalid()) {
+            return (TileElevator) tile;
+        }
+        return null;
+    }
 }

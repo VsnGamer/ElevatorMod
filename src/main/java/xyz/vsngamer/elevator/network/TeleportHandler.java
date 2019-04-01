@@ -24,7 +24,7 @@ public class TeleportHandler implements IMessageHandler<TeleportRequest, IMessag
         IBlockState fromState = world.getBlockState(from);
         IBlockState toState = world.getBlockState(to);
         //if (fromState.getBlock() != toState.getBlock() || !isElevator(fromState) || !isElevator(toState)) return null;
-        if (player.getDistanceSqToCenter(from) > 9f) return null;
+        if (player.getDistanceSqToCenter(from) > 4F) return null;
         if (!validateTarget(world, to)) return null;
         if (ModConfig.sameColor) {
         	if(fromState.getBlock() != toState.getBlock()) return null;
