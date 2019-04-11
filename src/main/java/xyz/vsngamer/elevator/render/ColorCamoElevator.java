@@ -22,7 +22,7 @@ public class ColorCamoElevator implements IBlockColor {
             return -1;
         }
 
-        Block b = worldIn.getBlockState(pos).getBlock();
+        Block b = state.getBlock();
         if (b instanceof BlockElevator) {
             TileElevator tile = ((BlockElevator) b).getTileElevator(worldIn, pos);
             if (tile != null && tile.getCamoState() != null) {
@@ -31,25 +31,4 @@ public class ColorCamoElevator implements IBlockColor {
         }
         return -1;
     }
-
-	/*@Override
-	public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex) {
-
-		if(worldIn != null && pos != null){
-            final TileEntity tile = worldIn.getTileEntity(pos);
-
-            if(tile instanceof TileElevator && !tile.isInvalid()){
-            	final TileElevator tileElevator = (TileElevator) tile;
-
-            	if(tileElevator.heldState != null){
-            		return Minecraft.getMinecraft().getBlockColors().colorMultiplier(tileElevator.heldState, worldIn, pos, tintIndex);
-            	}
-            }
-            return 16777215;
-		}
-		else{
-			return 16777215;
-		}
-	}*/
-
 }
