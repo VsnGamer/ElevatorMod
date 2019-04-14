@@ -7,7 +7,7 @@ import xyz.vsngamer.elevator.Ref;
 public class NetworkHandler {
     public static SimpleNetworkWrapper networkWrapper;
 
-    public static void init() {
+    public static void start() {
         networkWrapper = new SimpleNetworkWrapper(Ref.MOD_ID);
         networkWrapper.registerMessage(TeleportHandler.class, TeleportRequest.class, 0, Side.SERVER);
     }

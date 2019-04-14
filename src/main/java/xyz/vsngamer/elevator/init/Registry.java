@@ -26,18 +26,15 @@ import java.util.EnumMap;
 @Mod.EventBusSubscriber(modid = Ref.MOD_ID)
 public class Registry {
 
-    public static EnumMap<EnumDyeColor, BlockElevator> elevatorsBlocks = new EnumMap<>(
-            EnumDyeColor.class);
-    public static EnumMap<EnumDyeColor, ItemBlock> elevatorsItems = new EnumMap<>(
-            EnumDyeColor.class);
+    public static EnumMap<EnumDyeColor, BlockElevator> elevatorsBlocks = new EnumMap<>(EnumDyeColor.class);
+    public static EnumMap<EnumDyeColor, ItemBlock> elevatorsItems = new EnumMap<>(EnumDyeColor.class);
 
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> e) {
         for (EnumDyeColor color : EnumDyeColor.values()) {
-            BlockElevator block = new BlockElevator();
-            block.setRegistryName(Ref.MOD_ID, "elevator_" + color.getName());
-            block.setUnlocalizedName("elevator_" + color.getName());
+            BlockElevator block = new BlockElevator(color);
             e.getRegistry().register(block);
+
             elevatorsBlocks.put(color, block);
         }
 
@@ -50,15 +47,8 @@ public class Registry {
             ItemBlock itemBlock = new ItemBlock(Registry.elevatorsBlocks.get(color));
             itemBlock.setRegistryName("elevator_" + color.getName());
             e.getRegistry().register(itemBlock);
-            elevatorsItems.put(color, itemBlock);
-        }
-    }
 
-    @SideOnly(Side.CLIENT)
-    public static void registerRenders() {
-        for (ItemBlock itemBlock : elevatorsItems.values()) {
-            ModelLoader.setCustomModelResourceLocation(itemBlock, 0,
-                    new ModelResourceLocation(itemBlock.getRegistryName(), "inventory"));
+            elevatorsItems.put(color, itemBlock);
         }
     }
 
@@ -66,6 +56,10 @@ public class Registry {
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
         for (ItemBlock itemBlock : elevatorsItems.values()) {
+            ResourceLocation regName = itemBlock.getRegistryName();
+            if (regName == null) {
+                continue;
+            }
             ModelResourceLocation tag = new ModelResourceLocation(itemBlock.getRegistryName().toString(), "normal");
             IBakedModel model = event.getModelRegistry().getObject(tag);
 
@@ -73,8 +67,16 @@ public class Registry {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
-    public static void registerModels(final ModelRegistryEvent e) {
-        Registry.registerRenders();
+    public static void registerModels(ModelRegistryEvent e) {
+        for (ItemBlock itemBlock : elevatorsItems.values()) {
+            ResourceLocation regName = itemBlock.getRegistryName();
+            if (regName == null) {
+                continue;
+            }
+            ModelLoader.setCustomModelResourceLocation(itemBlock, 0,
+                    new ModelResourceLocation(regName, "inventory"));
+        }
     }
 }

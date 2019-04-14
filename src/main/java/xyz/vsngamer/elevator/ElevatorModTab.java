@@ -8,10 +8,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import xyz.vsngamer.elevator.init.Registry;
 
 public class ElevatorModTab extends CreativeTabs {
+    public static final ElevatorModTab TAB = new ElevatorModTab();
 
-    ElevatorModTab() {
+    private ElevatorModTab() {
         super("tabElevators");
-        setBackgroundImageName("item_search.png");
     }
 
     @Override
@@ -19,10 +19,4 @@ public class ElevatorModTab extends CreativeTabs {
     public ItemStack getTabIconItem() {
         return new ItemStack(Registry.elevatorsItems.get(EnumDyeColor.WHITE));
     }
-
-    @Override
-    public boolean hasSearchBar() {
-        return true;
-    }
-
 }

@@ -15,27 +15,30 @@ import xyz.vsngamer.elevator.network.NetworkHandler;
 import xyz.vsngamer.elevator.network.TeleportHandler;
 import xyz.vsngamer.elevator.network.TeleportRequest;
 
+@Mod.EventBusSubscriber(modid = Ref.MOD_ID)
 @SideOnly(Side.CLIENT)
 public class ElevatorHandler {
     private static boolean lastSneaking;
     private static boolean lastJumping;
 
     @SubscribeEvent
-    public void onInput(InputEvent inputEvent) {
+    public static void onInput(InputEvent inputEvent) {
         EntityPlayer player = Minecraft.getMinecraft().player;
-        if (!player.isSpectator()) {
-            boolean sneaking = player.isSneaking();
-            if (lastSneaking != sneaking) {
-                lastSneaking = sneaking;
-                if (sneaking)
-                    tryTeleport(player, EnumFacing.DOWN);
-            }
-            boolean jumping = player.isJumping;
-            if (lastJumping != jumping) {
-                lastJumping = jumping;
-                if (jumping)
-                    tryTeleport(player, EnumFacing.UP);
-            }
+        if (player.isSpectator()) {
+            return;
+        }
+
+        boolean sneaking = player.isSneaking();
+        if (lastSneaking != sneaking) {
+            lastSneaking = sneaking;
+            if (sneaking)
+                tryTeleport(player, EnumFacing.DOWN);
+        }
+        boolean jumping = player.isJumping;
+        if (lastJumping != jumping) {
+            lastJumping = jumping;
+            if (jumping)
+                tryTeleport(player, EnumFacing.UP);
         }
     }
 

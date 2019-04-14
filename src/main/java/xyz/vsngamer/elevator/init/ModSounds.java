@@ -7,9 +7,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import xyz.vsngamer.elevator.Ref;
 
- @Mod.EventBusSubscriber(modid = Ref.MOD_ID)
+@Mod.EventBusSubscriber(modid = Ref.MOD_ID)
 public class ModSounds {
-
 	public static SoundEvent teleport;
 	
 	@SubscribeEvent
@@ -18,5 +17,4 @@ public class ModSounds {
 		teleport = new SoundEvent(loc).setRegistryName(loc);
 		e.getRegistry().register(teleport);
 	}
-
 }

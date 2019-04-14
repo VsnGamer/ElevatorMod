@@ -56,7 +56,6 @@ public class TileElevator extends TileEntity {
         handleUpdateTag(pkt.getNbtCompound());
     }
 
-
     public IBlockState getCamoState() {
         return heldState;
     }

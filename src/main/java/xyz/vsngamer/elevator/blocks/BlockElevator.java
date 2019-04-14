@@ -8,6 +8,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -15,11 +16,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
-import xyz.vsngamer.elevator.ElevatorMod;
+import xyz.vsngamer.elevator.ElevatorModTab;
+import xyz.vsngamer.elevator.Ref;
 import xyz.vsngamer.elevator.init.ModConfig;
 import xyz.vsngamer.elevator.tile.Properties;
 import xyz.vsngamer.elevator.tile.TileElevator;
@@ -30,11 +31,15 @@ import java.util.List;
 @SuppressWarnings("deprecation")
 public class BlockElevator extends Block {
 
-    public BlockElevator() {
+    public BlockElevator(EnumDyeColor color) {
         super(Material.CLOTH);
         setHardness(0.8F);
         setSoundType(SoundType.CLOTH);
-        setCreativeTab(ElevatorMod.CREATIVE_TAB);
+        setCreativeTab(ElevatorModTab.TAB);
+        setLightOpacity(15);
+
+        setRegistryName(new ResourceLocation(Ref.MOD_ID, "elevator_" + color.getName()));
+        setUnlocalizedName("elevator_" + color.getName());
     }
 
     @Override
@@ -54,6 +59,10 @@ public class BlockElevator extends Block {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+//        if (worldIn.isRemote) {
+//            return true;
+//        }
+
         final ItemStack handStack = playerIn.getHeldItemMainhand();
         if (!isValidItem(handStack)) {
             return false;
@@ -63,20 +72,21 @@ public class BlockElevator extends Block {
 
         // #getStateForPlacement is better
         IBlockState handState = handBlock.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, handStack.getMetadata(), playerIn, null);
-
-        // Get actualstate for saving calls to #getActualState
+        // Get actual state for saving calls to #getActualState
         IBlockState stateToApply = handState.getActualState(worldIn, pos);
 
         TileElevator tile = this.getTileElevator(worldIn, pos);
-        if (tile == null) {
+        if (tile == null || tile.isInvalid()) {
             return false;
         }
 
+        // Set camo
         if (!handStack.isEmpty() && stateToApply != tile.getCamoState()) {
             setCamoAndUpdate(stateToApply, tile, worldIn, pos);
             return true;
         }
 
+        // Remove camo
         if (handStack.isEmpty() && tile.getCamoState() != null) {
             setCamoAndUpdate(null, tile, worldIn, pos);
             return true;
@@ -99,7 +109,7 @@ public class BlockElevator extends Block {
             return extState.withProperty(Properties.HELD_STATE, tile.getCamoState());
         }
 
-        return state;
+        return extState;
     }
 
     @Override
@@ -191,8 +201,9 @@ public class BlockElevator extends Block {
         TileElevator tile = this.getTileElevator(worldIn, pos);
         if (tile != null && tile.getCamoState() != null) {
             IBlockState camoState = tile.getCamoState();
-            if (camoState != camoState.getActualState(worldIn, pos)) {
-                tile.setCamoState(camoState.getActualState(worldIn, pos));
+            IBlockState actualState = camoState.getActualState(worldIn, pos);
+            if (camoState != actualState) {
+                tile.setCamoState(actualState);
             }
         }
         return super.getActualState(state, worldIn, pos);
@@ -207,6 +218,16 @@ public class BlockElevator extends Block {
         return super.getLightValue(state, world, pos);
     }
 
+    @Override
+    public int getLightOpacity(IBlockState state, IBlockAccess world, BlockPos pos) {
+        TileElevator tile = this.getTileElevator(world, pos);
+        if (tile != null && tile.getCamoState() != null) {
+            return tile.getCamoState().getLightOpacity(world, pos);
+        }
+        return super.getLightOpacity(state, world, pos);
+    }
+
+    // Redstone
     @Override
     public boolean canProvidePower(IBlockState state) {
         return true;
@@ -223,6 +244,13 @@ public class BlockElevator extends Block {
 
     @Override
     public boolean shouldCheckWeakPower(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+        TileElevator tile = getTileElevator(world, pos);
+        if (tile != null) {
+            IBlockState heldState = tile.getCamoState();
+            if (heldState != null) {
+                return tile.getCamoState().getBlock().shouldCheckWeakPower(heldState, world, pos, side);
+            }
+        }
         return true;
     }
 
@@ -243,6 +271,7 @@ public class BlockElevator extends Block {
         }
         return 0;
     }
+
 
     /**
      * Gets the TileElevator associated with its block
@@ -268,7 +297,7 @@ public class BlockElevator extends Block {
      * Also accepts empty stack for removing camo.
      *
      * @param stack the ItemStack
-     * @return <code>true</code> if it's a valid block / empty;
+     * @return <code>true</code> if it's a valid block or an empty hand;
      * <code>false</code> otherwise
      */
     private boolean isValidItem(ItemStack stack) {
@@ -290,8 +319,14 @@ public class BlockElevator extends Block {
             return false;
         }
 
+        // Only normally rendered blocks (not chests, ...)
+        if (block.getDefaultState().getRenderType() != EnumBlockRenderType.MODEL) {
+            return false;
+        }
+
         // Only blocks with a collision box
         return block.getDefaultState().getMaterial().blocksMovement();
+
     }
 
     /**
@@ -299,9 +334,9 @@ public class BlockElevator extends Block {
      * Updates the clients and lighting
      * Plays nice sound effect
      *
-     * @param camoState of the block it will mimic
+     * @param camoState state of the block it will mimic
      * @param tile      the TileElevator associated
-     * @param world     where the block is
+     * @param world     where the block exists
      * @param pos       position of the block
      */
     private void setCamoAndUpdate(IBlockState camoState, TileElevator tile, World world, BlockPos pos) {
@@ -309,8 +344,8 @@ public class BlockElevator extends Block {
         IBlockState blockState = world.getBlockState(pos);
 
         tile.setCamoState(camoState);
-        world.notifyBlockUpdate(pos, blockState, blockState, 2);
-        world.checkLightFor(EnumSkyBlock.BLOCK, pos);
+        world.checkLight(pos);
+        world.notifyBlockUpdate(pos, world.getBlockState(pos), blockState, 2);
         world.notifyNeighborsOfStateChange(pos, this, true);
         world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1F, 1F);
     }
