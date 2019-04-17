@@ -6,8 +6,6 @@ import net.minecraft.util.math.BlockPos;
 public class TeleportRequest {
     private final BlockPos from, to;
 
-    //public TeleportRequest() {}
-
     public TeleportRequest(BlockPos from, BlockPos to) {
         this.from = from;
         this.to = to;

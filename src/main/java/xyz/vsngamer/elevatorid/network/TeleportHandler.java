@@ -1,6 +1,5 @@
 package xyz.vsngamer.elevatorid.network;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.SoundCategory;
@@ -8,7 +7,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
-import org.apache.logging.log4j.LogManager;
 import xyz.vsngamer.elevatorid.blocks.BlockElevator;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.ModSounds;
@@ -18,29 +16,31 @@ import java.util.function.Supplier;
 public class TeleportHandler {
     static void handle(TeleportRequest message, Supplier<NetworkEvent.Context> ctx) {
         EntityPlayerMP player = ctx.get().getSender();
-        if (player == null) {
-            LogManager.getLogger().error("player null");
-            return;
-        }
+        if (player == null) return;
+
         World world = player.world;
         BlockPos from = message.getFrom(), to = message.getTo();
+
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) return;
+
         IBlockState fromState = world.getBlockState(from);
         IBlockState toState = world.getBlockState(to);
         if (!isElevator(fromState) || !isElevator(toState)) return;
-        if (player.getDistanceSqToCenter(from) > 5f) return;
+
+        if (player.getDistanceSqToCenter(from) > 4D) return;
+
+        // this is already validated on the client not sure if it's needed here
         if (!validateTarget(world, to)) return;
 
-        if (ModConfig.GENERAL.sameColor.get()) {
-            if (fromState.getBlock() != toState.getBlock()) return;
-        }
-        if (ModConfig.GENERAL.precisionTarget.get()) {
-            player.setPositionAndUpdate(to.getX() + 0.5f, to.getY() + 1, to.getZ() + 0.5f);
-        } else {
-            player.setPositionAndUpdate(to.getX() - from.getX() + player.posX, to.getY() - from.getY() + player.posY, to.getZ() - from.getZ() + player.posZ);
-        }
+        if (ModConfig.GENERAL.sameColor.get() && fromState.getBlock() != toState.getBlock()) return;
+
+        if (ModConfig.GENERAL.precisionTarget.get())
+            player.setPositionAndUpdate(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D);
+        else
+            player.setPositionAndUpdate(player.posX, to.getY() + 1D, player.posZ);
+
         player.motionY = 0;
-        world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1F, 1F);
     }
 
     public static boolean validateTarget(IBlockReader world, BlockPos target) {
@@ -48,8 +48,7 @@ public class TeleportHandler {
     }
 
     private static boolean validateTarget(IBlockState blockState) {
-        final boolean fullC = blockState.isFullCube();
-        return blockState.getMaterial() == Material.AIR || !fullC;
+        return !blockState.getMaterial().blocksMovement();
     }
 
     public static boolean isElevator(IBlockState blockState) {
