@@ -9,6 +9,7 @@ import xyz.vsngamer.elevatorid.ElevatorMod;
 
 @Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModSounds {
+
     public static SoundEvent teleport;
 
     @SubscribeEvent

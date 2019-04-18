@@ -12,8 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReaderBase;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.Logger;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.init.ModConfig;
@@ -41,10 +39,7 @@ public class BlockElevator extends Block {
         public ItemBlockElevator() {
             super(BlockElevator.this, new Item.Properties().group(ElevatorModTab.TAB).setNoRepair());
 
-            if (BlockElevator.this.getRegistryName() == null) {
-                LogManager.getLogger(ElevatorMod.ID).error("WTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTFWTF");
-                return;
-            }
+            if (BlockElevator.this.getRegistryName() == null) return; // This should never happen... I hope
             setRegistryName(BlockElevator.this.getRegistryName());
         }
     }

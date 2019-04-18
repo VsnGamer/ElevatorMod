@@ -11,11 +11,11 @@ public class TeleportRequest {
         this.to = to;
     }
 
-    public BlockPos getFrom() {
+    BlockPos getFrom() {
         return from;
     }
 
-    public BlockPos getTo() {
+    BlockPos getTo() {
         return to;
     }
 

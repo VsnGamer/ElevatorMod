@@ -18,7 +18,6 @@ public class Registry {
     private static EnumMap<EnumDyeColor, BlockElevator> ELEVATOR_BLOCKS = new EnumMap<>(EnumDyeColor.class);
     public static EnumMap<EnumDyeColor, ItemBlock> ELEVATOR_ITEMBLOCKS = new EnumMap<>(EnumDyeColor.class);
 
-
     static {
         for (EnumDyeColor color : EnumDyeColor.values()) {
             BlockElevator block = new BlockElevator(color);
@@ -41,22 +40,7 @@ public class Registry {
         }
     }
 
-    // This is probably going to be removed (https://gist.github.com/williewillus/353c872bcf1a6ace9921189f6100d09a#rendering-changes)
-    /*@SideOnly(Side.CLIENT)
-    public static void registerRenders() {
-        for (ItemBlock itemBlock : elevatorsItems.values()) {
-            ModelLoader.setCustomModelResourceLocation(itemBlock, 0,
-                    new ModelResourceLocation(itemBlock.getRegistryName(), "inventory"));
-        }
-    }
-
-    @SubscribeEvent
-    public static void registerModels(final ModelRegistryEvent e) {
-        Registry.registerRenders();
-    }*/
-
-
-    // TODO: Config
+    // TODO: Config GUI
     /*@SubscribeEvent
     public static void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(ElevatorMod.ID)) {

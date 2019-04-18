@@ -1,16 +1,19 @@
 package xyz.vsngamer.elevatorid.network;
 
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.BlockElevator;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.ModSounds;
 
+import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 public class TeleportHandler {
@@ -25,6 +28,7 @@ public class TeleportHandler {
 
         IBlockState fromState = world.getBlockState(from);
         IBlockState toState = world.getBlockState(to);
+
         if (!isElevator(fromState) || !isElevator(toState)) return;
 
         if (player.getDistanceSqToCenter(from) > 4D) return;
@@ -47,11 +51,11 @@ public class TeleportHandler {
         return validateTarget(world.getBlockState(target.up(1))) && validateTarget(world.getBlockState(target.up(2)));
     }
 
-    private static boolean validateTarget(IBlockState blockState) {
-        return !blockState.getMaterial().blocksMovement();
+    private static boolean validateTarget(@Nonnull IBlockState blockState) {
+        return !blockState.causesSuffocation();
     }
 
-    public static boolean isElevator(IBlockState blockState) {
+    public static boolean isElevator(@Nonnull IBlockState blockState) {
         return blockState.getBlock() instanceof BlockElevator;
     }
 }

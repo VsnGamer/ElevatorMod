@@ -6,8 +6,10 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 
 public class NetworkHandler {
+
     private static final String PROTOCOL_VERSION = "1";
-    public static SimpleChannel networkHandler = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(ElevatorMod.ID, "main_channel"))
+    public static SimpleChannel networkHandler = NetworkRegistry.ChannelBuilder
+            .named(new ResourceLocation(ElevatorMod.ID, "main_channel"))
             .clientAcceptedVersions(PROTOCOL_VERSION::equals)
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
