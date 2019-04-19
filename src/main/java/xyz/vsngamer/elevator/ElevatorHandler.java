@@ -21,7 +21,7 @@ public class ElevatorHandler {
 	private static boolean lastJumping;
 
 	@SubscribeEvent
-	public void onInput(InputEvent inputEvent) {
+	public void onInput(InputEvent event) {
 		EntityPlayer player = Minecraft.getMinecraft().player;
 		if (!player.isSpectator()) {
 			boolean sneaking = player.isSneaking();

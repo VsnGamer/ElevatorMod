@@ -13,11 +13,11 @@ import java.io.File;
 public class ModConfig {
 
     @Config.Comment("Can mobs spawn in elevators ?")
-    public static boolean mobSpawn = true;
+    public static boolean mobSpawn = false;
 
     @Config.Comment("Realign players after teleporting to the center of elevator ?")
     public static boolean precisionTarget = true;
 
     @Config.Comment("Should elevators have the same color to teleport ?")
-    public static boolean sameColor = true;
+    public static boolean sameColor = false;
 }
