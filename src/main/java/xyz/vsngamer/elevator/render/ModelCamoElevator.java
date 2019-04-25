@@ -25,13 +25,12 @@ public class ModelCamoElevator implements IBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
-        final Minecraft mc = Minecraft.getMinecraft();
-
-        final IExtendedBlockState extState = (IExtendedBlockState) state;
-        final IBlockState heldState = extState.getValue(Properties.HELD_STATE);
+        Minecraft mc = Minecraft.getMinecraft();
+        IExtendedBlockState extState = (IExtendedBlockState) state;
+        IBlockState heldState = extState.getValue(Properties.HELD_STATE);
 
         if (heldState != null) {
-            final IBakedModel model = mc.getBlockRendererDispatcher().getBlockModelShapes().getModelForState(heldState);
+            IBakedModel model = mc.getBlockRendererDispatcher().getBlockModelShapes().getModelForState(heldState);
             try {
                 return model.getQuads(heldState, side, rand);
             } catch (Exception e) {

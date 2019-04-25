@@ -22,7 +22,6 @@ public class TileElevator extends TileEntity {
                 compound.setInteger("held_meta", heldState.getBlock().getMetaFromState(heldState));
             }
         }
-
         return super.writeToNBT(compound);
     }
 
@@ -43,7 +42,7 @@ public class TileElevator extends TileEntity {
     @Nullable
     @Override
     public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
+        return new SPacketUpdateTileEntity(getPos(), 1, getUpdateTag());
     }
 
     @Override
@@ -54,6 +53,9 @@ public class TileElevator extends TileEntity {
     @Override
     public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         handleUpdateTag(pkt.getNbtCompound());
+
+        world.markBlockRangeForRenderUpdate(pos, pos);
+        world.checkLight(pos);
     }
 
     public IBlockState getCamoState() {
@@ -62,6 +64,16 @@ public class TileElevator extends TileEntity {
 
     public void setCamoState(IBlockState state) {
         heldState = state;
+        updateTile();
         markDirty();
+    }
+
+    /**
+     * Send rendering updates to clients
+     */
+    private void updateTile() {
+        world.checkLight(pos);
+        world.notifyNeighborsOfStateChange(pos, this.getBlockType(), true);
+        world.notifyBlockUpdate(pos,world.getBlockState(pos),world.getBlockState(pos),1);
     }
 }

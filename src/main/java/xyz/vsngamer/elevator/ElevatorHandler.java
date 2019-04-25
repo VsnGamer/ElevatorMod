@@ -16,11 +16,11 @@ import xyz.vsngamer.elevator.network.TeleportHandler;
 import xyz.vsngamer.elevator.network.TeleportRequest;
 
 @Mod.EventBusSubscriber(modid = Ref.MOD_ID)
-@SideOnly(Side.CLIENT)
 public class ElevatorHandler {
     private static boolean lastSneaking;
     private static boolean lastJumping;
 
+    @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void onInput(InputEvent inputEvent) {
         EntityPlayer player = Minecraft.getMinecraft().player;

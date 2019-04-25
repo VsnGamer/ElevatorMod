@@ -18,6 +18,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import xyz.vsngamer.elevator.ElevatorModTab;
 import xyz.vsngamer.elevator.Ref;
@@ -59,9 +60,9 @@ public class BlockElevator extends Block {
 
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-//        if (worldIn.isRemote) {
-//            return true;
-//        }
+        if (worldIn.isRemote) {
+            return true;
+        }
 
         final ItemStack handStack = playerIn.getHeldItemMainhand();
         if (!isValidItem(handStack)) {
@@ -159,8 +160,12 @@ public class BlockElevator extends Block {
         TileElevator tile = this.getTileElevator(worldIn, pos);
 
         if (tile != null && tile.getCamoState() != null) {
-            tile.getCamoState().getBlock().onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
-            return;
+            try {
+                tile.getCamoState().getBlock().onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
+                return;
+            } catch (IllegalArgumentException e) {
+                //e.printStackTrace();
+            }
         }
 
         super.onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
@@ -297,8 +302,8 @@ public class BlockElevator extends Block {
      * Also accepts empty stack for removing camo.
      *
      * @param stack the ItemStack
-     * @return <code>true</code> if it's a valid block or an empty hand;
-     * <code>false</code> otherwise
+     * @return true if it's a valid block or an empty hand;
+     * false otherwise
      */
     private boolean isValidItem(ItemStack stack) {
         Item item = stack.getItem();
@@ -331,7 +336,6 @@ public class BlockElevator extends Block {
 
     /**
      * Sets the elevator's camouflage state
-     * Updates the clients and lighting
      * Plays nice sound effect
      *
      * @param camoState state of the block it will mimic
@@ -340,13 +344,10 @@ public class BlockElevator extends Block {
      * @param pos       position of the block
      */
     private void setCamoAndUpdate(IBlockState camoState, TileElevator tile, World world, BlockPos pos) {
-        SoundEvent sound = new SoundEvent(new ResourceLocation("minecraft:item.chorus_fruit.teleport"));
-        IBlockState blockState = world.getBlockState(pos);
+        SoundEvent sound = SoundEvent.REGISTRY.getObject(new ResourceLocation("minecraft:item.chorus_fruit.teleport"));
 
         tile.setCamoState(camoState);
-        world.checkLight(pos);
-        world.notifyBlockUpdate(pos, world.getBlockState(pos), blockState, 2);
-        world.notifyNeighborsOfStateChange(pos, this, true);
-        world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1F, 1F);
+
+        world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
     }
 }
