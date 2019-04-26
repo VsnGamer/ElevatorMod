@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import xyz.vsngamer.elevator.Ref;
 import xyz.vsngamer.elevator.blocks.BlockElevator;
 import xyz.vsngamer.elevator.render.ModelCamoElevator;
@@ -47,6 +48,8 @@ public class Registry {
             ItemBlock itemBlock = new ItemBlock(Registry.elevatorsBlocks.get(color));
             itemBlock.setRegistryName("elevator_" + color.getName());
             e.getRegistry().register(itemBlock);
+
+            OreDictionary.registerOre("blockElevator", itemBlock);
 
             elevatorsItems.put(color, itemBlock);
         }

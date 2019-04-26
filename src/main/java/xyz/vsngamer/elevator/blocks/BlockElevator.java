@@ -18,7 +18,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import xyz.vsngamer.elevator.ElevatorModTab;
 import xyz.vsngamer.elevator.Ref;
@@ -163,8 +162,7 @@ public class BlockElevator extends Block {
             try {
                 tile.getCamoState().getBlock().onEntityCollidedWithBlock(worldIn, pos, state, entityIn);
                 return;
-            } catch (IllegalArgumentException e) {
-                //e.printStackTrace();
+            } catch (IllegalArgumentException ignored) {
             }
         }
 
@@ -195,7 +193,10 @@ public class BlockElevator extends Block {
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState) {
         TileElevator tile = this.getTileElevator(worldIn, pos);
         if (tile != null && tile.getCamoState() != null) {
-            tile.getCamoState().addCollisionBoxToList(worldIn, pos, entityBox, collidingBoxes, entityIn, isActualState);
+            try {
+                tile.getCamoState().addCollisionBoxToList(worldIn, pos, entityBox, collidingBoxes, entityIn, isActualState);
+            } catch (IllegalArgumentException ignored) {
+            }
             return;
         }
         super.addCollisionBoxToList(state, worldIn, pos, entityBox, collidingBoxes, entityIn, isActualState);
@@ -330,7 +331,7 @@ public class BlockElevator extends Block {
         }
 
         // Only blocks with a collision box
-        return block.getDefaultState().getMaterial().blocksMovement();
+        return block.getDefaultState().getMaterial().isSolid();
 
     }
 
