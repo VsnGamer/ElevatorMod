@@ -9,7 +9,9 @@ import xyz.vsngamer.elevator.init.Registry;
 
 public class ElevatorModTab extends CreativeTabs {
 
-	public ElevatorModTab() {
+	public static final CreativeTabs TAB = new ElevatorModTab();
+
+	private ElevatorModTab() {
 		super("tabElevators");
 		setBackgroundImageName("item_search.png");
 	}
@@ -17,7 +19,7 @@ public class ElevatorModTab extends CreativeTabs {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public ItemStack getTabIconItem() {
-		return new ItemStack(Registry.elevatorsItems.get(EnumDyeColor.WHITE));
+		return new ItemStack(Registry.ELEVATOR_ITEMBLOCKS.get(EnumDyeColor.WHITE));
 	}
 
 	@Override

@@ -13,8 +13,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import xyz.vsngamer.elevator.Ref;
 import xyz.vsngamer.elevator.blocks.BlockElevator;
@@ -24,42 +22,37 @@ import java.util.EnumMap;
 @Mod.EventBusSubscriber(modid = Ref.MOD_ID)
 public class Registry {
 
-    public static EnumMap<EnumDyeColor, BlockElevator> elevatorsBlocks = new EnumMap<>(EnumDyeColor.class);
-    public static EnumMap<EnumDyeColor, ItemBlock> elevatorsItems = new EnumMap<>(EnumDyeColor.class);
+    private static EnumMap<EnumDyeColor, BlockElevator> ELEVATOR_BLOCKS = new EnumMap<>(EnumDyeColor.class);
+    public static EnumMap<EnumDyeColor, ItemBlock> ELEVATOR_ITEMBLOCKS = new EnumMap<>(EnumDyeColor.class);
 
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> e) {
         for (EnumDyeColor color : EnumDyeColor.values()) {
-            BlockElevator block = new BlockElevator();
-            block.setRegistryName(Ref.MOD_ID, "elevator_" + color.getName());
-            block.setUnlocalizedName("elevator_" + color.getName());
+            BlockElevator block = new BlockElevator(color);
             e.getRegistry().register(block);
-            elevatorsBlocks.put(color, block);
+
+            ELEVATOR_BLOCKS.put(color, block);
         }
     }
 
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> e) {
         for (EnumDyeColor color : EnumDyeColor.values()) {
-            ItemBlock itemBlock = new ItemBlock(Registry.elevatorsBlocks.get(color));
+            ItemBlock itemBlock = new ItemBlock(Registry.ELEVATOR_BLOCKS.get(color));
             itemBlock.setRegistryName("elevator_" + color.getName());
             e.getRegistry().register(itemBlock);
-            elevatorsItems.put(color, itemBlock);
+
+            ELEVATOR_ITEMBLOCKS.put(color, itemBlock);
 
             OreDictionary.registerOre("blockElevator", itemBlock);
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    private static void registerRenders() {
-        for (ItemBlock itemBlock : elevatorsItems.values()) {
-            ModelLoader.setCustomModelResourceLocation(itemBlock, 0, new ModelResourceLocation(itemBlock.getRegistryName(), "inventory"));
-        }
-    }
-
     @SubscribeEvent
     public static void registerModels(final ModelRegistryEvent e) {
-        Registry.registerRenders();
+        for (ItemBlock itemBlock : ELEVATOR_ITEMBLOCKS.values()) {
+            ModelLoader.setCustomModelResourceLocation(itemBlock, 0, new ModelResourceLocation(itemBlock.getRegistryName(), "inventory"));
+        }
     }
 
     @SubscribeEvent

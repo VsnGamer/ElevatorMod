@@ -22,11 +22,13 @@ public class TeleportHandler implements IMessageHandler<TeleportRequest, IMessag
         BlockPos from = message.getFrom(), to = message.getTo();
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) return null;
 
+        // This ensures the player is still standing on the origin elevator
+        if (player.getDistanceSqToCenter(from) > 4D) return null;
+
         IBlockState fromState = world.getBlockState(from);
         IBlockState toState = world.getBlockState(to);
 
         if (!isElevator(fromState) || !isElevator(toState)) return null;
-        if (player.getDistanceSqToCenter(from) > 5f) return null;
         if (!validateTarget(world, to)) return null;
 
         if (ModConfig.sameColor) {
@@ -34,13 +36,13 @@ public class TeleportHandler implements IMessageHandler<TeleportRequest, IMessag
         }
 
         if (ModConfig.precisionTarget) {
-            player.setPositionAndUpdate(to.getX() + 0.5f, to.getY() + 1, to.getZ() + 0.5f);
+            player.setPositionAndUpdate(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D);
         } else {
-            player.setPositionAndUpdate(to.getX() - from.getX() + player.posX, to.getY() - from.getY() + player.posY, to.getZ() - from.getZ() + player.posZ);
+            player.setPositionAndUpdate(player.posX, to.getY() + 1D, player.posZ);
         }
 
         player.motionY = 0;
-        world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1F, 1F);
         return null;
     }
 
