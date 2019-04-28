@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import xyz.vsngamer.elevator.Ref;
 import xyz.vsngamer.elevator.blocks.BlockElevator;
 
@@ -23,10 +24,8 @@ import java.util.EnumMap;
 @Mod.EventBusSubscriber(modid = Ref.MOD_ID)
 public class Registry {
 
-    public static EnumMap<EnumDyeColor, BlockElevator> elevatorsBlocks = new EnumMap<EnumDyeColor, BlockElevator>(
-            EnumDyeColor.class);
-    public static EnumMap<EnumDyeColor, ItemBlock> elevatorsItems = new EnumMap<EnumDyeColor, ItemBlock>(
-            EnumDyeColor.class);
+    public static EnumMap<EnumDyeColor, BlockElevator> elevatorsBlocks = new EnumMap<>(EnumDyeColor.class);
+    public static EnumMap<EnumDyeColor, ItemBlock> elevatorsItems = new EnumMap<>(EnumDyeColor.class);
 
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> e) {
@@ -46,14 +45,15 @@ public class Registry {
             itemBlock.setRegistryName("elevator_" + color.getName());
             e.getRegistry().register(itemBlock);
             elevatorsItems.put(color, itemBlock);
+
+            OreDictionary.registerOre("blockElevator", itemBlock);
         }
     }
 
     @SideOnly(Side.CLIENT)
-    public static void registerRenders() {
+    private static void registerRenders() {
         for (ItemBlock itemBlock : elevatorsItems.values()) {
-            ModelLoader.setCustomModelResourceLocation(itemBlock, 0,
-                    new ModelResourceLocation(itemBlock.getRegistryName(), "inventory"));
+            ModelLoader.setCustomModelResourceLocation(itemBlock, 0, new ModelResourceLocation(itemBlock.getRegistryName(), "inventory"));
         }
     }
 
