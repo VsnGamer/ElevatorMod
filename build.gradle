@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 group = 'xyz.vsngamer'
-version = '1.12.2-1.4.1'
+version = '1.12.2-1.4.2'
 
 sourceCompatibility = targetCompatibility = "1.8"
 
@@ -19,6 +19,21 @@ minecraft {
     version = "1.12.2-14.23.5.2836"
     runDir = "run"    
     mappings = "snapshot_20171003"
+}
+
+repositories {
+    //JEI
+    maven {
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+    maven {
+        url = "https://modmaven.k-4u.nl"
+    }
+}
+
+dependencies {
+    deobfProvided "mezz.jei:jei_1.12.2:4.15.0.278:api"
+    runtime "mezz.jei:jei_1.12.2:4.15.0.278"
 }
 
 compileJava {

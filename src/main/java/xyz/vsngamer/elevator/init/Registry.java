@@ -73,8 +73,9 @@ public class Registry {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent e) {
+        ResourceLocation regName;
         for (ItemBlock itemBlock : elevatorsItems.values()) {
-            ResourceLocation regName = itemBlock.getRegistryName();
+            regName = itemBlock.getRegistryName();
             if (regName == null) {
                 continue;
             }
