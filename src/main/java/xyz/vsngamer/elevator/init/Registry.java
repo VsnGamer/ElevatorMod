@@ -27,43 +27,40 @@ import java.util.EnumMap;
 @Mod.EventBusSubscriber(modid = Ref.MOD_ID)
 public class Registry {
 
-    public static EnumMap<EnumDyeColor, BlockElevator> elevatorsBlocks = new EnumMap<>(EnumDyeColor.class);
-    public static EnumMap<EnumDyeColor, ItemBlock> elevatorsItems = new EnumMap<>(EnumDyeColor.class);
+    public static EnumMap<EnumDyeColor, BlockElevator> ELEVATOR_BLOCKS = new EnumMap<>(EnumDyeColor.class);
+    public static EnumMap<EnumDyeColor, ItemBlock> ELEVATOR_ITEMBLOCKS = new EnumMap<>(EnumDyeColor.class);
+
+    static {
+        for (EnumDyeColor color : EnumDyeColor.values()) {
+            BlockElevator block = new BlockElevator(color);
+            ELEVATOR_BLOCKS.put(color, block);
+            ELEVATOR_ITEMBLOCKS.put(color, block.new ItemBlockElevator());
+        }
+    }
 
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> e) {
-        for (EnumDyeColor color : EnumDyeColor.values()) {
-            BlockElevator block = new BlockElevator(color);
-            e.getRegistry().register(block);
-
-            elevatorsBlocks.put(color, block);
-        }
-
+        ELEVATOR_BLOCKS.values().forEach(block -> e.getRegistry().register(block));
         GameRegistry.registerTileEntity(TileElevator.class, new ResourceLocation(Ref.MOD_ID, "tile_elevator"));
     }
 
     @SubscribeEvent
     public static void registerItems(final RegistryEvent.Register<Item> e) {
-        for (EnumDyeColor color : EnumDyeColor.values()) {
-            ItemBlock itemBlock = new ItemBlock(Registry.elevatorsBlocks.get(color));
-            itemBlock.setRegistryName("elevator_" + color.getName());
-            e.getRegistry().register(itemBlock);
-
-            OreDictionary.registerOre("blockElevator", itemBlock);
-
-            elevatorsItems.put(color, itemBlock);
-        }
+        ELEVATOR_ITEMBLOCKS.values().forEach(item -> {
+            e.getRegistry().register(item);
+            OreDictionary.registerOre("blockElevator", item);
+        });
     }
 
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent event) {
-        for (ItemBlock itemBlock : elevatorsItems.values()) {
+        for (ItemBlock itemBlock : ELEVATOR_ITEMBLOCKS.values()) {
             ResourceLocation regName = itemBlock.getRegistryName();
             if (regName == null) {
                 continue;
             }
-            ModelResourceLocation tag = new ModelResourceLocation(itemBlock.getRegistryName().toString(), "normal");
+            ModelResourceLocation tag = new ModelResourceLocation(regName.toString(), "normal");
             IBakedModel model = event.getModelRegistry().getObject(tag);
 
             event.getModelRegistry().putObject(tag, new ModelCamoElevator(model));
@@ -74,7 +71,7 @@ public class Registry {
     @SubscribeEvent
     public static void registerModels(ModelRegistryEvent e) {
         ResourceLocation regName;
-        for (ItemBlock itemBlock : elevatorsItems.values()) {
+        for (ItemBlock itemBlock : ELEVATOR_ITEMBLOCKS.values()) {
             regName = itemBlock.getRegistryName();
             if (regName == null) {
                 continue;

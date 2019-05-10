@@ -14,6 +14,6 @@ public class ElevatorJEIPlugin implements IModPlugin {
     public void register(IModRegistry registry) {
         IIngredientType<ItemStack> type = registry.getIngredientRegistry().getIngredientType(ItemStack.class);
 
-        Registry.elevatorsItems.values().forEach(item -> registry.addIngredientInfo(new ItemStack(item), type, "jei.description.elevators"));
+        Registry.ELEVATOR_ITEMBLOCKS.values().forEach(item -> registry.addIngredientInfo(new ItemStack(item), type, "jei.description.elevators"));
     }
 }

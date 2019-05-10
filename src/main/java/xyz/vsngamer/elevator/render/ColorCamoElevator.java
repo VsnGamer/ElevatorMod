@@ -1,6 +1,5 @@
 package xyz.vsngamer.elevator.render;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -22,9 +21,8 @@ public class ColorCamoElevator implements IBlockColor {
             return -1;
         }
 
-        Block b = state.getBlock();
-        if (b instanceof BlockElevator) {
-            TileElevator tile = ((BlockElevator) b).getTileElevator(worldIn, pos);
+        if (state.getBlock() instanceof BlockElevator) {
+            TileElevator tile = ((BlockElevator) state.getBlock()).getTileElevator(worldIn, pos);
             if (tile != null && tile.getCamoState() != null) {
                 return Minecraft.getMinecraft().getBlockColors().colorMultiplier(tile.getCamoState(), worldIn, pos, tintIndex);
             }

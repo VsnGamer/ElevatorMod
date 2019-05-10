@@ -9,7 +9,7 @@ public class ClientProxy implements IProxy {
 
     @Override
     public void init() {
-        for (BlockElevator elevator : Registry.elevatorsBlocks.values()) {
+        for (BlockElevator elevator : Registry.ELEVATOR_BLOCKS.values()) {
             Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(new ColorCamoElevator(), elevator);
         }
     }

@@ -5,7 +5,7 @@ public class Ref {
     public static final String MOD_ID = "elevatorid";
 
     static final String NAME = "Elevator Mod";
-    static final String VERSION = "1.4.1";
+    static final String VERSION = "1.4.2";
     static final String ACCEPTED_VERSIONS = "[1.12.2]";
 
     static final String CLIENT_PROXY_CLASS = "xyz.vsngamer.elevator.proxy.ClientProxy";

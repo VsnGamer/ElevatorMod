@@ -345,10 +345,23 @@ public class BlockElevator extends Block {
      * @param pos       position of the block
      */
     private void setCamoAndUpdate(IBlockState camoState, TileElevator tile, World world, BlockPos pos) {
-        SoundEvent sound = SoundEvent.REGISTRY.getObject(new ResourceLocation("minecraft:item.chorus_fruit.teleport"));
-
+        SoundEvent sound = SoundEvent.REGISTRY.getObject(new ResourceLocation("entity.endermen.teleport"));
         tile.setCamoState(camoState);
 
-        world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        if (sound != null) {
+            world.playSound(null, pos, sound, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        }
+    }
+
+
+    public class ItemBlockElevator extends ItemBlock{
+
+        public ItemBlockElevator() {
+            super(BlockElevator.this);
+            ResourceLocation regName = BlockElevator.this.getRegistryName();
+            if (regName != null) {
+                setRegistryName(regName);
+            }
+        }
     }
 }
