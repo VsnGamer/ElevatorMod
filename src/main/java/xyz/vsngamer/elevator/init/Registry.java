@@ -57,12 +57,12 @@ public class Registry {
     public static void onModelBake(ModelBakeEvent event) {
         for (ItemBlock itemBlock : ELEVATOR_ITEMBLOCKS.values()) {
             ResourceLocation regName = itemBlock.getRegistryName();
-            if (regName == null) {
-                continue;
-            }
+            if (regName == null) continue;
+
             ModelResourceLocation tag = new ModelResourceLocation(regName.toString(), "normal");
             IBakedModel model = event.getModelRegistry().getObject(tag);
 
+            // Replace the default model with our custom IBakedModel, storing the default.
             event.getModelRegistry().putObject(tag, new ModelCamoElevator(model));
         }
     }
@@ -76,8 +76,7 @@ public class Registry {
             if (regName == null) {
                 continue;
             }
-            ModelLoader.setCustomModelResourceLocation(itemBlock, 0,
-                    new ModelResourceLocation(regName, "inventory"));
+            ModelLoader.setCustomModelResourceLocation(itemBlock, 0, new ModelResourceLocation(regName, "inventory"));
         }
     }
 }

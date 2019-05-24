@@ -36,7 +36,6 @@ public class BlockElevator extends Block {
         setHardness(0.8F);
         setSoundType(SoundType.CLOTH);
         setCreativeTab(ElevatorModTab.TAB);
-        setLightOpacity(15);
 
         setRegistryName(new ResourceLocation(Ref.MOD_ID, "elevator_" + color.getName()));
         setUnlocalizedName("elevator_" + color.getName());
@@ -215,13 +214,14 @@ public class BlockElevator extends Block {
         return super.getActualState(state, worldIn, pos);
     }
 
+    // Lighting
     @Override
     public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileElevator tile = this.getTileElevator(world, pos);
         if (tile != null && tile.getCamoState() != null) {
             return tile.getCamoState().getLightValue(world, pos);
         }
-        return super.getLightValue(state, world, pos);
+        return 0;
     }
 
     @Override
@@ -230,7 +230,7 @@ public class BlockElevator extends Block {
         if (tile != null && tile.getCamoState() != null) {
             return tile.getCamoState().getLightOpacity(world, pos);
         }
-        return super.getLightOpacity(state, world, pos);
+        return 255;
     }
 
     // Redstone
@@ -355,7 +355,6 @@ public class BlockElevator extends Block {
 
 
     public class ItemBlockElevator extends ItemBlock{
-
         public ItemBlockElevator() {
             super(BlockElevator.this);
             ResourceLocation regName = BlockElevator.this.getRegistryName();

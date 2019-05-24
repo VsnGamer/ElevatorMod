@@ -45,11 +45,11 @@ public class ElevatorHandler {
     private static void tryTeleport(EntityPlayer player, EnumFacing facing) {
         World world = player.world;
         IBlockState fromState = null, toState;
-        BlockPos fromPos = new BlockPos(player.posX, player.posY + 0.5f, player.posZ);
+        BlockPos fromPos = new BlockPos(player.posX, player.posY, player.posZ);
         boolean elevator = false;
         for (int i = 0; i <= 2; i++) {
             fromState = world.getBlockState(fromPos);
-            if (elevator = TeleportHandler.isElevator(fromState))
+            if (elevator = (TeleportHandler.isElevator(fromState) && TeleportHandler.validateTarget(world,fromPos)))
                 break;
             fromPos = fromPos.down();
         }
