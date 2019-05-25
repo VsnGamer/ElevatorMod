@@ -1,0 +1,22 @@
+{
+  "block.elevatorid.elevator_white": "白色电梯",
+  "block.elevatorid.elevator_black": "黑色电梯",
+  "block.elevatorid.elevator_blue": "蓝色电梯",
+  "block.elevatorid.elevator_brown": "棕色电梯",
+  "block.elevatorid.elevator_cyan": "青色电梯",
+  "block.elevatorid.elevator_gray": "灰色电梯",
+  "block.elevatorid.elevator_green": "绿色电梯",
+  "block.elevatorid.elevator_light_blue": "浅蓝色电梯",
+  "block.elevatorid.elevator_lime": "黄绿色电梯",
+  "block.elevatorid.elevator_magenta": "品红色电梯",
+  "block.elevatorid.elevator_orange": "橙色电梯",
+  "block.elevatorid.elevator_pink": "粉色电梯",
+  "block.elevatorid.elevator_purple": "紫色电梯",
+  "block.elevatorid.elevator_red": "红色电梯",
+  "block.elevatorid.elevator_light_gray": "浅灰色电梯",
+  "block.elevatorid.elevator_yellow": "黄色电梯",
+
+  "elevatorid.subtitle.teleport": "使用电梯",
+
+  "itemGroup.tabElevators": "电梯"
+}
