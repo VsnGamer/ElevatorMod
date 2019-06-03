@@ -15,29 +15,25 @@ import java.util.EnumMap;
 @Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registry {
 
-    private static EnumMap<EnumDyeColor, BlockElevator> ELEVATOR_BLOCKS = new EnumMap<>(EnumDyeColor.class);
-    public static EnumMap<EnumDyeColor, ItemBlock> ELEVATOR_ITEMBLOCKS = new EnumMap<>(EnumDyeColor.class);
+    private static final EnumMap<EnumDyeColor, BlockElevator> ELEVATOR_BLOCKS = new EnumMap<>(EnumDyeColor.class);
+    public static final EnumMap<EnumDyeColor, ItemBlock> ELEVATOR_ITEMBLOCKS = new EnumMap<>(EnumDyeColor.class);
 
     static {
         for (EnumDyeColor color : EnumDyeColor.values()) {
             BlockElevator block = new BlockElevator(color);
             ELEVATOR_BLOCKS.put(color, block);
-            ELEVATOR_ITEMBLOCKS.put(color, block.new ItemBlockElevator());
+            ELEVATOR_ITEMBLOCKS.put(color, block.itemBlock);
         }
     }
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> e) {
-        for (BlockElevator block : ELEVATOR_BLOCKS.values()) {
-            e.getRegistry().register(block);
-        }
+        ELEVATOR_BLOCKS.values().forEach((block) -> e.getRegistry().register(block));
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> e) {
-        for (ItemBlock item : ELEVATOR_ITEMBLOCKS.values()) {
-            e.getRegistry().register(item);
-        }
+        ELEVATOR_ITEMBLOCKS.values().forEach((item) -> e.getRegistry().register(item));
     }
 
     // TODO: Config GUI

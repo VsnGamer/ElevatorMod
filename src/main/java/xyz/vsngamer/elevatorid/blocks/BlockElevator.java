@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReaderBase;
 import xyz.vsngamer.elevatorid.ElevatorMod;
@@ -20,12 +21,16 @@ import javax.annotation.Nullable;
 
 public class BlockElevator extends Block {
 
+    public final ItemBlockElevator itemBlock;
+
     public BlockElevator(EnumDyeColor color) {
-        super(Block.Properties.create(Material.CLOTH)
-                .hardnessAndResistance(0.8F)
-                .sound(SoundType.CLOTH));
+        super(Block.Properties
+                .create(Material.CLOTH)
+                .sound(SoundType.CLOTH)
+                .hardnessAndResistance(0.8F));
 
         setRegistryName(ElevatorMod.ID, "elevator_" + color.getName());
+        itemBlock = new ItemBlockElevator();
     }
 
     @Override
@@ -33,14 +38,14 @@ public class BlockElevator extends Block {
         return ModConfig.GENERAL.mobSpawn.get() && super.canCreatureSpawn(state, world, pos, type, entityType);
     }
 
-
-    public class ItemBlockElevator extends ItemBlock {
-
-        public ItemBlockElevator() {
+    private class ItemBlockElevator extends ItemBlock {
+        private ItemBlockElevator() {
             super(BlockElevator.this, new Item.Properties().group(ElevatorModTab.TAB).setNoRepair());
 
-            if (BlockElevator.this.getRegistryName() == null) return; // This should never happen... I hope
-            setRegistryName(BlockElevator.this.getRegistryName());
+            ResourceLocation regName = BlockElevator.this.getRegistryName();
+            if (regName != null) {
+                setRegistryName(regName);
+            }
         }
     }
 }
