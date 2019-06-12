@@ -1,0 +1,20 @@
+tile.elevator_white.name=Ascenseur blanc
+tile.elevator_black.name=Ascenseur noir
+tile.elevator_blue.name=Ascenseur bleu
+tile.elevator_brown.name=Ascenseur marron
+tile.elevator_cyan.name=Ascenseur cyan
+tile.elevator_gray.name=Ascenseur gris
+tile.elevator_green.name=Ascenseur vert
+tile.elevator_light_blue.name=Ascenseur bleu clair
+tile.elevator_lime.name=Ascenseur vert clair
+tile.elevator_magenta.name=Ascenseur magenta
+tile.elevator_orange.name=Ascenseur orange
+tile.elevator_pink.name=Ascenseur rose
+tile.elevator_purple.name=Ascenseur violet
+tile.elevator_red.name=Ascenseur rouge
+tile.elevator_silver.name=Ascenseur gris clair
+tile.elevator_yellow.name=Ascenseur jaune
+
+elevatorid.subtitle.teleport=Ascenseur utilisé
+
+itemGroup.tabElevators=Ascenseurs
