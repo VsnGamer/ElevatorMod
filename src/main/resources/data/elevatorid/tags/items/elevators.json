@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "elevatorid:elevator_black",
+    "elevatorid:elevator_blue",
+    "elevatorid:elevator_brown",
+    "elevatorid:elevator_cyan",
+    "elevatorid:elevator_gray",
+    "elevatorid:elevator_green",
+    "elevatorid:elevator_light_blue",
+    "elevatorid:elevator_light_gray",
+    "elevatorid:elevator_lime",
+    "elevatorid:elevator_magenta",
+    "elevatorid:elevator_orange",
+    "elevatorid:elevator_pink",
+    "elevatorid:elevator_purple",
+    "elevatorid:elevator_red",
+    "elevatorid:elevator_white",
+    "elevatorid:elevator_yellow"
+  ]
+}

@@ -1,9 +1,8 @@
 package xyz.vsngamer.elevatorid.init;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,14 +14,14 @@ import java.util.EnumMap;
 @Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registry {
 
-    private static final EnumMap<EnumDyeColor, BlockElevator> ELEVATOR_BLOCKS = new EnumMap<>(EnumDyeColor.class);
-    public static final EnumMap<EnumDyeColor, ItemBlock> ELEVATOR_ITEMBLOCKS = new EnumMap<>(EnumDyeColor.class);
+    public static final EnumMap<DyeColor, BlockElevator> ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
+    //public static final EnumMap<DyeColor, IItemProvider> ELEVATOR_ITEMBLOCKS = new EnumMap<>(DyeColor.class);
 
     static {
-        for (EnumDyeColor color : EnumDyeColor.values()) {
+        for (DyeColor color : DyeColor.values()) {
             BlockElevator block = new BlockElevator(color);
             ELEVATOR_BLOCKS.put(color, block);
-            ELEVATOR_ITEMBLOCKS.put(color, block.itemBlock);
+            //ELEVATOR_ITEMBLOCKS.put(color, block.asItem());
         }
     }
 
@@ -33,7 +32,7 @@ public class Registry {
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> e) {
-        ELEVATOR_ITEMBLOCKS.values().forEach((item) -> e.getRegistry().register(item));
+        ELEVATOR_BLOCKS.values().forEach((block) -> e.getRegistry().register(block.blockItem));
     }
 
     // TODO: Config GUI

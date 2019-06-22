@@ -1,12 +1,12 @@
 package xyz.vsngamer.elevatorid;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,32 +22,32 @@ public class ElevatorHandler {
 
     @SubscribeEvent
     public static void onInput(InputEvent event) {
-        EntityPlayerSP player = Minecraft.getInstance().player;
+        ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null || player.isSpectator() || !player.isAlive()) return;
 
         boolean sneaking = player.isSneaking();
         if (lastSneaking != sneaking) {
             lastSneaking = sneaking;
             if (sneaking)
-                tryTeleport(player, EnumFacing.DOWN);
+                tryTeleport(player, Direction.DOWN);
         }
 
         boolean jumping = player.movementInput.jump;
         if (lastJumping != jumping) {
             lastJumping = jumping;
             if (jumping)
-                tryTeleport(player, EnumFacing.UP);
+                tryTeleport(player, Direction.UP);
         }
     }
 
-    private static void tryTeleport(EntityPlayerSP player, EnumFacing facing) {
+    private static void tryTeleport(ClientPlayerEntity player, Direction facing) {
         IBlockReader world = player.getEntityWorld();
 
         BlockPos fromPos = getOriginElevator(player);
         if (fromPos == null) return;
 
         BlockPos.MutableBlockPos toPos = new BlockPos.MutableBlockPos(fromPos);
-        IBlockState toState;
+        BlockState toState;
         while (true) {
             toPos.setY(toPos.getY() + facing.getYOffset());
             if (Math.abs(toPos.getY() - fromPos.getY()) > 256)
@@ -67,8 +67,8 @@ public class ElevatorHandler {
      * @param player the player that is trying to teleport
      * @return the position of the origin elevator or null if it doesn't exist or is invalid.
      */
-    private static BlockPos getOriginElevator(EntityPlayerSP player) {
-        WorldClient world = (WorldClient) player.getEntityWorld();
+    private static BlockPos getOriginElevator(ClientPlayerEntity player) {
+        World world = player.getEntityWorld();
         BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
 
         // Check the player's feet and the 2 blocks under it
