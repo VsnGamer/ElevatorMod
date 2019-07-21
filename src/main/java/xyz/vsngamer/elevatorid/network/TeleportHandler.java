@@ -6,7 +6,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.BlockElevator;
 import xyz.vsngamer.elevatorid.init.ModConfig;
@@ -23,7 +23,7 @@ public class TeleportHandler {
         BlockPos from = message.getFrom(), to = message.getTo();
 
         // This ensures the player is still standing on the origin elevator
-        final double distanceSq = player.getDistanceSq(new Vec3d(from).add(0,1,0));
+        final double distanceSq = player.getDistanceSq(new Vec3d(from).add(0, 1, 0));
         if (distanceSq > 4D) return;
 
         // this is already validated on the client not sure if it's needed here
