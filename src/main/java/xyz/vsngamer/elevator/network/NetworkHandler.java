@@ -8,6 +8,8 @@ public class NetworkHandler {
     public static SimpleNetworkWrapper networkWrapper = new SimpleNetworkWrapper(Ref.MOD_ID);
 
     public static void init() {
-        networkWrapper.registerMessage(TeleportHandler.class, TeleportRequest.class, 0, Side.SERVER);
+        int i = 0;
+        networkWrapper.registerMessage(TeleportHandler.class, TeleportRequest.class, i++, Side.SERVER);
+        networkWrapper.registerMessage(SyncConfigHandler.class, SyncConfig.class, i++, Side.CLIENT);
     }
 }

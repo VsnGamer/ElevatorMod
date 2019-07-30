@@ -1,7 +1,9 @@
 package xyz.vsngamer.elevator.init;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -13,9 +15,13 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.oredict.OreDictionary;
 import xyz.vsngamer.elevator.Ref;
 import xyz.vsngamer.elevator.blocks.BlockElevator;
+import xyz.vsngamer.elevator.network.NetworkHandler;
+import xyz.vsngamer.elevator.network.SyncConfig;
+import xyz.vsngamer.elevator.network.SyncConfigHandler;
 
 import java.util.EnumMap;
 
@@ -56,9 +62,20 @@ public class Registry {
     }
 
     @SubscribeEvent
-    public static void configChanged(ConfigChangedEvent event) {
+    public static void configChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(Ref.MOD_ID)) {
             ConfigManager.sync(Ref.MOD_ID, Config.Type.INSTANCE);
+
+            // SINGLE PLAYER
+            if (Minecraft.getMinecraft().isIntegratedServerRunning()) {
+                SyncConfigHandler.setClientConfig(ModConfig.serverConfig.sameColor, ModConfig.serverConfig.range);
+            }
         }
+    }
+
+    @SubscribeEvent
+    public static void syncServerConfig(PlayerEvent.PlayerLoggedInEvent e) {
+        EntityPlayerMP player = (EntityPlayerMP) e.player;
+        NetworkHandler.networkWrapper.sendTo(new SyncConfig(ModConfig.serverConfig.sameColor, ModConfig.serverConfig.range), player);
     }
 }

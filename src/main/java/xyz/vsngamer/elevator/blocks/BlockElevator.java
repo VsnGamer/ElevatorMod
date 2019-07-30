@@ -27,7 +27,7 @@ public class BlockElevator extends Block {
 
     @Override
     public boolean canCreatureSpawn(IBlockState state, IBlockAccess world, BlockPos pos, EntityLiving.SpawnPlacementType type) {
-        return ModConfig.mobSpawn && super.canCreatureSpawn(state, world, pos, type);
+        return ModConfig.serverConfig.mobSpawn && super.canCreatureSpawn(state, world, pos, type);
     }
 
 }

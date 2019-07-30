@@ -11,12 +11,12 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 group = 'xyz.vsngamer'
-version = '1.12.2-1.3.10'
+version = '1.12.2-1.3.11'
 
 sourceCompatibility = targetCompatibility = "1.8"
 
 minecraft {
-    version = "1.12.2-14.23.5.2836"
+    version = "1.12.2-14.23.5.2838"
     runDir = "run"
     mappings = "snapshot_20171003"
 }

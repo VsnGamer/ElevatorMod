@@ -31,11 +31,11 @@ public class TeleportHandler implements IMessageHandler<TeleportRequest, IMessag
         if (!isElevator(fromState) || !isElevator(toState)) return null;
         if (!validateTarget(world, to)) return null;
 
-        if (ModConfig.sameColor) {
-            if (fromState.getBlock() != toState.getBlock()) return null;
-        }
+//        if (ModConfig.serverConfig.sameColor) {
+//            if (fromState.getBlock() != toState.getBlock()) return null;
+//        }
 
-        if (ModConfig.precisionTarget) {
+        if (ModConfig.serverConfig.precisionTarget) {
             player.setPositionAndUpdate(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D);
         } else {
             player.setPositionAndUpdate(player.posX, to.getY() + 1D, player.posZ);
