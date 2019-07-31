@@ -68,7 +68,7 @@ public class Registry {
 
             // SINGLE PLAYER
             if (Minecraft.getMinecraft().isIntegratedServerRunning()) {
-                SyncConfigHandler.setClientConfig(ModConfig.serverConfig.sameColor, ModConfig.serverConfig.range);
+                ModConfig.setClientConfig(ModConfig.serverConfig.sameColor, ModConfig.serverConfig.range);
             }
         }
     }

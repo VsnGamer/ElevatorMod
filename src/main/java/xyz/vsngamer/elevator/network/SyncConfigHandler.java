@@ -9,12 +9,7 @@ public class SyncConfigHandler implements IMessageHandler<SyncConfig, IMessage> 
 
     @Override
     public IMessage onMessage(SyncConfig message, MessageContext ctx) {
-        setClientConfig(message.getSameColor(), message.getRange());
+        ModConfig.setClientConfig(message.getSameColor(), message.getRange());
         return null;
-    }
-
-    public static void setClientConfig(boolean sameColor, int range){
-        ModConfig.getClientConfig().sameColor = sameColor;
-        ModConfig.getClientConfig().range = range;
     }
 }

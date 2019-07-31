@@ -8,7 +8,7 @@ public class ModConfig {
 
     @Config.Name("general")
     public static final Options serverConfig = new Options();
-    protected static final Options clientConfig = new Options();
+    private static final Options clientConfig = new Options();
 
     public static class Options {
         @Config.Comment("Can mobs spawn in elevators ?")
@@ -27,5 +27,10 @@ public class ModConfig {
 
     public static Options getClientConfig() {
         return clientConfig;
+    }
+
+    public static void setClientConfig(boolean sameColor, int range){
+        clientConfig.sameColor = sameColor;
+        clientConfig.range = range;
     }
 }
