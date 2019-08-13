@@ -35,14 +35,16 @@ public class TeleportHandler implements IMessageHandler<TeleportRequest, IMessag
 //            if (fromState.getBlock() != toState.getBlock()) return null;
 //        }
 
-        if (ModConfig.serverConfig.precisionTarget) {
-            player.setPositionAndUpdate(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D);
-        } else {
-            player.setPositionAndUpdate(player.posX, to.getY() + 1D, player.posZ);
-        }
+        player.getServerWorld().addScheduledTask(() -> {
+            if (ModConfig.serverConfig.precisionTarget) {
+                player.setPositionAndUpdate(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D);
+            } else {
+                player.setPositionAndUpdate(player.posX, to.getY() + 1D, player.posZ);
+            }
 
-        player.motionY = 0;
-        world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1F, 1F);
+            player.motionY = 0;
+            world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1F, 1F);
+        });
         return null;
     }
 

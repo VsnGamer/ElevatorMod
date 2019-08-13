@@ -2,6 +2,7 @@ package xyz.vsngamer.elevator;
 
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +23,7 @@ public class ElevatorHandler {
 
     @SubscribeEvent
     public void onInput(InputEvent event) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (!player.isSpectator()) {
             boolean sneaking = player.isSneaking();
             if (lastSneaking != sneaking) {
@@ -30,7 +31,7 @@ public class ElevatorHandler {
                 if (sneaking)
                     tryTeleport(player, EnumFacing.DOWN);
             }
-            boolean jumping = player.isJumping;
+            boolean jumping = player.movementInput.jump;
             if (lastJumping != jumping) {
                 lastJumping = jumping;
                 if (jumping)

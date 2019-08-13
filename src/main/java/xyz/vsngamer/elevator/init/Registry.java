@@ -21,7 +21,6 @@ import xyz.vsngamer.elevator.Ref;
 import xyz.vsngamer.elevator.blocks.BlockElevator;
 import xyz.vsngamer.elevator.network.NetworkHandler;
 import xyz.vsngamer.elevator.network.SyncConfig;
-import xyz.vsngamer.elevator.network.SyncConfigHandler;
 
 import java.util.EnumMap;
 
