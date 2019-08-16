@@ -40,13 +40,15 @@ public class TeleportHandler {
         if (ModConfig.GENERAL.sameColor.get() && fromState.getBlock() != toState.getBlock()) return;
 
         // Passed all tests, begin teleport
-        if (ModConfig.GENERAL.precisionTarget.get())
-            player.setPositionAndUpdate(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D);
-        else
-            player.setPositionAndUpdate(player.posX, to.getY() + 1D, player.posZ);
+        ctx.get().enqueueWork( () -> {
+            if (ModConfig.GENERAL.precisionTarget.get())
+                player.setPositionAndUpdate(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D);
+            else
+                player.setPositionAndUpdate(player.posX, to.getY() + 1D, player.posZ);
 
-        player.setMotion(player.getMotion().mul(new Vec3d(1, 0, 1)));
-        world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1F, 1F);
+            player.setMotion(player.getMotion().mul(new Vec3d(1, 0, 1)));
+            world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1F, 1F);
+        });
     }
 
     public static boolean validateTarget(IBlockReader world, BlockPos target) {
@@ -54,7 +56,7 @@ public class TeleportHandler {
     }
 
     private static boolean validateTarget(BlockState blockState) {
-        return !blockState.isSolid(); // TODO maybe change this
+        return !blockState.getMaterial().isSolid(); // TODO maybe change this
     }
 
     public static boolean isElevator(BlockState blockState) {

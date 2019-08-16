@@ -37,12 +37,16 @@ public class BlockElevator extends Block {
         setRegistryName(ElevatorMod.ID, "elevator_" + color.getName());
 
         blockItem = new BlockItemElevator();
-        //ItemTags.getCollection().getOrCreate(new ResourceLocation(ElevatorMod.ID,"elevators")).contains(blockItem);
     }
 
     @Override
     public boolean canCreatureSpawn(BlockState state, IBlockReader world, BlockPos pos, EntitySpawnPlacementRegistry.PlacementType type, @Nullable EntityType<?> entityType) {
         return ModConfig.GENERAL.mobSpawn.get() && super.canCreatureSpawn(state, world, pos, type, entityType);
+    }
+
+    @Override
+    public Item asItem() {
+        return blockItem;
     }
 
     private class BlockItemElevator extends BlockItem {
