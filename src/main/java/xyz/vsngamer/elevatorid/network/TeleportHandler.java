@@ -8,7 +8,9 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
+import xyz.vsngamer.elevatorid.blocks.AbstractElevator;
 import xyz.vsngamer.elevatorid.blocks.BlockElevator;
+import xyz.vsngamer.elevatorid.blocks.DirectionalElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.ModSounds;
 
@@ -39,12 +41,18 @@ public class TeleportHandler {
 
         if (ModConfig.GENERAL.sameColor.get() && fromState.getBlock() != toState.getBlock()) return;
 
+        // Check directional elevator and yaw
+        final float yaw, pitch;
+        yaw = toState.getBlock() instanceof DirectionalElevatorBlock ? toState.get(DirectionalElevatorBlock.FACING).getHorizontalAngle() : player.rotationYaw;
+        pitch = (ModConfig.GENERAL.resetPitchNormal.get() && toState.getBlock() instanceof BlockElevator) || (ModConfig.GENERAL.resetPitchDirectional.get() && toState.getBlock() instanceof DirectionalElevatorBlock) ? 0F : player.rotationPitch;
+        //pitch = player.rotationPitch;
+
         // Passed all tests, begin teleport
-        ctx.get().enqueueWork( () -> {
+        ctx.get().enqueueWork(() -> {
             if (ModConfig.GENERAL.precisionTarget.get())
-                player.setPositionAndUpdate(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D);
+                player.connection.setPlayerLocation(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D, yaw, pitch);
             else
-                player.setPositionAndUpdate(player.posX, to.getY() + 1D, player.posZ);
+                player.connection.setPlayerLocation(player.posX, to.getY() + 1D, player.posZ, yaw, pitch);
 
             player.setMotion(player.getMotion().mul(new Vec3d(1, 0, 1)));
             world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1F, 1F);
@@ -60,6 +68,6 @@ public class TeleportHandler {
     }
 
     public static boolean isElevator(BlockState blockState) {
-        return blockState.getBlock() instanceof BlockElevator;
+        return blockState.getBlock() instanceof AbstractElevator;
     }
 }
