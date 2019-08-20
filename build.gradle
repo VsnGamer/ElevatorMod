@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.14.4-1.3.12'
+version = '1.14.4-1.5.0'
 group = 'xyz.vsngamer.elevatorid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'elevatorid'
 
@@ -75,7 +75,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.0.49'
+    minecraft 'net.minecraftforge:forge:1.14.4-28.0.51'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
