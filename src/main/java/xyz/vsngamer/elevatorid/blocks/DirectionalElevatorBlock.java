@@ -44,7 +44,7 @@ public class DirectionalElevatorBlock extends AbstractElevator {
 
     @Override
     public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (!player.isSneaking() && player.getHeldItem(handIn).isEmpty()) {
+        if (player.getHeldItem(handIn).isEmpty()) {
             worldIn.setBlockState(pos, state.with(SHOW_ARROW, !state.get(SHOW_ARROW)));
             return true;
         }

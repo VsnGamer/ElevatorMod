@@ -39,13 +39,14 @@ public class TeleportHandler {
 
         if (!validateTarget(world, to)) return;
 
-        if (ModConfig.GENERAL.sameColor.get() && fromState.getBlock() != toState.getBlock()) return;
+        AbstractElevator fromElevator = (AbstractElevator) fromState.getBlock();
+        AbstractElevator toElevator = (AbstractElevator) toState.getBlock();
+        if (ModConfig.GENERAL.sameColor.get() && fromElevator.getColor() != toElevator.getColor()) return;
 
-        // Check directional elevator and yaw
+        // Check yaw and pitch
         final float yaw, pitch;
-        yaw = toState.getBlock() instanceof DirectionalElevatorBlock ? toState.get(DirectionalElevatorBlock.FACING).getHorizontalAngle() : player.rotationYaw;
-        pitch = (ModConfig.GENERAL.resetPitchNormal.get() && toState.getBlock() instanceof BlockElevator) || (ModConfig.GENERAL.resetPitchDirectional.get() && toState.getBlock() instanceof DirectionalElevatorBlock) ? 0F : player.rotationPitch;
-        //pitch = player.rotationPitch;
+        yaw = toElevator instanceof DirectionalElevatorBlock ? toState.get(DirectionalElevatorBlock.FACING).getHorizontalAngle() : player.rotationYaw;
+        pitch = (ModConfig.GENERAL.resetPitchNormal.get() && toElevator instanceof BlockElevator) || (ModConfig.GENERAL.resetPitchDirectional.get() && toElevator instanceof DirectionalElevatorBlock) ? 0F : player.rotationPitch;
 
         // Passed all tests, begin teleport
         ctx.get().enqueueWork(() -> {

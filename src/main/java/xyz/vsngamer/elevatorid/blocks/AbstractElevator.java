@@ -25,6 +25,7 @@ public abstract class AbstractElevator extends Block {
                 .hardnessAndResistance(0.8F));
 
         setReg(color);
+        dyeColor = color;
     }
 
     abstract void setReg(DyeColor color);
@@ -42,6 +43,12 @@ public abstract class AbstractElevator extends Block {
             item = new ElevatorBlockItem();
         }
         return item;
+    }
+
+    private DyeColor dyeColor;
+
+    public DyeColor getColor(){
+        return dyeColor;
     }
 
     public class ElevatorBlockItem extends BlockItem {
