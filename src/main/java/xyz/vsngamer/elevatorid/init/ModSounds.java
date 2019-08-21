@@ -10,11 +10,10 @@ import xyz.vsngamer.elevatorid.ElevatorMod;
 @Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModSounds {
 
-    private static final ResourceLocation loc = new ResourceLocation(ElevatorMod.ID, "teleport");
-    public static final SoundEvent teleport = new SoundEvent(loc).setRegistryName(loc);
+    public static final SoundEvent TELEPORT = new SoundEvent(new ResourceLocation(ElevatorMod.ID, "teleport"));
 
     @SubscribeEvent
     public static void registerSound(RegistryEvent.Register<SoundEvent> e) {
-        e.getRegistry().register(teleport);
+        e.getRegistry().register(TELEPORT.setRegistryName(TELEPORT.getName()));
     }
 }

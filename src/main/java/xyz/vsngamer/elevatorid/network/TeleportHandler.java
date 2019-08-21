@@ -28,6 +28,10 @@ public class TeleportHandler {
         final double distanceSq = player.getDistanceSq(new Vec3d(from).add(0, 1, 0));
         if (distanceSq > 4D) return;
 
+        // Temporarily checking range on server side
+        double dist = from.distanceSq(to.getX(), to.getY(), to.getZ(), false);
+        if (dist > Math.pow(ModConfig.GENERAL.range.get(), 2)) return;
+
         // this is already validated on the client not sure if it's needed here
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) return;
 
@@ -56,7 +60,7 @@ public class TeleportHandler {
                 player.connection.setPlayerLocation(player.posX, to.getY() + 1D, player.posZ, yaw, pitch);
 
             player.setMotion(player.getMotion().mul(new Vec3d(1, 0, 1)));
-            world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1F, 1F);
+            world.playSound(null, to, ModSounds.TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
         });
     }
 

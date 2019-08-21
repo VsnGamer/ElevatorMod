@@ -15,9 +15,13 @@ import net.minecraft.world.IBlockReader;
 import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class AbstractElevator extends Block {
+
+    private DyeColor dyeColor;
+
     AbstractElevator(DyeColor color) {
         super(Block.Properties
                 .create(Material.WOOL, color)
@@ -37,6 +41,7 @@ public abstract class AbstractElevator extends Block {
 
     private ElevatorBlockItem item;
 
+    @Nonnull
     @Override
     public Item asItem() {
         if (item == null) {
@@ -44,8 +49,6 @@ public abstract class AbstractElevator extends Block {
         }
         return item;
     }
-
-    private DyeColor dyeColor;
 
     public DyeColor getColor(){
         return dyeColor;

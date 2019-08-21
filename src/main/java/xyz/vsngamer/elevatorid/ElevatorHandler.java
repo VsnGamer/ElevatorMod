@@ -65,7 +65,7 @@ public class ElevatorHandler {
      * Checks if a player is in (lower part of the player) or has an elevator up to 2 blocks below
      *
      * @param player the player trying to teleport
-     * @return the position of the origin elevator or null if it doesn't exist or is invalid.
+     * @return the position of the origin elevator or null if it doesn't exist or it's invalid.
      */
     private static BlockPos getOriginElevator(ClientPlayerEntity player) {
         World world = player.getEntityWorld();

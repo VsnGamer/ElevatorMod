@@ -4,8 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ConfigTracker;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.AbstractElevator;
 import xyz.vsngamer.elevatorid.blocks.BlockElevator;
@@ -21,23 +23,20 @@ public class Registry {
 
     static {
         for (DyeColor color : DyeColor.values()) {
-            BlockElevator block = new BlockElevator(color);
-            ELEVATOR_BLOCKS.put(color, block);
-
-            DirectionalElevatorBlock dirElevator = new DirectionalElevatorBlock(color);
-            DIRECTIONAL_ELEVATOR_BLOCKS.put(color, dirElevator);
+            ELEVATOR_BLOCKS.put(color, new BlockElevator(color));
+            DIRECTIONAL_ELEVATOR_BLOCKS.put(color, new DirectionalElevatorBlock(color));
         }
     }
 
     @SubscribeEvent
     public static void registerBlocks(RegistryEvent.Register<Block> e) {
-        ELEVATOR_BLOCKS.values().forEach((block) -> e.getRegistry().register(block));
+        ELEVATOR_BLOCKS.values().forEach(block -> e.getRegistry().register(block));
         DIRECTIONAL_ELEVATOR_BLOCKS.values().forEach(block -> e.getRegistry().register(block));
     }
 
     @SubscribeEvent
     public static void registerItems(RegistryEvent.Register<Item> e) {
-        ELEVATOR_BLOCKS.values().forEach((block) -> e.getRegistry().register(block.asItem()));
+        ELEVATOR_BLOCKS.values().forEach(block -> e.getRegistry().register(block.asItem()));
         DIRECTIONAL_ELEVATOR_BLOCKS.values().forEach(block -> e.getRegistry().register(block.asItem()));
     }
 

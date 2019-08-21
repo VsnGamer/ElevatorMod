@@ -1,7 +1,6 @@
 package xyz.vsngamer.elevatorid.init;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import xyz.vsngamer.elevatorid.blocks.BlockElevator;
 
 public class ModConfig {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -14,6 +13,7 @@ public class ModConfig {
         public final ForgeConfigSpec.BooleanValue mobSpawn;
         public final ForgeConfigSpec.BooleanValue resetPitchNormal;
         public final ForgeConfigSpec.BooleanValue resetPitchDirectional;
+        public final ForgeConfigSpec.IntValue range;
 
         CommonGeneral(ForgeConfigSpec.Builder builder) {
             builder.push("General");
@@ -23,6 +23,7 @@ public class ModConfig {
             mobSpawn = builder.comment("Can mobs spawn on elevators ?").define("mobSpawn", false);
             resetPitchNormal = builder.comment("Reset pitch to 0 when teleporting to normal elevators ?").define("resetPitchNormal", false);
             resetPitchDirectional = builder.comment("Reset pitch to 0 when teleporting to directional elevators ?").define("resetPitchDirectional", true);
+            range = builder.comment("Elevator range").defineInRange("range", 256, 3, 256);
 
             builder.pop();
         }
