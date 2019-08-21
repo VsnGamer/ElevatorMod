@@ -14,7 +14,7 @@ public class ElevatorMod {
     public static final String ID = "elevatorid";
 
     public ElevatorMod() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, xyz.vsngamer.elevatorid.init.ModConfig.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, xyz.vsngamer.elevatorid.init.ModConfig.SPEC);
     }
 
     @SubscribeEvent

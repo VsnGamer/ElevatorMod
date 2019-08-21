@@ -9,10 +9,11 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.AbstractElevator;
-import xyz.vsngamer.elevatorid.blocks.BlockElevator;
 import xyz.vsngamer.elevatorid.blocks.DirectionalElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.ModSounds;
+import xyz.vsngamer.elevatorid.init.ModTags;
+import xyz.vsngamer.elevatorid.init.Registry;
 
 import java.util.function.Supplier;
 
@@ -28,9 +29,9 @@ public class TeleportHandler {
         final double distanceSq = player.getDistanceSq(new Vec3d(from).add(0, 1, 0));
         if (distanceSq > 4D) return;
 
-        // Temporarily checking range on server side
-        double dist = from.distanceSq(to.getX(), to.getY(), to.getZ(), false);
-        if (dist > Math.pow(ModConfig.GENERAL.range.get(), 2)) return;
+//        // Temporarily checking range on server side
+//        double dist = from.distanceSq(to.getX(), to.getY(), to.getZ(), false);
+//        if (dist > Math.pow(ModConfig.GENERAL.range.get(), 2)) return;
 
         // this is already validated on the client not sure if it's needed here
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) return;
@@ -45,12 +46,13 @@ public class TeleportHandler {
 
         AbstractElevator fromElevator = (AbstractElevator) fromState.getBlock();
         AbstractElevator toElevator = (AbstractElevator) toState.getBlock();
-        if (ModConfig.GENERAL.sameColor.get() && fromElevator.getColor() != toElevator.getColor()) return;
+//        if (ModConfig.GENERAL.sameColor.get() && fromElevator.getColor() != toElevator.getColor()) return;
 
         // Check yaw and pitch
         final float yaw, pitch;
-        yaw = toElevator instanceof DirectionalElevatorBlock ? toState.get(DirectionalElevatorBlock.FACING).getHorizontalAngle() : player.rotationYaw;
-        pitch = (ModConfig.GENERAL.resetPitchNormal.get() && toElevator instanceof BlockElevator) || (ModConfig.GENERAL.resetPitchDirectional.get() && toElevator instanceof DirectionalElevatorBlock) ? 0F : player.rotationPitch;
+        yaw = ModTags.DIRECTIONAL_ELEVATORS_TAG.contains(toElevator) ? toState.get(DirectionalElevatorBlock.FACING).getHorizontalAngle() : player.rotationYaw;
+        pitch = (ModConfig.GENERAL.resetPitchNormal.get() && ModTags.NORMAL_ELEVATORS_TAG.contains(toElevator))
+                || (ModConfig.GENERAL.resetPitchDirectional.get() && ModTags.DIRECTIONAL_ELEVATORS_TAG.contains(toElevator)) ? 0F : player.rotationPitch;
 
         // Passed all tests, begin teleport
         ctx.get().enqueueWork(() -> {
@@ -73,6 +75,6 @@ public class TeleportHandler {
     }
 
     public static boolean isElevator(BlockState blockState) {
-        return blockState.getBlock() instanceof AbstractElevator;
+        return ModTags.ALL_ELEVATORS_TAG.contains(blockState.getBlock());
     }
 }
