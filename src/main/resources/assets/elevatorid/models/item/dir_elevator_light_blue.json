@@ -1,0 +1,6 @@
+{
+  "parent": "elevatorid:item/dir_elevator_inventory",
+  "textures": {
+    "all": "elevatorid:block/elevator_light_blue"
+  }
+}

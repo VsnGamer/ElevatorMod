@@ -1,5 +1,6 @@
 package xyz.vsngamer.elevatorid.network;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.SoundCategory;
@@ -8,9 +9,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
-import xyz.vsngamer.elevatorid.blocks.BlockElevator;
+import xyz.vsngamer.elevatorid.blocks.DirectionalElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.ModSounds;
+import xyz.vsngamer.elevatorid.init.ModTags;
 
 import java.util.function.Supplier;
 
@@ -26,28 +28,37 @@ public class TeleportHandler {
         final double distanceSq = player.getDistanceSq(new Vec3d(from).add(0, 1, 0));
         if (distanceSq > 4D) return;
 
+//        // Temporarily checking range on server side
+//        double dist = from.distanceSq(to.getX(), to.getY(), to.getZ(), false);
+//        if (dist > Math.pow(ModConfig.GENERAL.range.get(), 2)) return;
+
         // this is already validated on the client not sure if it's needed here
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) return;
 
         BlockState fromState = world.getBlockState(from);
         BlockState toState = world.getBlockState(to);
+        Block toElevator = toState.getBlock();
 
         // Same
         if (!isElevator(fromState) || !isElevator(toState)) return;
 
         if (!validateTarget(world, to)) return;
 
-        if (ModConfig.GENERAL.sameColor.get() && fromState.getBlock() != toState.getBlock()) return;
+        // Check yaw and pitch
+        final float yaw, pitch;
+        yaw = ModTags.DIRECTIONAL_ELEVATORS_TAG.contains(toElevator) ? toState.get(DirectionalElevatorBlock.FACING).getHorizontalAngle() : player.rotationYaw;
+        pitch = (ModConfig.GENERAL.resetPitchNormal.get() && ModTags.NORMAL_ELEVATORS_TAG.contains(toElevator))
+                || (ModConfig.GENERAL.resetPitchDirectional.get() && ModTags.DIRECTIONAL_ELEVATORS_TAG.contains(toElevator)) ? 0F : player.rotationPitch;
 
         // Passed all tests, begin teleport
-        ctx.get().enqueueWork( () -> {
+        ctx.get().enqueueWork(() -> {
             if (ModConfig.GENERAL.precisionTarget.get())
-                player.setPositionAndUpdate(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D);
+                player.connection.setPlayerLocation(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D, yaw, pitch);
             else
-                player.setPositionAndUpdate(player.posX, to.getY() + 1D, player.posZ);
+                player.connection.setPlayerLocation(player.posX, to.getY() + 1D, player.posZ, yaw, pitch);
 
             player.setMotion(player.getMotion().mul(new Vec3d(1, 0, 1)));
-            world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1F, 1F);
+            world.playSound(null, to, ModSounds.TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
         });
     }
 
@@ -60,6 +71,6 @@ public class TeleportHandler {
     }
 
     public static boolean isElevator(BlockState blockState) {
-        return blockState.getBlock() instanceof BlockElevator;
+        return ModTags.ALL_ELEVATORS_TAG.contains(blockState.getBlock());
     }
 }

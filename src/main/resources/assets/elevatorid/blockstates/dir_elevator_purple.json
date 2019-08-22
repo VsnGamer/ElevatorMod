@@ -1,0 +1,48 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "elevatorid:block/elevator_purple"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "show_arrow": "true"
+      },
+      "apply": {
+        "model": "elevatorid:block/arrow"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "show_arrow": "true"
+      },
+      "apply": {
+        "model": "elevatorid:block/arrow",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "show_arrow": "true"
+      },
+      "apply": {
+        "model": "elevatorid:block/arrow",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "show_arrow": "true"
+      },
+      "apply": {
+        "model": "elevatorid:block/arrow",
+        "y": 270
+      }
+    }
+  ]
+}
