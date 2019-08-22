@@ -1,5 +1,6 @@
 package xyz.vsngamer.elevatorid.network;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.SoundCategory;
@@ -8,12 +9,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkEvent;
-import xyz.vsngamer.elevatorid.blocks.AbstractElevator;
 import xyz.vsngamer.elevatorid.blocks.DirectionalElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.ModSounds;
 import xyz.vsngamer.elevatorid.init.ModTags;
-import xyz.vsngamer.elevatorid.init.Registry;
 
 import java.util.function.Supplier;
 
@@ -38,15 +37,12 @@ public class TeleportHandler {
 
         BlockState fromState = world.getBlockState(from);
         BlockState toState = world.getBlockState(to);
+        Block toElevator = toState.getBlock();
 
         // Same
         if (!isElevator(fromState) || !isElevator(toState)) return;
 
         if (!validateTarget(world, to)) return;
-
-        AbstractElevator fromElevator = (AbstractElevator) fromState.getBlock();
-        AbstractElevator toElevator = (AbstractElevator) toState.getBlock();
-//        if (ModConfig.GENERAL.sameColor.get() && fromElevator.getColor() != toElevator.getColor()) return;
 
         // Check yaw and pitch
         final float yaw, pitch;

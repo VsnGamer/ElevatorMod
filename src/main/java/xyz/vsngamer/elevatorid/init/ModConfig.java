@@ -36,6 +36,8 @@ public class ModConfig {
         }
     }
 
+    // Same debug messages as forge config
+
     @SubscribeEvent
     public static void onLoad(final net.minecraftforge.fml.config.ModConfig.Loading configEvent) {
         LogManager.getLogger().debug(FORGEMOD, "Loaded elevator config file {}", configEvent.getConfig().getFileName());
@@ -43,6 +45,6 @@ public class ModConfig {
 
     @SubscribeEvent
     public static void onFileChange(final net.minecraftforge.fml.config.ModConfig.ConfigReloading configEvent) {
-        LogManager.getLogger().fatal(FORGEMOD, "Elevator config just got changed on the file system!");
+        LogManager.getLogger().debug(FORGEMOD, "Elevator config just got changed on the file system!");
     }
 }
