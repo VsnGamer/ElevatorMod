@@ -9,7 +9,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import xyz.vsngamer.elevatorid.init.Registry;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
-import xyz.vsngamer.elevatorid.render.ElevatorScreen;
+import xyz.vsngamer.elevatorid.client.gui.ElevatorScreen;
 
 @Mod(ElevatorMod.ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -26,6 +26,7 @@ public class ElevatorMod {
         NetworkHandler.init();
     }
 
+    @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         ScreenManager.registerFactory(Registry.ELEVATOR_CONTAINER, ElevatorScreen::new);
     }

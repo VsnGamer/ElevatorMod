@@ -1,10 +1,15 @@
 package xyz.vsngamer.elevatorid.tile;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -25,7 +30,19 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
         return super.getCapability(cap, side);
     }
 
-    public static TileEntityType<ElevatorTileEntity> buildTileType(Block... validBlocks){
+    @Nonnull
+    @Override
+    public ITextComponent getDisplayName() {
+        return new TranslationTextComponent("container.elevatorid.elevator");
+    }
+
+    @Nullable
+    @Override
+    public Container createMenu(int id, PlayerInventory inv, PlayerEntity player) {
+        return new ElevatorContainer(id, pos, player, inv);
+    }
+
+    public static TileEntityType<ElevatorTileEntity> buildTileType(Block... validBlocks) {
         TileEntityType<ElevatorTileEntity> type = TileEntityType.Builder.create(ElevatorTileEntity::new, validBlocks).build(null);
         type.setRegistryName("elevator_tile");
         return type;

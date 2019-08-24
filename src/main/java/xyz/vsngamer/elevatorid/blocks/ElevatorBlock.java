@@ -81,11 +81,13 @@ public class ElevatorBlock extends HorizontalBlock {
             return true;
         }
 
+        if (!player.getHeldItem(handIn).isEmpty())
+            return false;
+
         TileEntity tile = worldIn.getTileEntity(pos);
-        if (tile instanceof ElevatorTileEntity) {
+        if (tile instanceof INamedContainerProvider) {
             NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile, pos);
         }
-
         return true;
     }
 
