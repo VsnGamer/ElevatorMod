@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import xyz.vsngamer.elevatorid.blocks.AbstractElevator;
+import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.network.TeleportHandler;
@@ -51,8 +51,8 @@ public class ElevatorHandler {
         BlockPos.MutableBlockPos toPos = new BlockPos.MutableBlockPos(fromPos);
         BlockState toState;
 
-        AbstractElevator fromElevator, toElevator;
-        fromElevator = (AbstractElevator) world.getBlockState(fromPos).getBlock();
+        ElevatorBlock fromElevator, toElevator;
+        fromElevator = (ElevatorBlock) world.getBlockState(fromPos).getBlock();
 
         while (true) {
             toPos.setY(toPos.getY() + facing.getYOffset());
@@ -60,9 +60,8 @@ public class ElevatorHandler {
                 break;
             toState = world.getBlockState(toPos);
 
-            // Sends all elevators to the server (related: sameColor config)
             if (TeleportHandler.isElevator(toState) && TeleportHandler.validateTarget(world, toPos)) {
-                toElevator = (AbstractElevator) toState.getBlock();
+                toElevator = (ElevatorBlock) toState.getBlock();
                 if(!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
                     NetworkHandler.networkHandler.sendToServer(new TeleportRequest(fromPos, toPos));
                     break;

@@ -1,0 +1,33 @@
+package xyz.vsngamer.elevatorid.tile;
+
+import net.minecraft.block.Block;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_TILE_ENTITY;
+
+public class ElevatorTileEntity extends TileEntity implements INamedContainerProvider {
+
+    public ElevatorTileEntity() {
+        super(ELEVATOR_TILE_ENTITY);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        return super.getCapability(cap, side);
+    }
+
+    public static TileEntityType<ElevatorTileEntity> buildTileType(Block... validBlocks){
+        TileEntityType<ElevatorTileEntity> type = TileEntityType.Builder.create(ElevatorTileEntity::new, validBlocks).build(null);
+        type.setRegistryName("elevator_tile");
+        return type;
+    }
+}

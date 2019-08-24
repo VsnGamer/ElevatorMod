@@ -5,6 +5,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import xyz.vsngamer.elevatorid.init.Registry;
 
+import javax.annotation.Nonnull;
+
 public class ElevatorModTab extends ItemGroup {
 
     public static ItemGroup TAB = new ElevatorModTab();
@@ -13,6 +15,7 @@ public class ElevatorModTab extends ItemGroup {
         super("tabElevators");
     }
 
+    @Nonnull
     @Override
     public ItemStack createIcon() {
         return new ItemStack(Registry.ELEVATOR_BLOCKS.get(DyeColor.WHITE));

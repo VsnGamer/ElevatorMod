@@ -19,8 +19,8 @@ import xyz.vsngamer.elevatorid.ElevatorMod;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@SuppressWarnings("deprecation")
-public class DirectionalElevatorBlock extends AbstractElevator {
+@Deprecated
+public class DirectionalElevatorBlock extends ElevatorBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     private static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
@@ -28,11 +28,6 @@ public class DirectionalElevatorBlock extends AbstractElevator {
     public DirectionalElevatorBlock(DyeColor color) {
         super(color);
         setDefaultState(getStateContainer().getBaseState().with(FACING, Direction.NORTH).with(SHOW_ARROW, true));
-    }
-
-    @Override
-    void setReg(DyeColor color) {
-        this.setRegistryName(ElevatorMod.ID, "dir_elevator_" + color.getName());
     }
 
     @Override
