@@ -1,16 +1,20 @@
 package xyz.vsngamer.elevatorid.init;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
+import xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel;
 import xyz.vsngamer.elevatorid.tile.ElevatorContainer;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 
@@ -52,6 +56,17 @@ public class Registry {
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> e){
         e.getRegistry().register(ELEVATOR_CONTAINER);
+    }
+
+    @SubscribeEvent
+    public static void onModelBake(ModelBakeEvent e){
+        ELEVATOR_BLOCKS.values().forEach(block -> {
+            ResourceLocation key = block.getRegistryName();
+            IBakedModel originalModel = e.getModelRegistry().get(key);
+
+            // Replace the default model with our custom IBakedModel, storing the default.
+            e.getModelRegistry().put(key, new ElevatorBakedModel(originalModel));
+        });
     }
 
     // TODO: Config GUI

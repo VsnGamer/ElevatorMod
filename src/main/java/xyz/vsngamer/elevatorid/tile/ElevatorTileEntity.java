@@ -10,8 +10,10 @@ import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,13 +35,19 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     @Nonnull
     @Override
     public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("container.elevatorid.elevator");
+        return new TranslationTextComponent("screen.elevatorid.elevator");
     }
 
     @Nullable
     @Override
     public Container createMenu(int id, PlayerInventory inv, PlayerEntity player) {
-        return new ElevatorContainer(id, pos, player, inv);
+        return new ElevatorContainer(id, pos, player);
+    }
+
+    @Nonnull
+    @Override
+    public IModelData getModelData() {
+        return Model
     }
 
     public static TileEntityType<ElevatorTileEntity> buildTileType(Block... validBlocks) {

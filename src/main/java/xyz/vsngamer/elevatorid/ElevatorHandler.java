@@ -63,7 +63,7 @@ public class ElevatorHandler {
             if (TeleportHandler.isElevator(toState) && TeleportHandler.validateTarget(world, toPos)) {
                 toElevator = (ElevatorBlock) toState.getBlock();
                 if(!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
-                    NetworkHandler.networkHandler.sendToServer(new TeleportRequest(fromPos, toPos));
+                    NetworkHandler.INSTANCE.sendToServer(new TeleportRequest(fromPos, toPos));
                     break;
                 }
             }

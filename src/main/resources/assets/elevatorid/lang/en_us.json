@@ -18,8 +18,9 @@
 
   "elevatorid.subtitle.teleport": "Elevator used",
 
-  "container.elevatorid.elevator": "Elevator Options",
-  "container.elevatorid.elevator.directional": "Directional",
+  "screen.elevatorid.elevator": "Elevator Options",
+  "screen.elevatorid.elevator.directional": "Directional",
+  "screen.elevatorid.elevator.hide_arrow": "Hide arrow",
 
   "itemGroup.tabElevators": "Elevators"
 }

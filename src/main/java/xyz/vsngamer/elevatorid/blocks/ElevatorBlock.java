@@ -78,7 +78,7 @@ public class ElevatorBlock extends HorizontalBlock {
     @Override
     public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (worldIn.isRemote) {
-            return true;
+            return player.getHeldItem(handIn).isEmpty();
         }
 
         if (!player.getHeldItem(handIn).isEmpty())
