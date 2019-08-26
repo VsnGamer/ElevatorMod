@@ -8,7 +8,8 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -54,20 +55,25 @@ public class Registry {
     }
 
     @SubscribeEvent
-    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> e){
+    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> e) {
         e.getRegistry().register(ELEVATOR_CONTAINER);
     }
 
     @SubscribeEvent
-    public static void onModelBake(ModelBakeEvent e){
+    public static void onModelBake(ModelBakeEvent e) {
         ELEVATOR_BLOCKS.values().forEach(block -> {
+            ResourceLocation arrow = new ResourceLocation(ElevatorMod.ID, "arrow");
             ResourceLocation key = block.getRegistryName();
-            IBakedModel originalModel = e.getModelRegistry().get(key);
+            // TODO NOT WORKING
+            IBakedModel originalModel = e.getModelManager().getModel().getModelRegistry().get(key);
+            IBakedModel arrowModel = e.getModelRegistry().get(arrow);
 
             // Replace the default model with our custom IBakedModel, storing the default.
             e.getModelRegistry().put(key, new ElevatorBakedModel(originalModel));
         });
     }
+
+
 
     // TODO: Config GUI
     /*@SubscribeEvent

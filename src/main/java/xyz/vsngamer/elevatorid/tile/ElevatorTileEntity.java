@@ -44,12 +44,6 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
         return new ElevatorContainer(id, pos, player);
     }
 
-    @Nonnull
-    @Override
-    public IModelData getModelData() {
-        return Model
-    }
-
     public static TileEntityType<ElevatorTileEntity> buildTileType(Block... validBlocks) {
         TileEntityType<ElevatorTileEntity> type = TileEntityType.Builder.create(ElevatorTileEntity::new, validBlocks).build(null);
         type.setRegistryName("elevator_tile");
