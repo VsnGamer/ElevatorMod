@@ -1,24 +1,16 @@
 package xyz.vsngamer.elevatorid.blocks;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalBlock;
-import net.minecraft.block.SoundType;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
+import net.minecraft.item.*;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
@@ -28,6 +20,7 @@ import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
+import xyz.vsngamer.elevatorid.util.FakeUseContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -51,6 +44,8 @@ public class ElevatorBlock extends HorizontalBlock {
         setRegistryName(ElevatorMod.ID, "elevator_" + color.getName());
 
         dyeColor = color;
+
+        setDefaultState(getStateContainer().getBaseState().with(DIRECTIONAL, false));
     }
 
     @Override
@@ -78,16 +73,33 @@ public class ElevatorBlock extends HorizontalBlock {
     @Override
     public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (worldIn.isRemote) {
-            return player.getHeldItem(handIn).isEmpty();
+            return true;
         }
 
-        if (!player.getHeldItem(handIn).isEmpty())
+        ItemStack handStack = player.getHeldItem(handIn);
+        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
+        if (tile == null) {
             return false;
-
-        TileEntity tile = worldIn.getTileEntity(pos);
-        if (tile instanceof INamedContainerProvider) {
-            NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tile, pos);
         }
+
+        if (isValidItem(handStack)) {
+            Block handBlock = Block.getBlockFromItem(handStack.getItem());
+            BlockState stateToApply = handBlock.getStateForPlacement(new FakeUseContext(player, handIn, hit));
+
+            // Try set camo
+            if (stateToApply != tile.getHeldState()) {
+                setCamoAndUpdate(stateToApply, tile, worldIn);
+                // If we successfully set camo, don't open the menu
+                return true;
+            }
+        }
+
+        if(player.isSneaking() && tile.getHeldState() != null){
+            setCamoAndUpdate(null,  tile, worldIn);
+            return true;
+        }
+
+        NetworkHooks.openGui((ServerPlayerEntity) player, tile, pos);
         return true;
     }
 
@@ -96,8 +108,57 @@ public class ElevatorBlock extends HorizontalBlock {
         return ModConfig.GENERAL.mobSpawn.get() && super.canCreatureSpawn(state, world, pos, type, entityType);
     }
 
+    @Nonnull
+    @Override
+    public BlockRenderLayer getRenderLayer() {
+        return BlockRenderLayer.CUTOUT_MIPPED;
+    }
+
     public DyeColor getColor() {
         return dyeColor;
+    }
+
+    private boolean isValidItem(ItemStack stack) {
+        Item item = stack.getItem();
+        Block block = Block.getBlockFromItem(item);
+
+        if (stack.isEmpty()) {
+            return false;
+        }
+
+        // Don't accept items
+        if (!(item instanceof BlockItem)) {
+            return false;
+        }
+
+        // Don't try to camouflage with itself
+        if (block instanceof ElevatorBlock) {
+            return false;
+        }
+
+        // Only normally rendered blocks (not chests, ...)
+        if (block.getDefaultState().getRenderType() != BlockRenderType.MODEL) {
+            return false;
+        }
+
+        // Only blocks with a collision box
+        return block.getDefaultState().getMaterial().isSolid();
+    }
+
+    public ElevatorTileEntity getElevatorTile(World world, BlockPos pos) {
+        // Get tile at pos
+        TileEntity tile = world.getTileEntity(pos);
+
+        // Check if it exists and is valid
+        if (tile instanceof ElevatorTileEntity && !tile.isRemoved() && tile.getType().isValidBlock(world.getBlockState(pos).getBlock())) {
+            return (ElevatorTileEntity) tile;
+        }
+        return null;
+    }
+
+    private void setCamoAndUpdate(BlockState newState, ElevatorTileEntity tile, World world) {
+        tile.setHeldState(newState);
+        world.playSound(null, tile.getPos(), SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
     }
 
     @Nonnull

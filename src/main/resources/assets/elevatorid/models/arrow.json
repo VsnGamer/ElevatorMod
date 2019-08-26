@@ -1,11 +1,12 @@
 {
+  "parent": "block/cube",
   "textures": {
     "arrow": "elevatorid:block/arrow"
   },
   "elements": [
     {
-      "from": [5, 16.001, 0],
-      "to": [11, 16.001, 6],
+      "from": [5, 16.1, 0],
+      "to": [11, 16.1, 6],
       "faces": {
         "up": {"texture": "#arrow", "rotation": 90, "uv": [0, 0, 16, 16]}
       },
