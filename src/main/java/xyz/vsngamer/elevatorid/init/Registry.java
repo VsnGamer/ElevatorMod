@@ -2,17 +2,16 @@ package xyz.vsngamer.elevatorid.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IUnbakedModel;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -29,7 +28,6 @@ public class Registry {
 
     public static final EnumMap<DyeColor, ElevatorBlock> ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
     public static final ElevatorBlock[] ELEVATOR_BLOCKS_ARRAY;
-
     public static final TileEntityType<ElevatorTileEntity> ELEVATOR_TILE_ENTITY;
     public static final ContainerType<ElevatorContainer> ELEVATOR_CONTAINER;
 
@@ -67,6 +65,10 @@ public class Registry {
 
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent e) {
+        Direction.Plane.HORIZONTAL.forEach(direction ->
+                ElevatorBakedModel.ARROW_VARIANTS.put(direction, e.getModelRegistry().get(new ResourceLocation("elevatorid:arrow/arrow_" + direction.toString())))
+        );
+
         ELEVATOR_BLOCKS.values().forEach(block -> {
             ResourceLocation regName = block.getRegistryName();
             if (regName == null) return;
@@ -75,7 +77,7 @@ public class Registry {
             e.getModelRegistry().keySet().forEach(key -> {
                 if (key.toString().contains(regName.toString())) {
                     IBakedModel originalModel = e.getModelRegistry().get(key);
-                    e.getModelRegistry().put(key, new ElevatorBakedModel(originalModel, arrow));
+                    e.getModelRegistry().put(key, new ElevatorBakedModel(originalModel));
                 }
             });
         });
@@ -83,7 +85,9 @@ public class Registry {
 
     @SubscribeEvent
     public static void onModelRegistry(ModelRegistryEvent e) {
-        ModelLoader.addSpecialModel(new ResourceLocation(ElevatorMod.ID, "arrow"));
+        Direction.Plane.HORIZONTAL.forEach(direction ->
+                ModelLoader.addSpecialModel(new ResourceLocation("elevatorid:arrow/arrow_" + direction.toString()))
+        );
     }
 
     // TODO: Config GUI
