@@ -111,7 +111,12 @@ public class ElevatorBlock extends HorizontalBlock {
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT_MIPPED;  //TODO MAKE A MULTILAYERMODEL
+        return BlockRenderLayer.TRANSLUCENT;
+    }
+
+    @Override
+    public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
+        return layer == BlockRenderLayer.TRANSLUCENT || layer == BlockRenderLayer.CUTOUT_MIPPED; // Also render in MIPPED because of the arrow
     }
 
     public DyeColor getColor() {

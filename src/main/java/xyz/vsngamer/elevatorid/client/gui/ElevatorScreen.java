@@ -8,6 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import xyz.vsngamer.elevatorid.ElevatorMod;
+import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.network.client.RemoveCamoPacket;
 import xyz.vsngamer.elevatorid.network.client.SetArrowPacket;
@@ -25,7 +26,7 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
 
     private FunctionalCheckbox dirButton;
     private FunctionalCheckbox hideArrowButton;
-    private Button resetCamo;
+    private Button resetCamoButton;
     private FacingControllerWrapper facingController;
 
     public ElevatorScreen(ElevatorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
@@ -40,9 +41,8 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
         super.init();
 
         String dirLang = new TranslationTextComponent("screen.elevatorid.elevator.directional").getFormattedText();
-        dirButton = new FunctionalCheckbox(guiLeft + 8, guiTop + 25, 20, 20, dirLang, tile.getBlockState().get(DIRECTIONAL), value -> {
-            NetworkHandler.INSTANCE.sendToServer(new SetDirectionalPacket(value, tile.getPos()));
-        });
+        dirButton = new FunctionalCheckbox(guiLeft + 8, guiTop + 25, 20, 20, dirLang, tile.getBlockState().get(DIRECTIONAL), value ->
+                NetworkHandler.INSTANCE.sendToServer(new SetDirectionalPacket(value, tile.getPos())));
         addButton(dirButton);
 
         String arrowLang = new TranslationTextComponent("screen.elevatorid.elevator.hide_arrow").getFormattedText();
@@ -52,28 +52,27 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
         addButton(hideArrowButton);
 
         String resetCamoLang = new TranslationTextComponent("screen.elevatorid.elevator.reset_camo").getFormattedText();
-        resetCamo = new Button(guiLeft + 8, guiTop + 75, 100, 20, resetCamoLang, p_onPress_1_ ->
+        resetCamoButton = new Button(guiLeft + 8, guiTop + 75, 100, 20, resetCamoLang, p_onPress_1_ ->
                 NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getPos())));
-        addButton(resetCamo);
+        addButton(resetCamoButton);
 
-        facingController = new FacingControllerWrapper(guiLeft + 120, guiTop + 20);
+        facingController = new FacingControllerWrapper(guiLeft + 120, guiTop + 20, tile.getPos());
         facingController.getButtons().forEach(this::addButton);
-
+        facingController.getButtons().forEach(button -> button.visible = false);
     }
-
-//    private void addFacingController(int x, int y) {
-//        FacingControllerWrapper wrapper = new FacingControllerWrapper(x, y);
-//        wrapper.getButtons().forEach(this::addButton);
-//    }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         renderBackground();
         super.render(mouseX, mouseY, partialTicks);
 
-        facingController.getButtons().forEach(facingButton -> facingButton.visible = dirButton.func_212942_a());
+        facingController.getButtons().forEach(button -> {
+            button.visible = dirButton.func_212942_a();
+            button.active = tile.getBlockState().get(ElevatorBlock.HORIZONTAL_FACING) != button.direction;
+        });
+
         hideArrowButton.visible = dirButton.func_212942_a();
-        resetCamo.active = tile.getHeldState() != null;
+        resetCamoButton.active = tile.getHeldState() != null;
     }
 
     @Override
@@ -91,6 +90,4 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         this.font.drawString(this.title.getFormattedText(), 8.0F, 8.0F, 14737632);
     }
-
-
 }

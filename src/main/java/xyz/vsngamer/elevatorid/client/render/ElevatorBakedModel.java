@@ -5,7 +5,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -13,9 +15,7 @@ import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
 
@@ -30,9 +30,15 @@ public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
     @Nonnull
     @Override
     public List<BakedQuad> getQuads(BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
-        List<BakedQuad> list = Lists.newArrayList();
-        if (state.get(ElevatorBlock.DIRECTIONAL) && state.get(ElevatorBlock.SHOW_ARROW))
-            list.addAll(ARROW_VARIANTS.get(state.get(ElevatorBlock.HORIZONTAL_FACING)).getQuads(state, side, rand, extraData));
+        List<BakedQuad> list = new ArrayList<>();
+
+        BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
+        if (layer == BlockRenderLayer.CUTOUT_MIPPED) {
+            if (state.get(ElevatorBlock.DIRECTIONAL) && state.get(ElevatorBlock.SHOW_ARROW)) {
+                list.addAll(ARROW_VARIANTS.get(state.get(ElevatorBlock.HORIZONTAL_FACING)).getQuads(state, side, rand, extraData));
+            }
+            return list;
+        }
 
         BlockState heldState = extraData.getData(HELD_STATE);
         if (heldState != null) {
