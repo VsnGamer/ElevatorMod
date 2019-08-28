@@ -19,6 +19,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.init.ModConfig;
+import xyz.vsngamer.elevatorid.network.NetworkHandler;
+import xyz.vsngamer.elevatorid.network.client.RemoveCamoPacket;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
 
@@ -30,6 +32,7 @@ import javax.annotation.Nullable;
 public class ElevatorBlock extends HorizontalBlock {
 
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
+    public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
 
     private ElevatorBlockItem item;
     private DyeColor dyeColor;
@@ -38,19 +41,15 @@ public class ElevatorBlock extends HorizontalBlock {
         super(Block.Properties
                 .create(Material.WOOL, color)
                 .sound(SoundType.CLOTH)
-                .hardnessAndResistance(0.8F)
-        );
+                .hardnessAndResistance(0.8F));
 
         setRegistryName(ElevatorMod.ID, "elevator_" + color.getName());
-
         dyeColor = color;
-
-        setDefaultState(getStateContainer().getBaseState().with(DIRECTIONAL, false));
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING, DIRECTIONAL);
+        builder.add(HORIZONTAL_FACING, DIRECTIONAL, SHOW_ARROW);
     }
 
     @Nullable
@@ -94,8 +93,9 @@ public class ElevatorBlock extends HorizontalBlock {
             }
         }
 
-        if(player.isSneaking() && tile.getHeldState() != null){
-            setCamoAndUpdate(null,  tile, worldIn);
+        // Remove camo
+        if (player.isSneaking() && tile.getHeldState() != null) {
+            NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(pos));
             return true;
         }
 
@@ -111,7 +111,7 @@ public class ElevatorBlock extends HorizontalBlock {
     @Nonnull
     @Override
     public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT_MIPPED;
+        return BlockRenderLayer.CUTOUT_MIPPED;  //TODO MAKE A MULTILAYERMODEL
     }
 
     public DyeColor getColor() {
@@ -145,7 +145,7 @@ public class ElevatorBlock extends HorizontalBlock {
         return block.getDefaultState().getMaterial().isSolid();
     }
 
-    public ElevatorTileEntity getElevatorTile(World world, BlockPos pos) {
+    private ElevatorTileEntity getElevatorTile(World world, BlockPos pos) {
         // Get tile at pos
         TileEntity tile = world.getTileEntity(pos);
 

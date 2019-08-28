@@ -16,7 +16,6 @@ class FunctionalCheckbox extends CheckboxButton {
     public void onPress() {
         super.onPress();
         onPress.onPress(func_212942_a());
-        //NetworkHandler.INSTANCE.sendToServer(new SetDirectionalPacket(func_212942_a(), tile.getPos()));
     }
 
     @FunctionalInterface

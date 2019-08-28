@@ -10,37 +10,35 @@ import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 
 import java.util.function.Supplier;
 
-public class SetDirectionalPacket {
+public class SetArrowPacket {
 
-    private final boolean value;
-    private final BlockPos pos;
+    private boolean value;
+    private BlockPos pos;
 
-    public SetDirectionalPacket(boolean value, BlockPos pos) {
+    public SetArrowPacket(boolean value, BlockPos pos) {
         this.value = value;
         this.pos = pos;
     }
 
-    public static void encode(SetDirectionalPacket msg, PacketBuffer buf) {
+
+    public static void encode(SetArrowPacket msg, PacketBuffer buf) {
         buf.writeBoolean(msg.value);
         buf.writeBlockPos(msg.pos);
     }
 
-    public static SetDirectionalPacket decode(PacketBuffer buf) {
-        return new SetDirectionalPacket(buf.readBoolean(), buf.readBlockPos());
+    public static SetArrowPacket decode(PacketBuffer buf) {
+        return new SetArrowPacket(buf.readBoolean(), buf.readBlockPos());
     }
 
-    public static void handle(SetDirectionalPacket msg, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(SetArrowPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ServerPlayerEntity player = ctx.get().getSender();
         if (player == null)
             return;
 
         ServerWorld world = player.getServerWorld();
-        BlockPos pos = msg.pos;
-        BlockState currState = world.getBlockState(pos);
-
-        if (currState.getBlock() instanceof ElevatorBlock) {
+        BlockState curState = world.getBlockState(msg.pos);
+        if (curState.getBlock() instanceof ElevatorBlock)
             ctx.get().enqueueWork(() ->
-                    world.setBlockState(pos, currState.with(ElevatorBlock.DIRECTIONAL, msg.value)));
-        }
+                    world.setBlockState(msg.pos, curState.with(ElevatorBlock.SHOW_ARROW, msg.value)));
     }
 }

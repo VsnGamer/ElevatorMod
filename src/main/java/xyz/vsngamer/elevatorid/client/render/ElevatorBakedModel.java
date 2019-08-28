@@ -6,10 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.BakedModelWrapper;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
@@ -34,13 +31,13 @@ public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
     @Override
     public List<BakedQuad> getQuads(BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
         List<BakedQuad> list = Lists.newArrayList();
-        IBakedModel arrowBakedModel = ARROW_VARIANTS.get(state.get(ElevatorBlock.HORIZONTAL_FACING));
-        list.addAll(arrowBakedModel.getQuads(state, side, rand, extraData));
+        if (state.get(ElevatorBlock.DIRECTIONAL) && state.get(ElevatorBlock.SHOW_ARROW))
+            list.addAll(ARROW_VARIANTS.get(state.get(ElevatorBlock.HORIZONTAL_FACING)).getQuads(state, side, rand, extraData));
 
         BlockState heldState = extraData.getData(HELD_STATE);
         if (heldState != null) {
             IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(heldState);
-            list.addAll(model.getQuads(state, side, rand, extraData));
+            list.addAll(model.getQuads(heldState, side, rand, extraData));
             return list;
         }
 

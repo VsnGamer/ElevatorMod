@@ -20,7 +20,8 @@ archivesBaseName = 'elevatorid'
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190821-1.14.3'
+    mappings channel: 'snapshot', version: '20190828-1.14.3'
+
     runs {
         client {
             workingDirectory project.file('run')
@@ -82,13 +83,13 @@ dependencies {
 jar {
     manifest {
         attributes([
-            "Specification-Title": "ElevatorMod",
-            "Specification-Vendor": "VsnGamer",
-            "Specification-Version": "1", // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"VsnGamer",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title"     : "ElevatorMod",
+                "Specification-Vendor"    : "VsnGamer",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : "VsnGamer",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }

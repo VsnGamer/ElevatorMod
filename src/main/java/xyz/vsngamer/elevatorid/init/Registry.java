@@ -2,7 +2,6 @@ package xyz.vsngamer.elevatorid.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -38,7 +37,6 @@ public class Registry {
 
         ELEVATOR_BLOCKS_ARRAY = ELEVATOR_BLOCKS.values().toArray(new ElevatorBlock[0]);
 
-//        Block[] validBlocks = ELEVATOR_BLOCKS.values().toArray(new Block[0]);
         ELEVATOR_TILE_ENTITY = ElevatorTileEntity.buildTileType(ELEVATOR_BLOCKS_ARRAY);
         ELEVATOR_CONTAINER = ElevatorContainer.buildContainerType();
     }

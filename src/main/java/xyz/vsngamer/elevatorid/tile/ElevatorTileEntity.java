@@ -29,6 +29,8 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
 
     private BlockState heldState;
 
+//    private boolean showArrow = true;
+
     public ElevatorTileEntity() {
         super(ELEVATOR_TILE_ENTITY);
     }
@@ -38,6 +40,7 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
         // Get blockstate from compound
         BlockState held_id = NBTUtil.readBlockState(compound.getCompound("held_id"));
         heldState = held_id == Blocks.AIR.getDefaultState() ? null : held_id;
+
         super.read(compound);
     }
 
@@ -74,14 +77,14 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         handleUpdateTag(pkt.getNbtCompound());
 
+        updateClient();
+    }
+
+    private void updateClient() {
         if (world != null && world.isRemote) {
             ModelDataManager.requestModelDataRefresh(this);
             world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 1);
         }
-    }
-
-    public BlockState getHeldState() {
-        return heldState;
     }
 
     public void setHeldState(BlockState heldState) {
@@ -89,10 +92,16 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
         update();
     }
 
-    private void update() {
+    public BlockState getHeldState() {
+        return heldState;
+    }
+
+    private void update() throws IllegalStateException {
         markDirty();
-        if (world != null) {
+        if (world != null && !world.isRemote) {
             world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
+        } else {
+            throw new IllegalStateException("Run this on the server");
         }
     }
 
