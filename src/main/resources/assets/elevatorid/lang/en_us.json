@@ -21,7 +21,7 @@
   "screen.elevatorid.elevator": "Elevator Options",
   "screen.elevatorid.elevator.directional": "Directional",
   "screen.elevatorid.elevator.hide_arrow": "Hide arrow",
-  "screen.elevatorid.elevator.reset_camo": "Reset camouflage",
+  "screen.elevatorid.elevator.reset_camo": "Remove camouflage",
 
   "itemGroup.tabElevators": "Elevators"
 }

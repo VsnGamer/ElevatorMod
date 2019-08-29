@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.extensions.IForgeContainerType;
@@ -15,6 +16,7 @@ import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_CONTAINER;
 
 public class ElevatorContainer extends Container {
 
+    private final Direction playerFacing;
     private ElevatorTileEntity elevatorTile;
 
     ElevatorContainer(int id, BlockPos pos, PlayerEntity player) {
@@ -24,6 +26,7 @@ public class ElevatorContainer extends Container {
         if (tile instanceof ElevatorTileEntity)
             elevatorTile = (ElevatorTileEntity) tile;
 
+        playerFacing = player.getHorizontalFacing();
     }
 
     // This will probably not be necessary
@@ -48,6 +51,10 @@ public class ElevatorContainer extends Container {
 
     public ElevatorTileEntity getTile() {
         return elevatorTile;
+    }
+
+    public Direction getPlayerFacing() {
+        return playerFacing;
     }
 
     public static ContainerType<ElevatorContainer> buildContainerType() {

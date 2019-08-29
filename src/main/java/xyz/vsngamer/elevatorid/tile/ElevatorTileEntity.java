@@ -98,11 +98,10 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
 
     private void update() throws IllegalStateException {
         markDirty();
-        if (world != null && !world.isRemote) {
-            world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 3);
-        } else {
+        if (world != null && !world.isRemote)
+            world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 3);
+        else
             throw new IllegalStateException("Run this on the server");
-        }
     }
 
     @Nonnull

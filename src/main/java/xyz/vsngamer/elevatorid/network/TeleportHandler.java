@@ -43,8 +43,12 @@ public class TeleportHandler {
 
         // Check yaw and pitch
         final float yaw, pitch;
-        yaw = toState.get(ElevatorBlock.DIRECTIONAL) ? toState.get(ElevatorBlock.HORIZONTAL_FACING).getHorizontalAngle() : player.rotationYaw;
-        pitch = toState.get(ElevatorBlock.DIRECTIONAL) ? 0F : player.rotationPitch;
+        yaw = toState.get(ElevatorBlock.DIRECTIONAL)
+                ? toState.get(ElevatorBlock.HORIZONTAL_FACING).getHorizontalAngle() : player.rotationYaw;
+
+        pitch = (toState.get(ElevatorBlock.DIRECTIONAL) && ModConfig.GENERAL.resetPitchDirectional.get())
+                || (!toState.get(ElevatorBlock.DIRECTIONAL) && ModConfig.GENERAL.resetPitchNormal.get())
+                ? 0F : player.rotationPitch;
 
         // Set X and Z
         final double toX, toZ;

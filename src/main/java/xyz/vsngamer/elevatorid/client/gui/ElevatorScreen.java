@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -23,40 +24,47 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
 
     private final ResourceLocation GUI_TEXTURE = new ResourceLocation(ElevatorMod.ID, "textures/gui/elevator_gui.png");
     private ElevatorTileEntity tile;
+    private Direction playerFacing;
 
     private FunctionalCheckbox dirButton;
     private FunctionalCheckbox hideArrowButton;
     private Button resetCamoButton;
     private FacingControllerWrapper facingController;
 
-    public ElevatorScreen(ElevatorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
-        super(screenContainer, inv, titleIn);
+    public ElevatorScreen(ElevatorContainer container, PlayerInventory inv, ITextComponent titleIn) {
+        super(container, inv, titleIn);
         xSize = 200;
         ySize = 100;
-        tile = screenContainer.getTile();
+
+        tile = container.getTile();
+        playerFacing = container.getPlayerFacing();
     }
 
     @Override
     protected void init() {
         super.init();
 
+        // Toggle directional button
         String dirLang = new TranslationTextComponent("screen.elevatorid.elevator.directional").getFormattedText();
         dirButton = new FunctionalCheckbox(guiLeft + 8, guiTop + 25, 20, 20, dirLang, tile.getBlockState().get(DIRECTIONAL), value ->
                 NetworkHandler.INSTANCE.sendToServer(new SetDirectionalPacket(value, tile.getPos())));
         addButton(dirButton);
 
+        // Toggle arrow button
         String arrowLang = new TranslationTextComponent("screen.elevatorid.elevator.hide_arrow").getFormattedText();
         hideArrowButton = new FunctionalCheckbox(guiLeft + 8, guiTop + 50, 20, 20, arrowLang, !tile.getBlockState().get(SHOW_ARROW), value ->
                 NetworkHandler.INSTANCE.sendToServer(new SetArrowPacket(!value, tile.getPos())));
         hideArrowButton.visible = false;
         addButton(hideArrowButton);
 
+        // Reset camouflage button
         String resetCamoLang = new TranslationTextComponent("screen.elevatorid.elevator.reset_camo").getFormattedText();
-        resetCamoButton = new Button(guiLeft + 8, guiTop + 75, 100, 20, resetCamoLang, p_onPress_1_ ->
+        resetCamoButton = new Button(guiLeft + 8, guiTop + 75, 110, 20, resetCamoLang, p_onPress_1_ ->
                 NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getPos())));
         addButton(resetCamoButton);
 
-        facingController = new FacingControllerWrapper(guiLeft + 120, guiTop + 20, tile.getPos());
+        // Directional controller
+        facingController = new FacingControllerWrapper(guiLeft + 120, guiTop + 20, tile.getPos(), playerFacing);
         facingController.getButtons().forEach(this::addButton);
         facingController.getButtons().forEach(button -> button.visible = false);
     }

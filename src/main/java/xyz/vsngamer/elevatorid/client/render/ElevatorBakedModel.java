@@ -1,10 +1,10 @@
 package xyz.vsngamer.elevatorid.client.render;
 
-import com.google.common.collect.Lists;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -15,7 +15,10 @@ import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Random;
 
 public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
 
@@ -50,5 +53,17 @@ public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
         // Original model
         list.addAll(originalModel.getQuads(state, side, rand, extraData));
         return list;
+    }
+
+    @Nonnull
+    @Override
+    public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
+        BlockState state = data.getData(HELD_STATE);
+        IBakedModel model;
+        if (state != null) {
+            model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(state);
+            return model.getParticleTexture(data);
+        }
+        return super.getParticleTexture(data);
     }
 }
