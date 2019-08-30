@@ -41,6 +41,7 @@ public class SetDirectionalPacket {
         if (currState.getBlock() instanceof ElevatorBlock) {
             ctx.get().enqueueWork(() ->
                     world.setBlockState(pos, currState.with(ElevatorBlock.DIRECTIONAL, msg.value)));
+            ctx.get().setPacketHandled(true);
         }
     }
 }

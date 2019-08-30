@@ -13,8 +13,10 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.math.SectionPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.LightType;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -28,8 +30,6 @@ import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_TILE_ENTITY;
 public class ElevatorTileEntity extends TileEntity implements INamedContainerProvider {
 
     private BlockState heldState;
-
-//    private boolean showArrow = true;
 
     public ElevatorTileEntity() {
         super(ELEVATOR_TILE_ENTITY);
@@ -83,7 +83,9 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     private void updateClient() {
         if (world != null && world.isRemote) {
             ModelDataManager.requestModelDataRefresh(this);
-            world.notifyBlockUpdate(pos, world.getBlockState(pos), world.getBlockState(pos), 1);
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 1);
+            int test = world.getLight(pos);
+            world.getChunkProvider().getLightManager().checkBlock(pos);
         }
     }
 
@@ -98,9 +100,11 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
 
     private void update() throws IllegalStateException {
         markDirty();
-        if (world != null && !world.isRemote)
-            world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 3);
-        else
+        if (world != null && !world.isRemote) {
+            world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 2);
+            getBlockState().func_215692_c();
+            world.getChunkProvider().getLightManager().checkBlock(pos);
+        } else
             throw new IllegalStateException("Run this on the server");
     }
 

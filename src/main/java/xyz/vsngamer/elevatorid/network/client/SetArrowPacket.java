@@ -37,8 +37,10 @@ public class SetArrowPacket {
 
         ServerWorld world = player.getServerWorld();
         BlockState curState = world.getBlockState(msg.pos);
-        if (curState.getBlock() instanceof ElevatorBlock)
+        if (curState.getBlock() instanceof ElevatorBlock) {
             ctx.get().enqueueWork(() ->
                     world.setBlockState(msg.pos, curState.with(ElevatorBlock.SHOW_ARROW, msg.value)));
+            ctx.get().setPacketHandled(true);
+        }
     }
 }

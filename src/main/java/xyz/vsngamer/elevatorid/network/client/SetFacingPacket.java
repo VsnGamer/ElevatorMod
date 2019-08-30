@@ -38,7 +38,9 @@ public class SetFacingPacket {
         ServerWorld world = player.getServerWorld();
         BlockState state = world.getBlockState(msg.pos);
         if (state.getBlock() instanceof ElevatorBlock) {
-            ctx.get().enqueueWork(() -> world.setBlockState(msg.pos, state.with(ElevatorBlock.HORIZONTAL_FACING, msg.direction)));
+            ctx.get().enqueueWork(() ->
+                    world.setBlockState(msg.pos, state.with(ElevatorBlock.HORIZONTAL_FACING, msg.direction)));
+            ctx.get().setPacketHandled(true);
         }
     }
 }

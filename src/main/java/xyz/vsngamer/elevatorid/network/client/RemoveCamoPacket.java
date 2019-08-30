@@ -40,6 +40,7 @@ public class RemoveCamoPacket {
                 ((ElevatorTileEntity) tile).setHeldState(null);
                 world.playSound(null, msg.pos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
             });
+            ctx.get().setPacketHandled(true);
         }
     }
 }

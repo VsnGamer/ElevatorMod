@@ -13,9 +13,9 @@ class FacingControllerWrapper {
     private final HashSet<FacingButton> bakedButtons = new HashSet<>();
     private final ArrayList<Point> slots = new ArrayList<>();
 
-    FacingControllerWrapper(int xIn, int yIn, BlockPos blockPos, Direction rotation) {
+    FacingControllerWrapper(int xIn, int yIn, BlockPos blockPos, Direction playerFacing) {
         initSlots(xIn, yIn);
-        initButtons(rotation, blockPos);
+        initButtons(playerFacing, blockPos);
     }
 
     private void initSlots(int xIn, int yIn) {
@@ -25,8 +25,8 @@ class FacingControllerWrapper {
         slots.add(new Point(xIn, yIn + 20)); //LEFT
     }
 
-    private void initButtons(Direction rotation, BlockPos pos) {
-        Collections.rotate(slots, rotation.getHorizontalIndex());
+    private void initButtons(Direction playerFacing, BlockPos pos) {
+        Collections.rotate(slots, playerFacing.getHorizontalIndex());
         bakedButtons.add(new FacingButton(slots.get(0), "S", Direction.SOUTH, pos));
         bakedButtons.add(new FacingButton(slots.get(1), "W", Direction.WEST, pos));
         bakedButtons.add(new FacingButton(slots.get(2), "N", Direction.NORTH, pos));

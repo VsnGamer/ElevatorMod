@@ -235,6 +235,15 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
+    public int getOpacity(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
+        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().getOpacity(worldIn, pos);
+        }
+        return worldIn.getMaxLightLevel();
+    }
+
+    @Override
     public boolean canBeConnectedTo(BlockState state, IBlockReader world, BlockPos pos, Direction facing) {
         return true;
     }
@@ -270,7 +279,7 @@ public class ElevatorBlock extends HorizontalBlock {
         return block.getDefaultState().getMaterial().isSolid();
     }
 
-    private ElevatorTileEntity getElevatorTile(IBlockReader world, BlockPos pos) {
+    private ElevatorTileEntity getElevatorTile(IBlockReader world, BlockPos pos) { // TODO MAKE THREAD SAFE BECAUSE LIGHT ENGINE ISN'T ON THE MAIN THREAD
         // Get tile at pos
         TileEntity tile = world.getTileEntity(pos);
 

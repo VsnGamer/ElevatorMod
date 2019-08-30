@@ -66,6 +66,8 @@ public class TeleportHandler {
             player.setMotion(player.getMotion().mul(new Vec3d(1, 0, 1)));
             world.playSound(null, to, ModSounds.TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
         });
+
+        ctx.get().setPacketHandled(true);
     }
 
     public static boolean validateTarget(IBlockReader world, BlockPos target) {
