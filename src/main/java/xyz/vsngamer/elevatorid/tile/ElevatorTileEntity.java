@@ -84,7 +84,6 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
         if (world != null && world.isRemote) {
             ModelDataManager.requestModelDataRefresh(this);
             world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 1);
-            int test = world.getLight(pos);
             world.getChunkProvider().getLightManager().checkBlock(pos);
         }
     }
@@ -102,7 +101,6 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
         markDirty();
         if (world != null && !world.isRemote) {
             world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 2);
-            getBlockState().func_215692_c();
             world.getChunkProvider().getLightManager().checkBlock(pos);
         } else
             throw new IllegalStateException("Run this on the server");

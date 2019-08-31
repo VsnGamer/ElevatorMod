@@ -2,6 +2,7 @@ package xyz.vsngamer.elevatorid.blocks;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.chunk.ChunkRenderCache;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
@@ -17,7 +18,10 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.*;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.fml.loading.LogMarkers;
 import net.minecraftforge.fml.network.NetworkHooks;
+import org.apache.logging.log4j.LogManager;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.init.ModConfig;
@@ -235,6 +239,15 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
+    public int getPackedLightmapCoords(BlockState state, IEnviromentBlockReader worldIn, BlockPos pos) {
+        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().getPackedLightmapCoords(worldIn, pos);
+        }
+        return super.getPackedLightmapCoords(state, worldIn, pos);
+    }
+
+    @Override
     public int getOpacity(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
         ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
         if (tile != null && tile.getHeldState() != null) {
@@ -279,14 +292,24 @@ public class ElevatorBlock extends HorizontalBlock {
         return block.getDefaultState().getMaterial().isSolid();
     }
 
-    private ElevatorTileEntity getElevatorTile(IBlockReader world, BlockPos pos) { // TODO MAKE THREAD SAFE BECAUSE LIGHT ENGINE ISN'T ON THE MAIN THREAD
+    private ElevatorTileEntity getElevatorTile(IBlockReader reader, BlockPos pos) { // TODO MAKE THREAD SAFE BECAUSE LIGHT ENGINE ISN'T ON THE MAIN THREAD
+        TileEntity tile;
+
         // Get tile at pos
-        TileEntity tile = world.getTileEntity(pos);
+        if (reader instanceof World) {
+            tile = ((World) reader).getChunkAt(pos).getTileEntity(pos);
+        } else if (reader instanceof ChunkRenderCache) {
+            tile = reader.getTileEntity(pos);
+        } else {
+            tile = reader.getTileEntity(pos);
+        }
 
         // Check if it exists and is valid
-        if (tile instanceof ElevatorTileEntity && !tile.isRemoved() && tile.getType().isValidBlock(world.getBlockState(pos).getBlock())) {
+        if (tile instanceof ElevatorTileEntity && tile.getType().isValidBlock(reader.getBlockState(pos).getBlock())) {
             return (ElevatorTileEntity) tile;
         }
+
+        LogManager.getLogger(ElevatorMod.ID).debug("NULL TILE, " + reader.toString());
         return null;
     }
 
