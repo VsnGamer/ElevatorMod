@@ -10,6 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -17,9 +18,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.*;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.fml.loading.LogMarkers;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.apache.logging.log4j.LogManager;
 import xyz.vsngamer.elevatorid.ElevatorMod;
@@ -39,6 +43,7 @@ public class ElevatorBlock extends HorizontalBlock {
 
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
+    public static final IntegerProperty LIGHT_TEST = IntegerProperty.create("light_test", 0, 15); // Temporary solution
 
     private ElevatorBlockItem item;
     private DyeColor dyeColor;
@@ -56,13 +61,13 @@ public class ElevatorBlock extends HorizontalBlock {
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(HORIZONTAL_FACING, DIRECTIONAL, SHOW_ARROW);
+        builder.add(HORIZONTAL_FACING, DIRECTIONAL, SHOW_ARROW, LIGHT_TEST);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite()).with(DIRECTIONAL, false);
+        return getDefaultState().with(HORIZONTAL_FACING, context.getPlacementHorizontalFacing().getOpposite()).with(DIRECTIONAL, false).with(LIGHT_TEST, 0);
     }
 
     @Override
@@ -229,22 +234,19 @@ public class ElevatorBlock extends HorizontalBlock {
         return 0;
     }
 
-    @Override
-    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
-        ElevatorTileEntity tile = getElevatorTile(world, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getLightValue(world, pos);
-        }
-        return 0;
-    }
+//     Not working right now
+//    @Override
+//    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
+//        ElevatorTileEntity tile = getElevatorTile(world, pos);
+//        if (tile != null && tile.getHeldState() != null) {
+//            return tile.getHeldState().getLightValue(world, pos);
+//        }
+//        return super.getLightValue(state, world, pos);
+//    }
 
     @Override
-    public int getPackedLightmapCoords(BlockState state, IEnviromentBlockReader worldIn, BlockPos pos) {
-        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getPackedLightmapCoords(worldIn, pos);
-        }
-        return super.getPackedLightmapCoords(state, worldIn, pos);
+    public int getLightValue(BlockState state) {
+        return state.get(LIGHT_TEST); // Temporary solution
     }
 
     @Override
@@ -295,11 +297,10 @@ public class ElevatorBlock extends HorizontalBlock {
     private ElevatorTileEntity getElevatorTile(IBlockReader reader, BlockPos pos) { // TODO MAKE THREAD SAFE BECAUSE LIGHT ENGINE ISN'T ON THE MAIN THREAD
         TileEntity tile;
 
-        // Get tile at pos
-        if (reader instanceof World) {
+        if(reader instanceof World){
             tile = ((World) reader).getChunkAt(pos).getTileEntity(pos);
         } else if (reader instanceof ChunkRenderCache) {
-            tile = reader.getTileEntity(pos);
+            tile = ((ChunkRenderCache) reader).getTileEntity(pos, Chunk.CreateEntityType.CHECK);
         } else {
             tile = reader.getTileEntity(pos);
         }

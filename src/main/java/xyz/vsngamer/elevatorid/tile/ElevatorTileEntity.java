@@ -13,13 +13,12 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.SectionPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.LightType;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,9 +46,8 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     @Nonnull
     @Override
     public CompoundNBT write(CompoundNBT compound) {
-        if (heldState != null) {
+        if (heldState != null)
             compound.put("held_id", NBTUtil.writeBlockState(heldState));
-        }
 
         return super.write(compound);
     }
@@ -76,34 +74,7 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         handleUpdateTag(pkt.getNbtCompound());
-
         updateClient();
-    }
-
-    private void updateClient() {
-        if (world != null && world.isRemote) {
-            ModelDataManager.requestModelDataRefresh(this);
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 1);
-            world.getChunkProvider().getLightManager().checkBlock(pos);
-        }
-    }
-
-    public void setHeldState(BlockState heldState) {
-        this.heldState = heldState;
-        update();
-    }
-
-    public BlockState getHeldState() {
-        return heldState;
-    }
-
-    private void update() throws IllegalStateException {
-        markDirty();
-        if (world != null && !world.isRemote) {
-            world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 2);
-            world.getChunkProvider().getLightManager().checkBlock(pos);
-        } else
-            throw new IllegalStateException("Run this on the server");
     }
 
     @Nonnull
@@ -115,6 +86,34 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     @Override
     public Container createMenu(int id, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
         return new ElevatorContainer(id, pos, player);
+    }
+
+    public void setHeldState(BlockState heldState) {
+        this.heldState = heldState;
+        updateServer();
+    }
+
+    public BlockState getHeldState() {
+        return heldState;
+    }
+
+    private void updateServer() throws IllegalStateException {
+        markDirty();
+        if (world != null && !world.isRemote) {
+            world.setBlockState(pos, getHeldState() != null ?
+                    getBlockState().with(ElevatorBlock.LIGHT_TEST, getHeldState().getLightValue()) : getBlockState().with(ElevatorBlock.LIGHT_TEST, 0));
+            world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 3);
+            world.getChunkProvider().getLightManager().checkBlock(pos);
+        } else
+            throw new IllegalStateException("Run this on the server");
+    }
+
+    private void updateClient() {
+        if (world != null && world.isRemote) {
+            ModelDataManager.requestModelDataRefresh(this);
+            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 1);
+            world.getChunkProvider().getLightManager().checkBlock(pos);
+        }
     }
 
     public static TileEntityType<ElevatorTileEntity> buildTileType(Block... validBlocks) {
