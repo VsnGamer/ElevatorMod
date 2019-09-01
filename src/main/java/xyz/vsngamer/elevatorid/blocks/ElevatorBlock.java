@@ -294,23 +294,23 @@ public class ElevatorBlock extends HorizontalBlock {
         return block.getDefaultState().getMaterial().isSolid();
     }
 
-    private ElevatorTileEntity getElevatorTile(IBlockReader reader, BlockPos pos) { // TODO MAKE THREAD SAFE BECAUSE LIGHT ENGINE ISN'T ON THE MAIN THREAD
+    private ElevatorTileEntity getElevatorTile(IBlockReader world, BlockPos pos) {
         TileEntity tile;
 
-        if(reader instanceof World){
-            tile = ((World) reader).getChunkAt(pos).getTileEntity(pos);
-        } else if (reader instanceof ChunkRenderCache) {
-            tile = ((ChunkRenderCache) reader).getTileEntity(pos, Chunk.CreateEntityType.CHECK);
+        if(world instanceof ServerWorld){
+            tile = ((ServerWorld) world).getChunkAt(pos).getTileEntity(pos);
+        } else if (world instanceof ChunkRenderCache) {
+            tile = ((ChunkRenderCache) world).getTileEntity(pos, Chunk.CreateEntityType.CHECK);
         } else {
-            tile = reader.getTileEntity(pos);
+            tile = world.getTileEntity(pos);
         }
 
         // Check if it exists and is valid
-        if (tile instanceof ElevatorTileEntity && tile.getType().isValidBlock(reader.getBlockState(pos).getBlock())) {
+        if (tile instanceof ElevatorTileEntity && tile.getType().isValidBlock(world.getBlockState(pos).getBlock())) {
             return (ElevatorTileEntity) tile;
         }
 
-        LogManager.getLogger(ElevatorMod.ID).debug("NULL TILE, " + reader.toString());
+        LogManager.getLogger(ElevatorMod.ID).debug("NULL TILE, " + world.toString());
         return null;
     }
 

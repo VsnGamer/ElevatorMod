@@ -1,12 +1,10 @@
 package xyz.vsngamer.elevatorid.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.network.client.SetFacingPacket;
 
@@ -27,12 +25,9 @@ class FacingButton extends Button {
     public void renderButton(int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
         Minecraft minecraft = Minecraft.getInstance();
         FontRenderer fontrenderer = minecraft.fontRenderer;
-        int j = getFGColor();
-        int color;
-        if (!active)
-            color = 65280;
-        else
-            color = j | MathHelper.ceil(this.alpha * 255.0F) << 24;
-        this.drawCenteredString(fontrenderer, this.getMessage(), this.x + this.width / 2, this.y + (this.height - 8) / 2, color);
+        this.drawCenteredString(fontrenderer, this.getMessage(), this.x + this.width / 2,
+                this.y + (this.height - 8) / 2, !active ? 65280 : 16777215);
+        if (isHovered)
+            fill(x, y, x + 20, y + 20, -2130706433);
     }
 }
