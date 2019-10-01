@@ -3,6 +3,7 @@ package xyz.vsngamer.elevatorid.client.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
@@ -23,10 +24,13 @@ class FacingButton extends Button {
 
     @Override
     public void renderButton(int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
-        Minecraft minecraft = Minecraft.getInstance();
-        FontRenderer fontrenderer = minecraft.fontRenderer;
-        this.drawCenteredString(fontrenderer, this.getMessage(), this.x + this.width / 2,
-                this.y + (this.height - 8) / 2, !active ? 65280 : 16777215);
+        this.drawCenteredString(Minecraft.getInstance().fontRenderer,
+                this.getMessage(),
+                this.x + this.width / 2,
+                this.y + (this.height - 8) / 2,
+                active ? 16777215 : 65280
+        );
+
         if (isHovered)
             fill(x, y, x + 20, y + 20, -2130706433);
     }

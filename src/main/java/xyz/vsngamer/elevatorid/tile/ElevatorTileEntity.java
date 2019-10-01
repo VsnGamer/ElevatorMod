@@ -100,12 +100,11 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     private void updateServer() throws IllegalStateException {
         markDirty();
         if (world != null && !world.isRemote) {
-            world.setBlockState(pos, getHeldState() != null ?
-                    getBlockState().with(ElevatorBlock.LIGHT_TEST, getHeldState().getLightValue()) : getBlockState().with(ElevatorBlock.LIGHT_TEST, 0));
             world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 3);
             world.getChunkProvider().getLightManager().checkBlock(pos);
-        } else
+        } else {
             throw new IllegalStateException("Run this on the server");
+        }
     }
 
     private void updateClient() {
@@ -116,7 +115,7 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
         }
     }
 
-    public static TileEntityType<ElevatorTileEntity> buildTileType(Block... validBlocks) {
+    public static TileEntityType<ElevatorTileEntity> getType(Block... validBlocks) {
         TileEntityType<ElevatorTileEntity> type = TileEntityType.Builder.create(ElevatorTileEntity::new, validBlocks).build(null);
         type.setRegistryName("elevator_tile");
         return type;

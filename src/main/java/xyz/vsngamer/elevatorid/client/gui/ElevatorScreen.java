@@ -2,12 +2,12 @@ package xyz.vsngamer.elevatorid.client.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
@@ -28,7 +28,7 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
 
     private FunctionalCheckbox dirButton;
     private FunctionalCheckbox hideArrowButton;
-    private Button resetCamoButton;
+    private GuiButtonExt resetCamoButton;
     private FacingControllerWrapper facingController;
 
     public ElevatorScreen(ElevatorContainer container, PlayerInventory inv, ITextComponent titleIn) {
@@ -59,7 +59,7 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
 
         // Reset camouflage button
         String resetCamoLang = new TranslationTextComponent("screen.elevatorid.elevator.reset_camo").getFormattedText();
-        resetCamoButton = new Button(guiLeft + 8, guiTop + 75, 110, 20, resetCamoLang, p_onPress_1_ ->
+        resetCamoButton = new GuiButtonExt(guiLeft + 8, guiTop + 75, 110, 20, resetCamoLang, p_onPress_1_ ->
                 NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getPos())));
         addButton(resetCamoButton);
 
@@ -74,6 +74,13 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
         renderBackground();
         super.render(mouseX, mouseY, partialTicks);
 
+
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
         facingController.getButtons().forEach(button -> {
             button.visible = dirButton.func_212942_a();
             button.active = tile.getBlockState().get(ElevatorBlock.HORIZONTAL_FACING) != button.direction;
@@ -86,8 +93,8 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        if (this.minecraft != null) {
-            this.minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
+        if (minecraft != null) {
+            minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
         }
         int relX = (this.width - this.xSize) / 2;
         int relY = (this.height - this.ySize) / 2;

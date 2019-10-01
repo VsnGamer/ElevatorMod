@@ -37,7 +37,7 @@ public class Registry {
 
         ELEVATOR_BLOCKS_ARRAY = ELEVATOR_BLOCKS.values().toArray(new ElevatorBlock[0]);
 
-        ELEVATOR_TILE_ENTITY = ElevatorTileEntity.buildTileType(ELEVATOR_BLOCKS_ARRAY);
+        ELEVATOR_TILE_ENTITY = ElevatorTileEntity.getType(ELEVATOR_BLOCKS_ARRAY);
         ELEVATOR_CONTAINER = ElevatorContainer.buildContainerType();
     }
 
