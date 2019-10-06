@@ -6,7 +6,7 @@
       "tag": "elevatorid:elevators"
     },
     {
-      "item": "minecraft:brown_dye"
+      "tag": "forge:dyes/brown"
     }
   ],
   "result": {

@@ -6,7 +6,7 @@
       "tag": "elevatorid:elevators"
     },
     {
-      "item": "minecraft:cyan_dye"
+      "tag": "forge:dyes/cyan"
     }
   ],
   "result": {

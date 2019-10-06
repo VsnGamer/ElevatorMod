@@ -6,7 +6,7 @@
       "tag": "elevatorid:directional_elevators"
     },
     {
-      "item": "minecraft:gray_dye"
+      "tag": "forge:dyes/gray"
     }
   ],
   "result": {
