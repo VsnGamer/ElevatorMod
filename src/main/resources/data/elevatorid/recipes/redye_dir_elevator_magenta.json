@@ -6,7 +6,7 @@
       "tag": "elevatorid:directional_elevators"
     },
     {
-      "item": "minecraft:magenta_dye"
+      "tag": "forge:dyes/magenta"
     }
   ],
   "result": {

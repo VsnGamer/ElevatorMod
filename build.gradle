@@ -13,14 +13,14 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.14.4-1.5.1'
+version = '1.14.4-1.5.2'
 group = 'xyz.vsngamer.elevatorid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'elevatorid'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190821-1.14.3'
+    mappings channel: 'snapshot', version: '20191006-1.14.3'
     runs {
         client {
             workingDirectory project.file('run')
@@ -32,7 +32,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                elevatorid {
                     source sourceSets.main
                 }
             }
@@ -48,7 +48,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                examplemod {
+                elevatorid {
                     source sourceSets.main
                 }
             }
@@ -63,10 +63,10 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'elevatorid', '--all', '--output', file('src/generated/resources/')
 
             mods {
-                examplemod {
+                elevatorid {
                     source sourceSets.main
                 }
             }
@@ -75,7 +75,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.0.55'
+    minecraft 'net.minecraftforge:forge:1.14.4-28.1.39'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

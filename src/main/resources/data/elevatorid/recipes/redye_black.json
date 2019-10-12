@@ -6,7 +6,7 @@
       "tag": "elevatorid:elevators"
     },
     {
-      "item": "minecraft:ink_sac"
+      "tag": "forge:dyes/black"
     }
   ],
   "result": {

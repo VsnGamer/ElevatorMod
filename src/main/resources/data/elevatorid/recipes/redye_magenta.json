@@ -6,7 +6,7 @@
       "tag": "elevatorid:elevators"
     },
     {
-      "item": "minecraft:magenta_dye"
+      "tag": "forge:dyes/magenta"
     }
   ],
   "result": {

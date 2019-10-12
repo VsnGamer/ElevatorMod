@@ -10,7 +10,7 @@ public class ElevatorModTab extends ItemGroup {
     public static ItemGroup TAB = new ElevatorModTab();
 
     private ElevatorModTab() {
-        super("tabElevators");
+        super("elevators_tab");
     }
 
     @Override

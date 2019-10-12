@@ -6,7 +6,7 @@
       "tag": "elevatorid:elevators"
     },
     {
-      "item": "minecraft:pink_dye"
+      "tag": "forge:dyes/pink"
     }
   ],
   "result": {
