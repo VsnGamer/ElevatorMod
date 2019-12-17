@@ -67,7 +67,7 @@ public class Registry {
 
             // SINGLE PLAYER
             if (Minecraft.getMinecraft().isIntegratedServerRunning()) {
-                ModConfig.setClientConfig(ModConfig.serverConfig.sameColor, ModConfig.serverConfig.range);
+                ModConfig.setClientConfig(ModConfig.serverConfig.sameColor, ModConfig.serverConfig.range, ModConfig.serverConfig.skipUnreachable);
             }
         }
     }
@@ -75,6 +75,6 @@ public class Registry {
     @SubscribeEvent
     public static void syncServerConfig(PlayerEvent.PlayerLoggedInEvent e) {
         EntityPlayerMP player = (EntityPlayerMP) e.player;
-        NetworkHandler.networkWrapper.sendTo(new SyncConfig(ModConfig.serverConfig.sameColor, ModConfig.serverConfig.range), player);
+        NetworkHandler.networkWrapper.sendTo(new SyncConfig(ModConfig.serverConfig.sameColor, ModConfig.serverConfig.range, ModConfig.serverConfig.skipUnreachable), player);
     }
 }
