@@ -23,14 +23,18 @@ public class ModConfig {
         @Config.Comment("Maximum elevator range")
         @Config.RangeInt(min = 3)
         public int range = 256;
+        
+        @Config.Comment("Should teleport skip unreachable elevators ?")
+        public boolean skipUnreachable = false;
     }
 
     public static Options getClientConfig() {
         return clientConfig;
     }
 
-    public static void setClientConfig(boolean sameColor, int range){
+    public static void setClientConfig(boolean sameColor, int range, boolean skipUnreachable){
         clientConfig.sameColor = sameColor;
         clientConfig.range = range;
+        clientConfig.skipUnreachable = skipUnreachable;
     }
 }

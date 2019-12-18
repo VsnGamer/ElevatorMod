@@ -7,12 +7,14 @@ public class SyncConfig implements IMessage {
 
     private boolean sameColor;
     private int range;
+    private boolean skipUnreachable;
 
     public SyncConfig() {}
 
-    public SyncConfig(boolean sameColor, int  range){
+    public SyncConfig(boolean sameColor, int  range, boolean skipUnreachable){
         this.sameColor = sameColor;
         this.range = range;
+        this.skipUnreachable = skipUnreachable;
     }
 
     boolean getSameColor() {
@@ -22,6 +24,11 @@ public class SyncConfig implements IMessage {
     int getRange() {
         return range;
     }
+    
+    boolean getSkipUnreachable() {
+        return skipUnreachable;
+    }
+
 
     @Override
     public void fromBytes(ByteBuf buf) {
