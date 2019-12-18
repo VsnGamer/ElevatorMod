@@ -1,6 +1,7 @@
 package xyz.vsngamer.elevatorid.blocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -41,12 +42,10 @@ public class DirectionalElevatorBlock extends AbstractElevator {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.getHeldItem(handIn).isEmpty()) {
+    public void onBlockClicked(BlockState state, World worldIn, BlockPos pos, PlayerEntity player) {
+        if (player.getHeldItem(player.swingingHand).isEmpty()) {
             worldIn.setBlockState(pos, state.with(SHOW_ARROW, !state.get(SHOW_ARROW)));
-            return true;
         }
-        return false;
     }
 
     @Nullable
@@ -66,9 +65,9 @@ public class DirectionalElevatorBlock extends AbstractElevator {
         return state.rotate(mirrorIn.toRotation(state.get(FACING)));
     }
 
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT_MIPPED;
-    }
+//    @Nonnull
+//    @Override
+//    public BlockRenderLayer getRenderLayer() {
+//        return BlockRenderLayer.CUTOUT_MIPPED;
+//    }
 }

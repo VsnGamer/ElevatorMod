@@ -17,32 +17,33 @@ import xyz.vsngamer.elevatorid.init.ModTags;
 import java.util.function.Supplier;
 
 public class TeleportHandler {
-    static void handle(TeleportRequest message, Supplier<NetworkEvent.Context> ctx) {
+    static boolean handle(TeleportRequest message, Supplier<NetworkEvent.Context> ctx) {
         ServerPlayerEntity player = ctx.get().getSender();
-        if (player == null) return;
+        if (player == null) return true;
 
         ServerWorld world = player.getServerWorld();
         BlockPos from = message.getFrom(), to = message.getTo();
 
+        // Integrity checks
+
+        // TODO deprecated, change later
+        if (!world.isAreaLoaded(from, to)) {
+            return true;
+        }
+
         // This ensures the player is still standing on the origin elevator
         final double distanceSq = player.getDistanceSq(new Vec3d(from).add(0, 1, 0));
-        if (distanceSq > 4D) return;
+        if (distanceSq > 4D) return true;
 
-//        // Temporarily checking range on server side
-//        double dist = from.distanceSq(to.getX(), to.getY(), to.getZ(), false);
-//        if (dist > Math.pow(ModConfig.GENERAL.range.get(), 2)) return;
-
-        // this is already validated on the client not sure if it's needed here
-        if (from.getX() != to.getX() || from.getZ() != to.getZ()) return;
+        if (from.getX() != to.getX() || from.getZ() != to.getZ()) return true;
 
         BlockState fromState = world.getBlockState(from);
         BlockState toState = world.getBlockState(to);
         Block toElevator = toState.getBlock();
 
-        // Same
-        if (!isElevator(fromState) || !isElevator(toState)) return;
+        if (!isElevator(fromState) || !isElevator(toState)) return true;
 
-        if (!validateTarget(world, to)) return;
+        if (!validateTarget(world, to)) return true;
 
         // Check yaw and pitch
         final float yaw, pitch;
@@ -55,11 +56,13 @@ public class TeleportHandler {
             if (ModConfig.GENERAL.precisionTarget.get())
                 player.connection.setPlayerLocation(to.getX() + 0.5D, to.getY() + 1D, to.getZ() + 0.5D, yaw, pitch);
             else
-                player.connection.setPlayerLocation(player.posX, to.getY() + 1D, player.posZ, yaw, pitch);
+                player.connection.setPlayerLocation(player.getPosition().getX(), to.getY() + 1D, player.getPosition().getZ(), yaw, pitch);
 
             player.setMotion(player.getMotion().mul(new Vec3d(1, 0, 1)));
             world.playSound(null, to, ModSounds.TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
         });
+
+        return true;
     }
 
     public static boolean validateTarget(IBlockReader world, BlockPos target) {

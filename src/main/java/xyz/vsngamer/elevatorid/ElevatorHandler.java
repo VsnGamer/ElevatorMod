@@ -27,7 +27,7 @@ public class ElevatorHandler {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null || player.isSpectator() || !player.isAlive()) return;
 
-        boolean sneaking = player.isSneaking();
+        boolean sneaking = player.isCrouching();
         if (lastSneaking != sneaking) {
             lastSneaking = sneaking;
             if (sneaking)
@@ -48,7 +48,7 @@ public class ElevatorHandler {
         BlockPos fromPos = getOriginElevator(player);
         if (fromPos == null) return;
 
-        BlockPos.MutableBlockPos toPos = new BlockPos.MutableBlockPos(fromPos);
+        BlockPos.Mutable toPos = new BlockPos.Mutable(fromPos);
         BlockState toState;
 
         AbstractElevator fromElevator, toElevator;
@@ -79,13 +79,13 @@ public class ElevatorHandler {
      */
     private static BlockPos getOriginElevator(ClientPlayerEntity player) {
         World world = player.getEntityWorld();
-        BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
+        BlockPos playerPos = player.getPosition();
 
         // Check the player's feet and the 2 blocks under it
         for (int i = 0; i < 3; i++) {
-            if (TeleportHandler.isElevator(world.getBlockState(pos)) && TeleportHandler.validateTarget(world, pos))
-                return pos;
-            pos = pos.down();
+            if (TeleportHandler.isElevator(world.getBlockState(playerPos)) && TeleportHandler.validateTarget(world, playerPos))
+                return playerPos;
+            playerPos = playerPos.down();
         }
 
         // Elevator doesn't exist or it's invalid
