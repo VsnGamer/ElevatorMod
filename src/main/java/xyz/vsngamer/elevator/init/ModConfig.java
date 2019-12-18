@@ -11,6 +11,7 @@ public class ModConfig {
     private static final Options clientConfig = new Options();
 
     public static class Options {
+        // Maybe add lang keys for comments later
         @Config.Comment("Can mobs spawn in elevators ?")
         public boolean mobSpawn = false;
 
@@ -24,7 +25,7 @@ public class ModConfig {
         @Config.RangeInt(min = 3)
         public int range = 256;
         
-        @Config.Comment("Should teleport if there is an invalid elevator between ?")
+        @Config.Comment("Should it teleport if there is an invalid elevator in between ?")
         public boolean skipUnreachable = true;
     }
 
