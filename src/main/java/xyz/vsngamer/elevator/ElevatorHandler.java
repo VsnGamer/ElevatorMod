@@ -61,16 +61,13 @@ public class ElevatorHandler {
             toState = world.getBlockState(toPos);
 
             if (TeleportHandler.isElevator(toState)) {
-            	if (TeleportHandler.validateTarget(world, toPos)) {
-	                if (!ModConfig.getClientConfig().sameColor || fromState.getBlock() == toState.getBlock()){
-	                    NetworkHandler.networkWrapper.sendToServer(new TeleportRequest(fromPos, toPos));
-	                    break;
-	                }
-            	}
-            	else if (ModConfig.getClientConfig().skipUnreachable)
-            		continue;
-            	else
-            		break;
+                if (TeleportHandler.validateTarget(world, toPos)) {
+                    if (!ModConfig.getClientConfig().sameColor || fromState.getBlock() == toState.getBlock()) {
+                        NetworkHandler.networkWrapper.sendToServer(new TeleportRequest(fromPos, toPos));
+                        break;
+                    }
+                } else if (!ModConfig.getClientConfig().skipUnreachable)
+                    break;
             }
         }
     }

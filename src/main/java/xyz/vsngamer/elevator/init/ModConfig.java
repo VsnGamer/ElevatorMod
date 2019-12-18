@@ -24,8 +24,8 @@ public class ModConfig {
         @Config.RangeInt(min = 3)
         public int range = 256;
         
-        @Config.Comment("Should teleport skip unreachable elevators ?")
-        public boolean skipUnreachable = false;
+        @Config.Comment("Should teleport if there is an invalid elevator between ?")
+        public boolean skipUnreachable = true;
     }
 
     public static Options getClientConfig() {
