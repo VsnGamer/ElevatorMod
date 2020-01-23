@@ -44,7 +44,7 @@ public class ModConfig {
     }
 
     @SubscribeEvent
-    public static void onFileChange(final net.minecraftforge.fml.config.ModConfig.ConfigReloading configEvent) {
+    public static void onFileChange(final net.minecraftforge.fml.config.ModConfig.Reloading configEvent) {
         LogManager.getLogger().debug(FORGEMOD, "Elevator config just got changed on the file system!");
     }
 }

@@ -35,14 +35,14 @@ public class DirectionalElevatorBlock extends ElevatorBlock {
         builder.add(FACING, SHOW_ARROW);
     }
 
-    @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (player.getHeldItem(handIn).isEmpty()) {
-            worldIn.setBlockState(pos, state.with(SHOW_ARROW, !state.get(SHOW_ARROW)));
-            return true;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+//        if (player.getHeldItem(handIn).isEmpty()) {
+//            worldIn.setBlockState(pos, state.with(SHOW_ARROW, !state.get(SHOW_ARROW)));
+//            return true;
+//        }
+//        return false;
+//    }
 
     @Nullable
     @Override
@@ -59,11 +59,5 @@ public class DirectionalElevatorBlock extends ElevatorBlock {
     @Override
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
         return state.rotate(mirrorIn.toRotation(state.get(FACING)));
-    }
-
-    @Nonnull
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT_MIPPED;
     }
 }

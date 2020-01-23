@@ -2,6 +2,8 @@ package xyz.vsngamer.elevatorid;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -32,5 +34,11 @@ public class ElevatorMod {
     public static void clientSetup(FMLClientSetupEvent event) {
         ScreenManager.registerFactory(Registry.ELEVATOR_CONTAINER, ElevatorScreen::new);
         Minecraft.getInstance().getBlockColors().register(new ColorCamoElevator(), Registry.ELEVATOR_BLOCKS_ARRAY);
+
+        // TODO RENDER LAYERS
+        Registry.ELEVATOR_BLOCKS.values().forEach(block -> {
+            RenderTypeLookup.setRenderLayer(block, renderType -> renderType == RenderType.translucent() || renderType == RenderType.cutoutMipped());
+//            RenderTypeLookup.setRenderLayer(block, RenderType.cutoutMipped());
+        });
     }
 }

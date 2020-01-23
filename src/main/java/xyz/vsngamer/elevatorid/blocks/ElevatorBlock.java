@@ -17,7 +17,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.*;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -38,7 +41,6 @@ public class ElevatorBlock extends HorizontalBlock {
 
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
-//    public static final IntegerProperty LIGHT_TEST = IntegerProperty.create("light_test", 0, 15); // Temporary solution
 
     private ElevatorBlockItem item;
     private DyeColor dyeColor;
@@ -48,11 +50,13 @@ public class ElevatorBlock extends HorizontalBlock {
                 .create(Material.WOOL, color)
                 .sound(SoundType.CLOTH)
                 .hardnessAndResistance(0.8F)
-                .variableOpacity());
+                .variableOpacity()
+                .func_226896_b_());
 
         setRegistryName(ElevatorMod.ID, "elevator_" + color.getName());
         dyeColor = color;
     }
+
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
@@ -82,15 +86,15 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (worldIn.isRemote) {
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         ItemStack handStack = player.getHeldItem(handIn);
         ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
         if (tile == null) {
-            return false;
+            return ActionResultType.FAIL;
         }
 
         if (isValidItem(handStack)) {
@@ -101,18 +105,18 @@ public class ElevatorBlock extends HorizontalBlock {
             if (stateToApply != tile.getHeldState()) {
                 setCamoAndUpdate(stateToApply, tile, worldIn);
                 // If we successfully set camo, don't open the menu
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
 
         // Remove camo
-        if (player.isSneaking() && tile.getHeldState() != null) {
+        if (player.isCrouching() && tile.getHeldState() != null) {
             NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(pos));
-            return true;
+            return ActionResultType.SUCCESS;
         }
 
         NetworkHooks.openGui((ServerPlayerEntity) player, tile, pos);
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
@@ -120,15 +124,22 @@ public class ElevatorBlock extends HorizontalBlock {
         return ModConfig.GENERAL.mobSpawn.get() && super.canCreatureSpawn(state, world, pos, type, entityType);
     }
 
-    @Nonnull
     @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.TRANSLUCENT;
+    public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return false;
     }
 
     @Override
-    public boolean canRenderInLayer(BlockState state, BlockRenderLayer layer) {
-        return layer == BlockRenderLayer.TRANSLUCENT || layer == BlockRenderLayer.CUTOUT_MIPPED; // Also render in MIPPED because of the arrow
+    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+        return adjacentBlockState.getBlock() instanceof BreakableBlock || super.isSideInvisible(state, adjacentBlockState, side);
+    }
+
+    @Override
+    public boolean canBeConnectedTo(BlockState state, IBlockReader world, BlockPos pos, Direction facing) {
+        ElevatorTileEntity tile = getElevatorTile(world, pos);
+        if (tile != null && tile.getHeldState() != null)
+            return tile.getHeldState().canBeConnectedTo(world, pos, facing);
+        return super.canBeConnectedTo(state, world, pos, facing);
     }
 
     // Collision
@@ -229,14 +240,28 @@ public class ElevatorBlock extends HorizontalBlock {
         return 0;
     }
 
-    // Not working right now
     @Override
-    public int getLightValue(BlockState state, IEnviromentBlockReader world, BlockPos pos) {
+    public int getLightValue(BlockState state, IBlockReader world, BlockPos pos) {
         ElevatorTileEntity tile = getElevatorTile(world, pos);
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getLightValue(world, pos);
         }
+
         return super.getLightValue(state, world, pos);
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+        return true;
+    }
+
+    @Override
+    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().getAmbientOcclusionLightValue(worldIn, pos);
+        }
+        return super.getAmbientOcclusionLightValue(state, worldIn, pos);
     }
 
     @Override
@@ -247,12 +272,6 @@ public class ElevatorBlock extends HorizontalBlock {
         }
         return worldIn.getMaxLightLevel();
     }
-
-//     Also not working
-//    @Override
-//    public boolean canBeConnectedTo(BlockState state, IBlockReader world, BlockPos pos, Direction facing) {
-//        return true;
-//    }
 
     @Override
     public SoundType getSoundType(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity entity) {

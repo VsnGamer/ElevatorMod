@@ -2,10 +2,10 @@ package xyz.vsngamer.elevatorid.client.render;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.BakedModelWrapper;
@@ -35,8 +35,8 @@ public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
     public List<BakedQuad> getQuads(BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
         List<BakedQuad> list = new ArrayList<>();
 
-        BlockRenderLayer layer = MinecraftForgeClient.getRenderLayer();
-        if (layer == BlockRenderLayer.CUTOUT_MIPPED) {
+        RenderType layer = MinecraftForgeClient.getRenderLayer();
+        if (layer == RenderType.cutoutMipped()) {
             if (state.get(ElevatorBlock.DIRECTIONAL) && state.get(ElevatorBlock.SHOW_ARROW)) {
                 list.addAll(ARROW_VARIANTS.get(state.get(ElevatorBlock.HORIZONTAL_FACING)).getQuads(state, side, rand, extraData));
             }
@@ -50,7 +50,7 @@ public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
             return list;
         }
 
-        // Original model
+        // Fallback / original model
         list.addAll(originalModel.getQuads(state, side, rand, extraData));
         return list;
     }

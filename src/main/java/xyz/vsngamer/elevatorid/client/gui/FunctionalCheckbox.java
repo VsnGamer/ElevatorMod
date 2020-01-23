@@ -15,7 +15,7 @@ class FunctionalCheckbox extends CheckboxButton {
     @Override
     public void onPress() {
         super.onPress();
-        onPress.onPress(func_212942_a());
+        onPress.onPress(isChecked());
     }
 
     @FunctionalInterface

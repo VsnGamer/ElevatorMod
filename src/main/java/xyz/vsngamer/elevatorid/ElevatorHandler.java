@@ -27,7 +27,7 @@ public class ElevatorHandler {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null || player.isSpectator() || !player.isAlive()) return;
 
-        boolean sneaking = player.isSneaking();
+        boolean sneaking = player.isCrouching();
         if (lastSneaking != sneaking) {
             lastSneaking = sneaking;
             if (sneaking)
@@ -48,7 +48,7 @@ public class ElevatorHandler {
         BlockPos fromPos = getOriginElevator(player);
         if (fromPos == null) return;
 
-        BlockPos.MutableBlockPos toPos = new BlockPos.MutableBlockPos(fromPos);
+        BlockPos.Mutable toPos = new BlockPos.Mutable(fromPos);
         BlockState toState;
 
         ElevatorBlock fromElevator, toElevator;
@@ -62,7 +62,7 @@ public class ElevatorHandler {
 
             if (TeleportHandler.isElevator(toState) && TeleportHandler.validateTarget(world, toPos)) {
                 toElevator = (ElevatorBlock) toState.getBlock();
-                if(!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
+                if (!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
                     NetworkHandler.INSTANCE.sendToServer(new TeleportRequest(fromPos, toPos));
                     break;
                 }
@@ -78,7 +78,7 @@ public class ElevatorHandler {
      */
     private static BlockPos getOriginElevator(ClientPlayerEntity player) {
         World world = player.getEntityWorld();
-        BlockPos pos = new BlockPos(player.posX, player.posY, player.posZ);
+        BlockPos pos = new BlockPos(player.getPosX(), player.getPosY(), player.getPosZ());
 
         // Check the player's feet and the 2 blocks under it
         for (int i = 0; i < 3; i++) {

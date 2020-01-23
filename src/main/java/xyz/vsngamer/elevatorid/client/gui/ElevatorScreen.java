@@ -7,7 +7,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
+import net.minecraftforge.fml.client.gui.widget.ExtendedButton;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
@@ -28,7 +28,7 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
 
     private FunctionalCheckbox dirButton;
     private FunctionalCheckbox hideArrowButton;
-    private GuiButtonExt resetCamoButton;
+    private ExtendedButton resetCamoButton;
     private FacingControllerWrapper facingController;
 
     public ElevatorScreen(ElevatorContainer container, PlayerInventory inv, ITextComponent titleIn) {
@@ -59,7 +59,7 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
 
         // Reset camouflage button
         String resetCamoLang = new TranslationTextComponent("screen.elevatorid.elevator.reset_camo").getFormattedText();
-        resetCamoButton = new GuiButtonExt(guiLeft + 8, guiTop + 75, 110, 20, resetCamoLang, p_onPress_1_ ->
+        resetCamoButton = new ExtendedButton(guiLeft + 8, guiTop + 75, 110, 20, resetCamoLang, p_onPress_1_ ->
                 NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getPos())));
         addButton(resetCamoButton);
 
@@ -67,14 +67,14 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
         facingController = new FacingControllerWrapper(guiLeft + 120, guiTop + 20, tile.getPos(), playerFacing);
         facingController.getButtons().forEach(this::addButton);
         facingController.getButtons().forEach(button -> button.visible = false);
+
+        resetCamoButton.active = tile.getHeldState() != null;
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks) {
         renderBackground();
         super.render(mouseX, mouseY, partialTicks);
-
-
     }
 
     @Override
@@ -82,11 +82,11 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
         super.tick();
 
         facingController.getButtons().forEach(button -> {
-            button.visible = dirButton.func_212942_a();
+            button.visible = dirButton.isChecked();
             button.active = tile.getBlockState().get(ElevatorBlock.HORIZONTAL_FACING) != button.direction;
         });
 
-        hideArrowButton.visible = dirButton.func_212942_a();
+        hideArrowButton.visible = dirButton.isChecked();
         resetCamoButton.active = tile.getHeldState() != null;
     }
 

@@ -2,6 +2,7 @@ package xyz.vsngamer.elevatorid.init;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
@@ -73,7 +74,7 @@ public class Registry {
 
             // SUPER HACKY
             e.getModelRegistry().keySet().forEach(key -> {
-                if (key.toString().contains(regName.toString())) {
+                if (key.getPath().equals(regName.getPath())) {
                     IBakedModel originalModel = e.getModelRegistry().get(key);
                     e.getModelRegistry().put(key, new ElevatorBakedModel(originalModel));
                 }

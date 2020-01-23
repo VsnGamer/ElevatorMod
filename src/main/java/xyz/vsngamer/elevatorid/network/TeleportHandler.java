@@ -56,8 +56,8 @@ public class TeleportHandler {
             toX = to.getX() + .5D;
             toZ = to.getZ() + .5D;
         } else {
-            toX = player.posX;
-            toZ = player.posZ;
+            toX = player.getPosX();
+            toZ = player.getPosZ();
         }
 
         // Passed all tests, begin teleport
