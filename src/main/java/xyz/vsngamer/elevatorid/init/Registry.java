@@ -1,17 +1,14 @@
 package xyz.vsngamer.elevatorid.init;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ConfigFileTypeHandler;
-import net.minecraftforge.fml.config.ConfigTracker;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.AbstractElevator;
 import xyz.vsngamer.elevatorid.blocks.BlockElevator;
@@ -24,7 +21,6 @@ public class Registry {
 
     public static final EnumMap<DyeColor, AbstractElevator> ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
     private static final EnumMap<DyeColor, AbstractElevator> DIRECTIONAL_ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
-
 
 
     static {
@@ -44,6 +40,11 @@ public class Registry {
     public static void registerItems(RegistryEvent.Register<Item> e) {
         ELEVATOR_BLOCKS.values().forEach(block -> e.getRegistry().register(block.asItem()));
         DIRECTIONAL_ELEVATOR_BLOCKS.values().forEach(block -> e.getRegistry().register(block.asItem()));
+    }
+
+    @SubscribeEvent
+    public static void clientSetup(FMLClientSetupEvent e) {
+        DIRECTIONAL_ELEVATOR_BLOCKS.values().forEach(block -> RenderTypeLookup.setRenderLayer(block, RenderType.cutout()));
     }
 
     // TODO: Config GUI

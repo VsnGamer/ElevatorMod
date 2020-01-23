@@ -1,5 +1,5 @@
 modLoader="javafml" 
-loaderVersion="[30,)"
+loaderVersion="[31,)"
 issueTrackerURL="https://github.com/VsnGamer/ElevatorMod/issues/"
 logoFile="logo.png"
 [[mods]]
@@ -16,12 +16,12 @@ Simple port of the elevator from OpenBlocks to 1.8+
 [[dependencies.elevatorid]]
     modId="forge"
     mandatory=true
-    versionRange="[30,)"
+    versionRange="[31,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.elevatorid]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.1]"
+    versionRange="[1.15.2]"
     ordering="NONE"
     side="BOTH"
