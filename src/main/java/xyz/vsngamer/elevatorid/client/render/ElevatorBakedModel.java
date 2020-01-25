@@ -3,6 +3,7 @@ package xyz.vsngamer.elevatorid.client.render;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -34,24 +35,28 @@ public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
     @Override
     public List<BakedQuad> getQuads(BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
         List<BakedQuad> list = new ArrayList<>();
-
         RenderType layer = MinecraftForgeClient.getRenderLayer();
+
         if (layer == RenderType.cutoutMipped()) {
             if (state.get(ElevatorBlock.DIRECTIONAL) && state.get(ElevatorBlock.SHOW_ARROW)) {
                 list.addAll(ARROW_VARIANTS.get(state.get(ElevatorBlock.HORIZONTAL_FACING)).getQuads(state, side, rand, extraData));
             }
-            return list;
         }
 
         BlockState heldState = extraData.getData(HELD_STATE);
         if (heldState != null) {
-            IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(heldState);
-            list.addAll(model.getQuads(heldState, side, rand, extraData));
+            // Render camouflage in the correct layer
+            if (RenderTypeLookup.canRenderInLayer(heldState, layer)) {
+                IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(heldState);
+                list.addAll(model.getQuads(heldState, side, rand, extraData));
+            }
             return list;
         }
 
-        // Fallback / original model
-        list.addAll(originalModel.getQuads(state, side, rand, extraData));
+        // Fallback / original model (renders on solid)
+        if (layer == RenderType.solid())
+            list.addAll(originalModel.getQuads(state, side, rand, extraData));
+
         return list;
     }
 

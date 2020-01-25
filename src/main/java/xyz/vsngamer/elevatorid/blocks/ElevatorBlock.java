@@ -85,6 +85,7 @@ public class ElevatorBlock extends HorizontalBlock {
         return false;
     }
 
+    @Nonnull
     @Override
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         if (worldIn.isRemote) {
@@ -125,7 +126,7 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public boolean isNormalCube(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
         return false;
     }
 
@@ -177,10 +178,17 @@ public class ElevatorBlock extends HorizontalBlock {
             try {
                 tile.getHeldState().getBlock().onEntityCollision(state, worldIn, pos, entityIn);
                 return;
-            } catch (IllegalArgumentException ignored) {
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
             }
         }
         super.onEntityCollision(state, worldIn, pos, entityIn);
+    }
+
+    // TODO soulsand and honey use this
+    @Override
+    public float func_226891_m_() {
+        return super.func_226891_m_();
     }
 
     @Nonnull
@@ -279,7 +287,7 @@ public class ElevatorBlock extends HorizontalBlock {
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getSoundType(world, pos, entity);
         }
-        return SoundType.CLOTH;
+        return super.getSoundType(state, world, pos, entity);
     }
 
     public DyeColor getColor() {
@@ -316,13 +324,13 @@ public class ElevatorBlock extends HorizontalBlock {
     private ElevatorTileEntity getElevatorTile(IBlockReader world, BlockPos pos) {
         TileEntity tile;
 
-        if (world instanceof ServerWorld) {
-            tile = ((ServerWorld) world).getChunkAt(pos).getTileEntity(pos);
-        } else if (world instanceof ChunkRenderCache) {
-            tile = ((ChunkRenderCache) world).getTileEntity(pos, Chunk.CreateEntityType.CHECK);
-        } else {
+//        if (world instanceof ServerWorld) {
+//            tile = ((ServerWorld) world).getChunkAt(pos).getTileEntity(pos);
+//        } else if (world instanceof ChunkRenderCache) {
+//            tile = ((ChunkRenderCache) world).getTileEntity(pos, Chunk.CreateEntityType.CHECK);
+//        } else {
             tile = world.getTileEntity(pos);
-        }
+//        }
 
         // Check if it exists and is valid
         if (tile instanceof ElevatorTileEntity && tile.getType().isValidBlock(world.getBlockState(pos).getBlock())) {

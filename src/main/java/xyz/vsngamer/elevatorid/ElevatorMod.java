@@ -35,10 +35,7 @@ public class ElevatorMod {
         ScreenManager.registerFactory(Registry.ELEVATOR_CONTAINER, ElevatorScreen::new);
         Minecraft.getInstance().getBlockColors().register(new ColorCamoElevator(), Registry.ELEVATOR_BLOCKS_ARRAY);
 
-        // TODO RENDER LAYERS
-        Registry.ELEVATOR_BLOCKS.values().forEach(block -> {
-            RenderTypeLookup.setRenderLayer(block, renderType -> renderType == RenderType.translucent() || renderType == RenderType.cutoutMipped());
-//            RenderTypeLookup.setRenderLayer(block, RenderType.cutoutMipped());
-        });
+        Registry.ELEVATOR_BLOCKS.values().forEach(block ->
+                RenderTypeLookup.setRenderLayer(block, renderType -> true));
     }
 }
