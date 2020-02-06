@@ -22,7 +22,6 @@ public class Registry {
     public static final EnumMap<DyeColor, AbstractElevator> ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
     private static final EnumMap<DyeColor, AbstractElevator> DIRECTIONAL_ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
 
-
     static {
         for (DyeColor color : DyeColor.values()) {
             ELEVATOR_BLOCKS.put(color, new BlockElevator(color));
@@ -44,7 +43,7 @@ public class Registry {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent e) {
-        DIRECTIONAL_ELEVATOR_BLOCKS.values().forEach(block -> RenderTypeLookup.setRenderLayer(block, RenderType.cutout()));
+        DIRECTIONAL_ELEVATOR_BLOCKS.values().forEach(block -> RenderTypeLookup.setRenderLayer(block, RenderType.cutoutMipped()));
     }
 
     // TODO: Config GUI
