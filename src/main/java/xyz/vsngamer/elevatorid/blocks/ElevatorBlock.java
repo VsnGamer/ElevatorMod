@@ -2,7 +2,6 @@ package xyz.vsngamer.elevatorid.blocks;
 
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.chunk.ChunkRenderCache;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EntityType;
@@ -21,8 +20,6 @@ import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.NetworkHooks;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.ElevatorModTab;
@@ -51,12 +48,11 @@ public class ElevatorBlock extends HorizontalBlock {
                 .sound(SoundType.CLOTH)
                 .hardnessAndResistance(0.8F)
                 .variableOpacity()
-                .func_226896_b_());
+                .notSolid());
 
         setRegistryName(ElevatorMod.ID, "elevator_" + color.getName());
         dyeColor = color;
     }
-
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
@@ -187,8 +183,14 @@ public class ElevatorBlock extends HorizontalBlock {
 
     // TODO soulsand and honey use this
     @Override
-    public float func_226891_m_() {
-        return super.func_226891_m_();
+    public float getSpeedFactor() {
+        return super.getSpeedFactor();
+    }
+
+    // TODO honey uses this
+    @Override
+    public float getJumpFactor() {
+        return super.getJumpFactor();
     }
 
     @Nonnull
@@ -259,12 +261,12 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
         return true;
     }
 
     @Override
-    public float getAmbientOcclusionLightValue(BlockState state, IBlockReader worldIn, BlockPos pos) {
+    public float getAmbientOcclusionLightValue(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
         ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getAmbientOcclusionLightValue(worldIn, pos);
@@ -329,7 +331,7 @@ public class ElevatorBlock extends HorizontalBlock {
 //        } else if (world instanceof ChunkRenderCache) {
 //            tile = ((ChunkRenderCache) world).getTileEntity(pos, Chunk.CreateEntityType.CHECK);
 //        } else {
-            tile = world.getTileEntity(pos);
+        tile = world.getTileEntity(pos);
 //        }
 
         // Check if it exists and is valid

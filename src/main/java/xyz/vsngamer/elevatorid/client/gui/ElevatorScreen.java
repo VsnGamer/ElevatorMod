@@ -92,7 +92,7 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+//        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         if (minecraft != null) {
             minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
         }
