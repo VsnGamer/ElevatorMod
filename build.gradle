@@ -76,7 +76,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.0'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.1.1'
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..
