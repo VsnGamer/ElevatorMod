@@ -15,31 +15,31 @@ import xyz.vsngamer.elevatorid.init.ModSounds;
 import java.util.function.Supplier;
 
 public class TeleportHandler {
-    static void handle(TeleportRequest message, Supplier<NetworkEvent.Context> ctx) {
+    static boolean handle(TeleportRequest message, Supplier<NetworkEvent.Context> ctx) {
         ServerPlayerEntity player = ctx.get().getSender();
-        if (player == null) return;
+        if (player == null) return true;
 
         ServerWorld world = player.getServerWorld();
         BlockPos from = message.getFrom(), to = message.getTo();
 
         // This ensures the player is still standing on the origin elevator
         final double distanceSq = player.getDistanceSq(new Vec3d(from).add(0, 1, 0));
-        if (distanceSq > 4D) return;
+        if (distanceSq > 4D) return true;
 
 //        // Temporarily checking range on server side
 //        double dist = from.distanceSq(to.getX(), to.getY(), to.getZ(), false);
 //        if (dist > Math.pow(ModConfig.GENERAL.range.get(), 2)) return;
 
         // this is already validated on the client not sure if it's needed here
-        if (from.getX() != to.getX() || from.getZ() != to.getZ()) return;
+        if (from.getX() != to.getX() || from.getZ() != to.getZ()) return true;
 
         BlockState fromState = world.getBlockState(from);
         BlockState toState = world.getBlockState(to);
 
         // Same
-        if (!isElevator(fromState) || !isElevator(toState)) return;
+        if (!isElevator(fromState) || !isElevator(toState)) return true;
 
-        if (!validateTarget(world, to)) return;
+        if (!validateTarget(world, to)) return true;
 
         // Check yaw and pitch
         final float yaw, pitch;
@@ -67,7 +67,7 @@ public class TeleportHandler {
             world.playSound(null, to, ModSounds.TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
         });
 
-        ctx.get().setPacketHandled(true);
+        return true;
     }
 
     public static boolean validateTarget(IBlockReader world, BlockPos target) {
