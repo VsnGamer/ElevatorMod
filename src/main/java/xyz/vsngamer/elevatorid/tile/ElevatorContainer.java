@@ -59,7 +59,7 @@ public class ElevatorContainer extends Container {
 
     public static ContainerType<ElevatorContainer> buildContainerType() {
         ContainerType<ElevatorContainer> type = IForgeContainerType.create((windowId, inv, data) ->
-                new ElevatorContainer(windowId, data.readBlockPos(), Minecraft.getInstance().player));
+                new ElevatorContainer(windowId, data.readBlockPos(), inv.player));
         type.setRegistryName("elevator_container");
         return type;
     }

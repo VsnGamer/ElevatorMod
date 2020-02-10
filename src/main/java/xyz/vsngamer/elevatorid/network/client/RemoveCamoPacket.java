@@ -28,10 +28,10 @@ public class RemoveCamoPacket {
         return new RemoveCamoPacket(buf.readBlockPos());
     }
 
-    public static void handle(RemoveCamoPacket msg, Supplier<NetworkEvent.Context> ctx) {
+    public static boolean handle(RemoveCamoPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ServerPlayerEntity player = ctx.get().getSender();
         if (player == null)
-            return;
+            return true;
 
         ServerWorld world = player.getServerWorld();
         TileEntity tile = world.getTileEntity(msg.pos);
@@ -40,7 +40,8 @@ public class RemoveCamoPacket {
                 ((ElevatorTileEntity) tile).setHeldState(null);
                 world.playSound(null, msg.pos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
             });
-            ctx.get().setPacketHandled(true);
         }
+
+        return true;
     }
 }

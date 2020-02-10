@@ -23,7 +23,7 @@ class FacingButton extends Button {
     }
 
     @Override
-    public void renderButton(int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
+    public void renderButton(int mouseX, int mouseY, float partial) {
         this.drawCenteredString(Minecraft.getInstance().fontRenderer,
                 this.getMessage(),
                 this.x + this.width / 2,

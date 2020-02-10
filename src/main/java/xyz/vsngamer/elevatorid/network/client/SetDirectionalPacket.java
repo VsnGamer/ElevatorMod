@@ -29,10 +29,10 @@ public class SetDirectionalPacket {
         return new SetDirectionalPacket(buf.readBoolean(), buf.readBlockPos());
     }
 
-    public static void handle(SetDirectionalPacket msg, Supplier<NetworkEvent.Context> ctx) {
+    public static boolean handle(SetDirectionalPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ServerPlayerEntity player = ctx.get().getSender();
         if (player == null)
-            return;
+            return true;
 
         ServerWorld world = player.getServerWorld();
         BlockPos pos = msg.pos;
@@ -41,7 +41,8 @@ public class SetDirectionalPacket {
         if (currState.getBlock() instanceof ElevatorBlock) {
             ctx.get().enqueueWork(() ->
                     world.setBlockState(pos, currState.with(ElevatorBlock.DIRECTIONAL, msg.value)));
-            ctx.get().setPacketHandled(true);
         }
+
+        return true;
     }
 }

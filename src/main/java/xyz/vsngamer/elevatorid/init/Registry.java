@@ -1,29 +1,19 @@
 package xyz.vsngamer.elevatorid.init;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.logging.log4j.LogManager;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
-import xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel;
 import xyz.vsngamer.elevatorid.tile.ElevatorContainer;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 
 import java.util.EnumMap;
-
-import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
 
 @Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registry {
@@ -62,44 +52,6 @@ public class Registry {
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<ContainerType<?>> e) {
         e.getRegistry().register(ELEVATOR_CONTAINER);
-    }
-
-    @SubscribeEvent
-    public static void onModelBake(ModelBakeEvent e) {
-        Direction.Plane.HORIZONTAL.forEach(direction ->
-                ElevatorBakedModel.ARROW_VARIANTS.put(direction, e.getModelRegistry().get(new ResourceLocation("elevatorid:arrow/arrow_" + direction.toString())))
-        );
-
-//        ELEVATOR_BLOCKS.values().forEach(elevatorBlock -> LogManager.getLogger().debug(elevatorBlock.getRegistryName()));
-
-        // This is a little bit faster
-        e.getModelRegistry().keySet().forEach(key -> {
-            LogManager.getLogger().debug(key.getPath());
-            if ("elevatorid".equals(key.getNamespace()) && key.getPath().contains("elevator_")) {
-                IBakedModel originalModel = e.getModelRegistry().get(key);
-                e.getModelRegistry().put(key, new ElevatorBakedModel(originalModel));
-            }
-        });
-
-//        ELEVATOR_BLOCKS.values().forEach(block -> {
-//            ResourceLocation regName = block.getRegistryName();
-//            if (regName == null) return;
-//
-//            // SUPER HACKY
-//            e.getModelRegistry().keySet().forEach(key -> {
-//                if (key.getPath().equals(regName.getPath())) {
-//                    IBakedModel originalModel = e.getModelRegistry().get(key);
-//                    e.getModelRegistry().put(key, new ElevatorBakedModel(originalModel));
-//                }
-//            });
-//        });
-    }
-
-    @SubscribeEvent
-    public static void onModelRegistry(ModelRegistryEvent e) {
-        Direction.Plane.HORIZONTAL.forEach(direction ->
-                ModelLoader.addSpecialModel(new ResourceLocation("elevatorid:arrow/arrow_" + direction.toString()))
-        );
     }
 
     // TODO: Config GUI

@@ -4,9 +4,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.server.TicketType;
 import net.minecraftforge.fml.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
@@ -15,6 +17,7 @@ import xyz.vsngamer.elevatorid.init.ModSounds;
 import java.util.function.Supplier;
 
 public class TeleportHandler {
+
     static boolean handle(TeleportRequest message, Supplier<NetworkEvent.Context> ctx) {
         ServerPlayerEntity player = ctx.get().getSender();
         if (player == null) return true;
@@ -26,17 +29,14 @@ public class TeleportHandler {
         final double distanceSq = player.getDistanceSq(new Vec3d(from).add(0, 1, 0));
         if (distanceSq > 4D) return true;
 
-//        // Temporarily checking range on server side
 //        double dist = from.distanceSq(to.getX(), to.getY(), to.getZ(), false);
 //        if (dist > Math.pow(ModConfig.GENERAL.range.get(), 2)) return;
 
-        // this is already validated on the client not sure if it's needed here
         if (from.getX() != to.getX() || from.getZ() != to.getZ()) return true;
 
         BlockState fromState = world.getBlockState(from);
         BlockState toState = world.getBlockState(to);
 
-        // Same
         if (!isElevator(fromState) || !isElevator(toState)) return true;
 
         if (!validateTarget(world, to)) return true;
@@ -63,7 +63,9 @@ public class TeleportHandler {
         // Passed all tests, begin teleport
         ctx.get().enqueueWork(() -> {
             player.connection.setPlayerLocation(toX, to.getY() + 1D, toZ, yaw, pitch);
-            player.setMotion(player.getMotion().mul(new Vec3d(1, 0, 1)));
+            player.onGround = true;
+            player.setMotion(player.getMotion().mul(new Vec3d(1D, 0D, 1D)));
+
             world.playSound(null, to, ModSounds.TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
         });
 

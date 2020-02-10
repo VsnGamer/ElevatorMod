@@ -30,17 +30,18 @@ public class SetFacingPacket {
         return new SetFacingPacket(buf.readEnumValue(Direction.class), buf.readBlockPos());
     }
 
-    public static void handle(SetFacingPacket msg, Supplier<NetworkEvent.Context> ctx) {
+    public static boolean handle(SetFacingPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ServerPlayerEntity player = ctx.get().getSender();
         if (player == null)
-            return;
+            return true;
 
         ServerWorld world = player.getServerWorld();
         BlockState state = world.getBlockState(msg.pos);
         if (state.getBlock() instanceof ElevatorBlock) {
             ctx.get().enqueueWork(() ->
                     world.setBlockState(msg.pos, state.with(ElevatorBlock.HORIZONTAL_FACING, msg.direction)));
-            ctx.get().setPacketHandled(true);
         }
+
+        return true;
     }
 }

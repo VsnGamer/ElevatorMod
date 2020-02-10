@@ -324,14 +324,13 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     private ElevatorTileEntity getElevatorTile(IBlockReader world, BlockPos pos) {
-        TileEntity tile;
+        TileEntity tile = world.getTileEntity(pos);
 
 //        if (world instanceof ServerWorld) {
 //            tile = ((ServerWorld) world).getChunkAt(pos).getTileEntity(pos);
 //        } else if (world instanceof ChunkRenderCache) {
 //            tile = ((ChunkRenderCache) world).getTileEntity(pos, Chunk.CreateEntityType.CHECK);
 //        } else {
-        tile = world.getTileEntity(pos);
 //        }
 
         // Check if it exists and is valid
