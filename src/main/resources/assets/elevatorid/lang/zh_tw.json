@@ -16,24 +16,12 @@
   "block.elevatorid.elevator_light_gray": "淺灰色電梯",
   "block.elevatorid.elevator_yellow": "黃色電梯",
 
-  "block.elevatorid.dir_elevator_white": "定向的白色電梯",
-  "block.elevatorid.dir_elevator_black": "定向的黑色電梯",
-  "block.elevatorid.dir_elevator_blue": "定向的藍色電梯",
-  "block.elevatorid.dir_elevator_brown": "定向的棕色電梯",
-  "block.elevatorid.dir_elevator_cyan": "定向的青色電梯",
-  "block.elevatorid.dir_elevator_gray": "定向的灰色電梯",
-  "block.elevatorid.dir_elevator_green": "定向的綠色電梯",
-  "block.elevatorid.dir_elevator_light_blue": "定向的淺藍色電梯",
-  "block.elevatorid.dir_elevator_lime": "定向的淺綠色電梯",
-  "block.elevatorid.dir_elevator_magenta": "定向的洋紅色電梯",
-  "block.elevatorid.dir_elevator_orange": "定向的橘色電梯",
-  "block.elevatorid.dir_elevator_pink": "定向的粉色電梯",
-  "block.elevatorid.dir_elevator_purple": "定向的紫色電梯",
-  "block.elevatorid.dir_elevator_red": "定向的紅色電梯",
-  "block.elevatorid.dir_elevator_light_gray": "定向的淺灰色電梯",
-  "block.elevatorid.dir_elevator_yellow": "定向的黃色電梯",
-
   "elevatorid.subtitle.teleport": "使用電梯",
+  
+  "screen.elevatorid.elevator": "電梯設定",
+  "screen.elevatorid.elevator.directional": "定向",
+  "screen.elevatorid.elevator.hide_arrow": "隱藏箭頭",
+  "screen.elevatorid.elevator.reset_camo": "移除偽裝",
 
   "itemGroup.elevators_tab": "Elevators"
 }
