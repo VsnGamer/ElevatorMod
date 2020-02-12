@@ -31,16 +31,17 @@ public class SetFacingPacket {
     }
 
     public static boolean handle(SetFacingPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ServerPlayerEntity player = ctx.get().getSender();
-        if (player == null)
-            return true;
+        ctx.get().enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.get().getSender();
+            if (player == null)
+                return;
 
-        ServerWorld world = player.getServerWorld();
-        BlockState state = world.getBlockState(msg.pos);
-        if (state.getBlock() instanceof ElevatorBlock) {
-            ctx.get().enqueueWork(() ->
-                    world.setBlockState(msg.pos, state.with(ElevatorBlock.HORIZONTAL_FACING, msg.direction)));
-        }
+            ServerWorld world = player.getServerWorld();
+            BlockState state = world.getBlockState(msg.pos);
+            if (state.getBlock() instanceof ElevatorBlock) {
+                world.setBlockState(msg.pos, state.with(ElevatorBlock.HORIZONTAL_FACING, msg.direction));
+            }
+        });
 
         return true;
     }

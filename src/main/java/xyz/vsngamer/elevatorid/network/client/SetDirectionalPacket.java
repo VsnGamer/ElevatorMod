@@ -30,18 +30,19 @@ public class SetDirectionalPacket {
     }
 
     public static boolean handle(SetDirectionalPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ServerPlayerEntity player = ctx.get().getSender();
-        if (player == null)
-            return true;
+        ctx.get().enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.get().getSender();
+            if (player == null)
+                return;
 
-        ServerWorld world = player.getServerWorld();
-        BlockPos pos = msg.pos;
-        BlockState currState = world.getBlockState(pos);
+            ServerWorld world = player.getServerWorld();
+            BlockPos pos = msg.pos;
+            BlockState currState = world.getBlockState(pos);
 
-        if (currState.getBlock() instanceof ElevatorBlock) {
-            ctx.get().enqueueWork(() ->
-                    world.setBlockState(pos, currState.with(ElevatorBlock.DIRECTIONAL, msg.value)));
-        }
+            if (currState.getBlock() instanceof ElevatorBlock) {
+                world.setBlockState(pos, currState.with(ElevatorBlock.DIRECTIONAL, msg.value));
+            }
+        });
 
         return true;
     }

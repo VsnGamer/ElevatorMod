@@ -31,16 +31,17 @@ public class SetArrowPacket {
     }
 
     public static boolean handle(SetArrowPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ServerPlayerEntity player = ctx.get().getSender();
-        if (player == null)
-            return true;
+        ctx.get().enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.get().getSender();
+            if (player == null)
+                return;
 
-        ServerWorld world = player.getServerWorld();
-        BlockState curState = world.getBlockState(msg.pos);
-        if (curState.getBlock() instanceof ElevatorBlock) {
-            ctx.get().enqueueWork(() ->
-                    world.setBlockState(msg.pos, curState.with(ElevatorBlock.SHOW_ARROW, msg.value)));
-        }
+            ServerWorld world = player.getServerWorld();
+            BlockState curState = world.getBlockState(msg.pos);
+            if (curState.getBlock() instanceof ElevatorBlock) {
+                world.setBlockState(msg.pos, curState.with(ElevatorBlock.SHOW_ARROW, msg.value));
+            }
+        });
 
         return true;
     }

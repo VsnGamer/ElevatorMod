@@ -21,6 +21,8 @@ public class ModConfig {
         public final ForgeConfigSpec.BooleanValue resetPitchNormal;
         public final ForgeConfigSpec.BooleanValue resetPitchDirectional;
         public final ForgeConfigSpec.IntValue range;
+        public final ForgeConfigSpec.BooleanValue useXP;
+        public final ForgeConfigSpec.IntValue XPPointsAmount;
 
         CommonGeneral(ForgeConfigSpec.Builder builder) {
             builder.push("General");
@@ -31,6 +33,8 @@ public class ModConfig {
             mobSpawn = builder.comment("Can mobs spawn on elevators ?").define("mobSpawn", false);
             resetPitchNormal = builder.comment("Reset pitch to 0 when teleporting to normal elevators ?").define("resetPitchNormal", false);
             resetPitchDirectional = builder.comment("Reset pitch to 0 when teleporting to directional elevators ?").define("resetPitchDirectional", true);
+            useXP = builder.comment("Should teleporting require XP ?").define("useXP", false);
+            XPPointsAmount = builder.comment("Amount of XP points to use when useXP is enabled", "Note this is NOT experience levels").defineInRange("XPPointsAmount", 1, 1, Integer.MAX_VALUE);
 
             builder.pop();
         }

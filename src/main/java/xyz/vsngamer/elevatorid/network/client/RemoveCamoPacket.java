@@ -29,18 +29,18 @@ public class RemoveCamoPacket {
     }
 
     public static boolean handle(RemoveCamoPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ServerPlayerEntity player = ctx.get().getSender();
-        if (player == null)
-            return true;
+        ctx.get().enqueueWork(() -> {
+            ServerPlayerEntity player = ctx.get().getSender();
+            if (player == null)
+                return;
 
-        ServerWorld world = player.getServerWorld();
-        TileEntity tile = world.getTileEntity(msg.pos);
-        if (tile instanceof ElevatorTileEntity) {
-            ctx.get().enqueueWork(() -> {
+            ServerWorld world = player.getServerWorld();
+            TileEntity tile = world.getTileEntity(msg.pos);
+            if (tile instanceof ElevatorTileEntity) {
                 ((ElevatorTileEntity) tile).setHeldState(null);
                 world.playSound(null, msg.pos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
-            });
-        }
+            }
+        });
 
         return true;
     }

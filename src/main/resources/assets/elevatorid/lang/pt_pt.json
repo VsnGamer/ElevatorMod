@@ -18,5 +18,12 @@
 
   "elevatorid.subtitle.teleport": "Elevador usado",
 
+  "screen.elevatorid.elevator": "Opções do Elevator",
+  "screen.elevatorid.elevator.directional": "Direcional",
+  "screen.elevatorid.elevator.hide_arrow": "Esconder seta",
+  "screen.elevatorid.elevator.reset_camo": "Remover camuflagem",
+
+  "elevatorid.message.missing_xp": "Não tens experiêcia suficiente para teleportar",
+
   "itemGroup.elevators_tab": "Elevadores"
 }

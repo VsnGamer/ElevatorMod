@@ -16,23 +16,6 @@
   "block.elevatorid.elevator_light_gray": "Jasnoszara winda",
   "block.elevatorid.elevator_yellow": "Żółta winda",
 
-  "block.elevatorid.dir_elevator_white": "Kierunkowa biała winda",
-  "block.elevatorid.dir_elevator_black": "Kierunkowa czarna winda",
-  "block.elevatorid.dir_elevator_blue": "Kierunkowa niebieska winda",
-  "block.elevatorid.dir_elevator_brown": "Kierunkowa brązowa winda",
-  "block.elevatorid.dir_elevator_cyan": "Kierunkowa błękitna winda",
-  "block.elevatorid.dir_elevator_gray": "Kierunkowa szara winda",
-  "block.elevatorid.dir_elevator_green": "Kierunkowa zielona winda",
-  "block.elevatorid.dir_elevator_light_blue": "Kierunkowa jasnoniebieska winda",
-  "block.elevatorid.dir_elevator_lime": "Kierunkowa jasnozielona winda",
-  "block.elevatorid.dir_elevator_magenta": "Kierunkowa karmazynowa winda",
-  "block.elevatorid.dir_elevator_orange": "Kierunkowa pomarańczowa winda",
-  "block.elevatorid.dir_elevator_pink": "Kierunkowa różowa winda",
-  "block.elevatorid.dir_elevator_purple": "Kierunkowa fioletowa winda",
-  "block.elevatorid.dir_elevator_red": "Kierunkowa czerwona winda",
-  "block.elevatorid.dir_elevator_light_gray": "Kierunkowa jasnoszara winda",
-  "block.elevatorid.dir_elevator_yellow": "Kierunkowa żółta winda",
-
   "elevatorid.subtitle.teleport": "Używana winda",
 
   "itemGroup.tabElevators": "Elevators"
