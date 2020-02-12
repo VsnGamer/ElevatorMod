@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import xyz.vsngamer.elevatorid.blocks.AbstractElevator;
+import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.network.TeleportHandler;
@@ -51,8 +51,8 @@ public class ElevatorHandler {
         BlockPos.Mutable toPos = new BlockPos.Mutable(fromPos);
         BlockState toState;
 
-        AbstractElevator fromElevator, toElevator;
-        fromElevator = (AbstractElevator) world.getBlockState(fromPos).getBlock();
+        ElevatorBlock fromElevator, toElevator;
+        fromElevator = (ElevatorBlock) world.getBlockState(fromPos).getBlock();
 
         while (true) {
             toPos.setY(toPos.getY() + facing.getYOffset());
@@ -60,11 +60,10 @@ public class ElevatorHandler {
                 break;
             toState = world.getBlockState(toPos);
 
-            // Sends all elevators to the server (related: sameColor config)
             if (TeleportHandler.isElevator(toState) && TeleportHandler.validateTarget(world, toPos)) {
-                toElevator = (AbstractElevator) toState.getBlock();
-                if(!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
-                    NetworkHandler.networkHandler.sendToServer(new TeleportRequest(fromPos, toPos));
+                toElevator = (ElevatorBlock) toState.getBlock();
+                if (!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
+                    NetworkHandler.INSTANCE.sendToServer(new TeleportRequest(fromPos, toPos));
                     break;
                 }
             }
@@ -79,13 +78,13 @@ public class ElevatorHandler {
      */
     private static BlockPos getOriginElevator(ClientPlayerEntity player) {
         World world = player.getEntityWorld();
-        BlockPos playerPos = player.getPosition();
+        BlockPos pos = new BlockPos(player.getPosX(), player.getPosY(), player.getPosZ());
 
         // Check the player's feet and the 2 blocks under it
         for (int i = 0; i < 3; i++) {
-            if (TeleportHandler.isElevator(world.getBlockState(playerPos)) && TeleportHandler.validateTarget(world, playerPos))
-                return playerPos;
-            playerPos = playerPos.down();
+            if (TeleportHandler.isElevator(world.getBlockState(pos)) && TeleportHandler.validateTarget(world, pos))
+                return pos;
+            pos = pos.down();
         }
 
         // Elevator doesn't exist or it's invalid

@@ -20,5 +20,4 @@ public class ElevatorModTab extends ItemGroup {
     public ItemStack createIcon() {
         return new ItemStack(Registry.ELEVATOR_BLOCKS.get(DyeColor.WHITE));
     }
-
 }

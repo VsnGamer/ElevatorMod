@@ -16,24 +16,12 @@
   "block.elevatorid.elevator_light_gray": "Light Gray Elevator",
   "block.elevatorid.elevator_yellow": "Yellow Elevator",
 
-  "block.elevatorid.dir_elevator_white": "Directional White Elevator",
-  "block.elevatorid.dir_elevator_black": "Directional Black Elevator",
-  "block.elevatorid.dir_elevator_blue": "Directional Blue Elevator",
-  "block.elevatorid.dir_elevator_brown": "Directional Brown Elevator",
-  "block.elevatorid.dir_elevator_cyan": "Directional Cyan Elevator",
-  "block.elevatorid.dir_elevator_gray": "Directional Gray Elevator",
-  "block.elevatorid.dir_elevator_green": "Directional Green Elevator",
-  "block.elevatorid.dir_elevator_light_blue": "Directional Light Blue Elevator",
-  "block.elevatorid.dir_elevator_lime": "Directional Lime Elevator",
-  "block.elevatorid.dir_elevator_magenta": "Directional Magenta Elevator",
-  "block.elevatorid.dir_elevator_orange": "Directional Orange Elevator",
-  "block.elevatorid.dir_elevator_pink": "Directional Pink Elevator",
-  "block.elevatorid.dir_elevator_purple": "Directional Purple Elevator",
-  "block.elevatorid.dir_elevator_red": "Directional Red Elevator",
-  "block.elevatorid.dir_elevator_light_gray": "Directional Light Gray Elevator",
-  "block.elevatorid.dir_elevator_yellow": "Directional Yellow Elevator",
-
   "elevatorid.subtitle.teleport": "Elevator used",
 
-  "itemGroup.elevators_tab": "Elevators"
+  "screen.elevatorid.elevator": "Elevator Options",
+  "screen.elevatorid.elevator.directional": "Directional",
+  "screen.elevatorid.elevator.hide_arrow": "Hide arrow",
+  "screen.elevatorid.elevator.reset_camo": "Remove camouflage",
+
+  "itemGroup.tabElevators": "Elevators"
 }

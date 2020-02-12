@@ -1,0 +1,15 @@
+{
+  "textures": {
+    "arrow": "elevatorid:block/arrow"
+  },
+  "elements": [
+    {
+      "from": [5, 16.1, 10],
+      "to": [11, 16.1, 16],
+      "faces": {
+        "up": {"texture": "#arrow", "rotation": 270, "uv": [0, 0, 16, 16]}
+      },
+      "__comment": "THE ARROW"
+    }
+  ]
+}

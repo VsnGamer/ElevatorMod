@@ -21,21 +21,10 @@ public class TeleportRequest {
 
     static TeleportRequest decode(PacketBuffer buf) {
         return new TeleportRequest(buf.readBlockPos(), buf.readBlockPos());
-
-//        from = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
-//        to = new BlockPos(buf.readInt(), buf.readInt(), buf.readInt());
     }
 
     static void encode(TeleportRequest msg, PacketBuffer buf) {
         buf.writeBlockPos(msg.from);
         buf.writeBlockPos(msg.to);
-
-//        buf.writeInt(from.getX());
-//        buf.writeInt(from.getY());
-//        buf.writeInt(from.getZ());
-//
-//        buf.writeInt(to.getX());
-//        buf.writeInt(to.getY());
-//        buf.writeInt(to.getZ());
     }
 }
