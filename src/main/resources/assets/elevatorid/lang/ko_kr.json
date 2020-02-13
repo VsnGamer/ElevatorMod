@@ -23,5 +23,7 @@
   "screen.elevatorid.elevator.hide_arrow": "화살표 미표시",
   "screen.elevatorid.elevator.reset_camo": "위장 미표시",
 
+  "elevatorid.message.missing_xp": "충분한 경험치가 없어서 텔레포트를 할 수 없습니다.",
+
   "itemGroup.tabElevators": "엘리베이터"
 }
