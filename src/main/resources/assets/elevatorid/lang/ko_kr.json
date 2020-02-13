@@ -1,0 +1,29 @@
+{
+  "block.elevatorid.elevator_white": "하얀색 엘리베이터",
+  "block.elevatorid.elevator_black": "검은색 엘리베이터",
+  "block.elevatorid.elevator_blue": "파란색 엘리베이터",
+  "block.elevatorid.elevator_brown": "갈색 엘리베이터",
+  "block.elevatorid.elevator_cyan": "청록색 엘리베이터",
+  "block.elevatorid.elevator_gray": "회색 엘리베이터",
+  "block.elevatorid.elevator_green": "초록색 엘리베이터",
+  "block.elevatorid.elevator_light_blue": "하늘색 엘리베이터",
+  "block.elevatorid.elevator_lime": "연두색 엘리베이터",
+  "block.elevatorid.elevator_magenta": "자홍색 엘리베이터",
+  "block.elevatorid.elevator_orange": "주황색 엘리베이터",
+  "block.elevatorid.elevator_pink": "분홍색 엘리베이터",
+  "block.elevatorid.elevator_purple": "보라색 엘리베이터",
+  "block.elevatorid.elevator_red": "빨강색 엘리베이터",
+  "block.elevatorid.elevator_light_gray": "회백색 엘리베이터",
+  "block.elevatorid.elevator_yellow": "노랑색 엘리베이터",
+
+  "elevatorid.subtitle.teleport": "엘리베이터 작동됨",
+
+  "screen.elevatorid.elevator": "엘리베이터 설정",
+  "screen.elevatorid.elevator.directional": "방향",
+  "screen.elevatorid.elevator.hide_arrow": "화살표 미표시",
+  "screen.elevatorid.elevator.reset_camo": "위장 미표시",
+
+  "elevatorid.message.missing_xp": "충분한 경험치가 없어서 텔레포트를 할 수 없습니다.",
+
+  "itemGroup.tabElevators": "엘리베이터"
+}
