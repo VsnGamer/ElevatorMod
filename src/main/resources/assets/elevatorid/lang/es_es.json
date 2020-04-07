@@ -16,7 +16,7 @@
   "block.elevatorid.elevator_light_gray": "Ascensor gris claro",
   "block.elevatorid.elevator_yellow": "Ascensor amarillo",
 
-  "elevatorid.subtitle.teleport": "Ascensor es utilizado",
+  "elevatorid.subtitle.teleport": "Ascensor siendo utilizado",
 
   "screen.elevatorid.elevator": "Opciones de ascensor",
   "screen.elevatorid.elevator.directional": "Direccional",
