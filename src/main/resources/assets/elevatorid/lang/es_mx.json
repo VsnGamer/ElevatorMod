@@ -1,0 +1,29 @@
+{
+  "block.elevatorid.elevator_white": "Ascensor blanco",
+  "block.elevatorid.elevator_black": "Ascensor negro",
+  "block.elevatorid.elevator_blue": "Ascensor azul",
+  "block.elevatorid.elevator_brown": "Ascensor café",
+  "block.elevatorid.elevator_cyan": "Ascensor cian",
+  "block.elevatorid.elevator_gray": "Ascensor gris",
+  "block.elevatorid.elevator_green": "Ascensor verde",
+  "block.elevatorid.elevator_light_blue": "Ascensor azul claro",
+  "block.elevatorid.elevator_lime": "Ascensor verde lima",
+  "block.elevatorid.elevator_magenta": "Ascensor magenta",
+  "block.elevatorid.elevator_orange": "Ascensor naranja",
+  "block.elevatorid.elevator_pink": "Ascensor rosa",
+  "block.elevatorid.elevator_purple": "Ascensor morado",
+  "block.elevatorid.elevator_red": "Ascensor rojo",
+  "block.elevatorid.elevator_light_gray": "Ascensor gris claro",
+  "block.elevatorid.elevator_yellow": "Ascensor amarillo",
+
+  "elevatorid.subtitle.teleport": "Ascensor es utilizado",
+
+  "screen.elevatorid.elevator": "Opciones de ascensor",
+  "screen.elevatorid.elevator.directional": "Direccional",
+  "screen.elevatorid.elevator.hide_arrow": "Esconder flecha",
+  "screen.elevatorid.elevator.reset_camo": "Quitar camuflage",
+
+  "elevatorid.message.missing_xp": "Necesitas más XP para poder teletransportarte",
+
+  "itemGroup.elevators_tab": "Ascensores"
+}
