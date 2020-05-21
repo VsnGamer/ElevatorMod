@@ -25,5 +25,5 @@
 
   "elevatorid.message.missing_xp": "충분한 경험치가 없어서 텔레포트를 할 수 없습니다.",
 
-  "itemGroup.tabElevators": "엘리베이터"
+  "itemGroup.elevators_tab": "엘리베이터"
 }
