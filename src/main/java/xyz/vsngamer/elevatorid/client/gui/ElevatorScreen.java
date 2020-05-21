@@ -23,8 +23,8 @@ import static xyz.vsngamer.elevatorid.blocks.ElevatorBlock.SHOW_ARROW;
 public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
 
     private final ResourceLocation GUI_TEXTURE = new ResourceLocation(ElevatorMod.ID, "textures/gui/elevator_gui.png");
-    private ElevatorTileEntity tile;
-    private Direction playerFacing;
+    private final ElevatorTileEntity tile;
+    private final Direction playerFacing;
 
     private FunctionalCheckbox dirButton;
     private FunctionalCheckbox hideArrowButton;
@@ -96,6 +96,7 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
         if (minecraft != null) {
             minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
         }
+
         int relX = (this.width - this.xSize) / 2;
         int relY = (this.height - this.ySize) / 2;
         this.blit(relX, relY, 0, 0, this.xSize, this.ySize);

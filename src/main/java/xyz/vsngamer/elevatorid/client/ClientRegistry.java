@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -38,28 +37,12 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent e) {
-//        ELEVATOR_BLOCKS.values().forEach(elevatorBlock -> LogManager.getLogger().debug(elevatorBlock.getRegistryName()));
-
         // This is a little bit faster, still hacky
-        e.getModelRegistry().keySet().forEach(key -> {
-//            LogManager.getLogger().debug(key.getPath());
-            if ("elevatorid".equals(key.getNamespace()) && key.getPath().contains("elevator_")) {
-                IBakedModel originalModel = e.getModelRegistry().get(key);
-                e.getModelRegistry().put(key, new ElevatorBakedModel(originalModel));
-            }
-        });
-
-//        ELEVATOR_BLOCKS.values().forEach(block -> {
-//            ResourceLocation regName = block.getRegistryName();
-//            if (regName == null) return;
-//
-//            // SUPER HACKY
-//            e.getModelRegistry().keySet().forEach(key -> {
-//                if (key.getPath().equals(regName.getPath())) {
-//                    IBakedModel originalModel = e.getModelRegistry().get(key);
-//                    e.getModelRegistry().put(key, new ElevatorBakedModel(originalModel));
-//                }
-//            });
-//        });
+        e.getModelRegistry().entrySet().stream()
+                .filter(entry -> "elevatorid".equals(entry.getKey().getNamespace()) && entry.getKey().getPath().contains("elevator_"))
+                .forEach(entry -> {
+                    IBakedModel originalModel = entry.getValue();
+                    e.getModelRegistry().put(entry.getKey(), new ElevatorBakedModel(originalModel));
+                });
     }
 }
