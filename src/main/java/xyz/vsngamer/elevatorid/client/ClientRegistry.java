@@ -33,17 +33,11 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void onModelRegistry(ModelRegistryEvent e) {
-        Direction.Plane.HORIZONTAL.forEach(direction ->
-                ModelLoader.addSpecialModel(new ResourceLocation("elevatorid:arrow/arrow_" + direction.toString()))
-        );
+        ModelLoader.addSpecialModel(new ResourceLocation("elevatorid", "arrow"));
     }
 
     @SubscribeEvent
     public static void onModelBake(ModelBakeEvent e) {
-        Direction.Plane.HORIZONTAL.forEach(direction ->
-                ElevatorBakedModel.ARROW_VARIANTS.put(direction, e.getModelRegistry().get(new ResourceLocation("elevatorid:arrow/arrow_" + direction.toString())))
-        );
-
 //        ELEVATOR_BLOCKS.values().forEach(elevatorBlock -> LogManager.getLogger().debug(elevatorBlock.getRegistryName()));
 
         // This is a little bit faster, still hacky

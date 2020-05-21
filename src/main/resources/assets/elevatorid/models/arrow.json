@@ -9,7 +9,7 @@
       "faces": {
         "up": {"texture": "#arrow", "rotation": 270, "uv": [0, 0, 16, 16]}
       },
-      "__comment": "THE ARROW"
+      "__comment": "The arrow (default south)"
     }
   ]
 }
