@@ -40,7 +40,7 @@ public class ElevatorBlock extends HorizontalBlock {
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
 
     private ElevatorBlockItem item;
-    private DyeColor dyeColor;
+    private final DyeColor dyeColor;
 
     public ElevatorBlock(DyeColor color) {
         super(Block.Properties
@@ -50,7 +50,7 @@ public class ElevatorBlock extends HorizontalBlock {
                 .variableOpacity()
                 .notSolid());
 
-        setRegistryName(ElevatorMod.ID, "elevator_" + color.getName());
+        setRegistryName(ElevatorMod.ID, "elevator_" + color.getTranslationKey());
         dyeColor = color;
     }
 
@@ -77,13 +77,13 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public boolean isReplaceable(BlockState state, @Nonnull BlockItemUseContext useContext) {
+    public boolean isReplaceable(@Nonnull BlockState state, @Nonnull BlockItemUseContext useContext) {
         return false;
     }
 
     @Nonnull
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(@Nonnull BlockState state, World worldIn, @Nonnull BlockPos pos, @Nonnull PlayerEntity player, @Nonnull Hand handIn, @Nonnull BlockRayTraceResult hit) {
         if (worldIn.isRemote) {
             return ActionResultType.SUCCESS;
         }
@@ -121,13 +121,13 @@ public class ElevatorBlock extends HorizontalBlock {
         return ModConfig.GENERAL.mobSpawn.get() && super.canCreatureSpawn(state, world, pos, type, entityType);
     }
 
-    @Override
-    public boolean isNormalCube(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
-        return false;
-    }
+//    @Override
+//    public boolean isNormalCube(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
+//        return false;
+//    }
 
     @Override
-    public boolean isSideInvisible(BlockState state, BlockState adjacentBlockState, Direction side) {
+    public boolean isSideInvisible(@Nonnull BlockState state, BlockState adjacentBlockState, @Nonnull Direction side) {
         return adjacentBlockState.getBlock() instanceof BreakableBlock || super.isSideInvisible(state, adjacentBlockState, side);
     }
 
@@ -142,7 +142,7 @@ public class ElevatorBlock extends HorizontalBlock {
     // Collision
     @Nonnull
     @Override
-    public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, ISelectionContext context) {
+    public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
         ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
         if (tile != null && tile.getHeldState() != null)
             return tile.getHeldState().getCollisionShape(worldIn, pos, context);
@@ -152,7 +152,7 @@ public class ElevatorBlock extends HorizontalBlock {
     // Visual outline
     @Nonnull
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
+    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context) {
         ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
         if (tile != null && tile.getHeldState() != null)
             return tile.getHeldState().getShape(worldIn, pos, context);
@@ -160,7 +160,7 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public float getSlipperiness(BlockState state, IWorldReader world, BlockPos pos, @Nullable Entity entity) {
+    public float getSlipperiness(@Nonnull BlockState state, @Nonnull IWorldReader world, @Nonnull BlockPos pos, @Nullable Entity entity) {
         ElevatorTileEntity tile = getElevatorTile(world, pos);
         if (tile != null && tile.getHeldState() != null)
             return tile.getHeldState().getSlipperiness(world, pos, entity);
@@ -168,7 +168,7 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn) {
+    public void onEntityCollision(@Nonnull BlockState state, @Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull Entity entityIn) {
         ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
         if (tile != null && tile.getHeldState() != null) {
             try {
@@ -195,7 +195,7 @@ public class ElevatorBlock extends HorizontalBlock {
 
     @Nonnull
     @Override
-    public BlockState updatePostPlacement(@Nonnull BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos) {
+    public BlockState updatePostPlacement(@Nonnull BlockState stateIn, @Nonnull Direction facing, @Nonnull BlockState facingState, IWorld worldIn, @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         if (!worldIn.isRemote()) {
             ElevatorTileEntity tile = getElevatorTile(worldIn, currentPos);
             if (tile != null && tile.getHeldState() != null) {
@@ -210,7 +210,7 @@ public class ElevatorBlock extends HorizontalBlock {
 
     // Redstone
     @Override
-    public boolean canProvidePower(BlockState state) {
+    public boolean canProvidePower(@Nonnull BlockState state) {
         return true;
     }
 
@@ -233,7 +233,7 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public int getWeakPower(BlockState state, IBlockReader reader, BlockPos pos, Direction direction) {
+    public int getWeakPower(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
         ElevatorTileEntity tile = getElevatorTile(reader, pos);
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getWeakPower(reader, pos, direction);
@@ -242,7 +242,7 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public int getStrongPower(BlockState state, IBlockReader reader, BlockPos pos, Direction direction) {
+    public int getStrongPower(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
         ElevatorTileEntity tile = getElevatorTile(reader, pos);
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getStrongPower(reader, pos, direction);
@@ -261,12 +261,12 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
+    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull IBlockReader reader, @Nonnull BlockPos pos) {
         return true;
     }
 
     @Override
-    public float getAmbientOcclusionLightValue(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
+    public float getAmbientOcclusionLightValue(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
         ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getAmbientOcclusionLightValue(worldIn, pos);
@@ -275,7 +275,7 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     @Override
-    public int getOpacity(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
+    public int getOpacity(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
         ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getOpacity(worldIn, pos);

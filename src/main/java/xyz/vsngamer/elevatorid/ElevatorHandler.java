@@ -27,7 +27,7 @@ public class ElevatorHandler {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player == null || player.isSpectator() || !player.isAlive()) return;
 
-        boolean sneaking = player.isCrouching();
+        boolean sneaking = player.movementInput.sneaking;
         if (lastSneaking != sneaking) {
             lastSneaking = sneaking;
             if (sneaking)
@@ -48,7 +48,7 @@ public class ElevatorHandler {
         BlockPos fromPos = getOriginElevator(player);
         if (fromPos == null) return;
 
-        BlockPos.Mutable toPos = new BlockPos.Mutable(fromPos);
+        BlockPos.Mutable toPos = new BlockPos.Mutable(fromPos.getX(), fromPos.getY(), fromPos.getZ());
         BlockState toState;
 
         ElevatorBlock fromElevator, toElevator;

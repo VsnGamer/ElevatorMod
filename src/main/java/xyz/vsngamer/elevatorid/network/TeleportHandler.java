@@ -5,8 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -30,7 +29,7 @@ public class TeleportHandler {
             BlockPos from = message.getFrom(), to = message.getTo();
 
             // This ensures the player is still standing on the origin elevator
-            final double distanceSq = player.getDistanceSq(new Vec3d(from).add(0, 1, 0));
+            final double distanceSq = player.getDistanceSq(new Vector3d(from.getX(), from.getY(), from.getZ()).add(0, 1, 0));
             if (distanceSq > 4D) return;
 
 //        double dist = from.distanceSq(to.getX(), to.getY(), to.getZ(), false);
@@ -69,13 +68,13 @@ public class TeleportHandler {
                 if (getPlayerExperienceProgress(player) - ModConfig.GENERAL.XPPointsAmount.get() >= 0 || player.experienceLevel > 0) {
                     player.giveExperiencePoints(-ModConfig.GENERAL.XPPointsAmount.get());
                 } else {
-                    player.sendMessage(new TranslationTextComponent("elevatorid.message.missing_xp").applyTextStyle(TextFormatting.RED));
+                    player.sendMessage(new TranslationTextComponent("elevatorid.message.missing_xp").func_240699_a_(TextFormatting.RED), player.getUniqueID());
                     return;
                 }
             }
 
             player.connection.setPlayerLocation(toX, to.getY() + 1D, toZ, yaw, pitch);
-            player.setMotion(player.getMotion().mul(new Vec3d(1D, 0D, 1D)));
+            player.setMotion(player.getMotion().mul(new Vector3d(1D, 0D, 1D)));
             world.playSound(null, to, ModSounds.TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
         });
 

@@ -35,12 +35,12 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     }
 
     @Override
-    public void read(CompoundNBT compound) {
+    public void func_230337_a_(@Nonnull BlockState state, CompoundNBT compound) {
         // Get blockstate from compound
         BlockState held_id = NBTUtil.readBlockState(compound.getCompound("held_id"));
         heldState = held_id == Blocks.AIR.getDefaultState() ? null : held_id;
 
-        super.read(compound);
+        super.func_230337_a_(state, compound);
     }
 
     @Nonnull
@@ -73,7 +73,7 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        handleUpdateTag(pkt.getNbtCompound());
+        handleUpdateTag(getBlockState(),pkt.getNbtCompound());
         updateClient();
     }
 
@@ -100,7 +100,7 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     private void updateServer() throws IllegalStateException {
         markDirty();
         if (world != null && !world.isRemote) {
-            world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 3);
+            world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 3, 0);
             world.getChunkProvider().getLightManager().checkBlock(pos);
         } else {
             throw new IllegalStateException("Run this on the server");
