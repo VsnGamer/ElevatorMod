@@ -73,7 +73,8 @@ public class TeleportHandler {
                 }
             }
 
-            player.connection.setPlayerLocation(toX, to.getY() + 1D, toZ, yaw, pitch);
+            // Teleport prevents sync issues when riding entities
+            player.teleport(world,toX, to.getY() + 1D, toZ, yaw, pitch);
             player.setMotion(player.getMotion().mul(new Vector3d(1D, 0D, 1D)));
             world.playSound(null, to, ModSounds.TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
         });
