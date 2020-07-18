@@ -3,6 +3,7 @@ package xyz.vsngamer.elevatorid.network;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
@@ -74,7 +75,8 @@ public class TeleportHandler {
             }
 
             // Teleport prevents sync issues when riding entities
-            player.teleport(world,toX, to.getY() + 1D, toZ, yaw, pitch);
+            double blockYOffset = toState.getCollisionShape(world, to).getEnd(Direction.Axis.Y);
+            player.teleport(world, toX, to.getY() + (blockYOffset == Double.NEGATIVE_INFINITY ? 1 : blockYOffset), toZ, yaw, pitch);
             player.setMotion(player.getMotion().mul(new Vector3d(1D, 0D, 1D)));
             world.playSound(null, to, ModSounds.TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
         });

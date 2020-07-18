@@ -131,14 +131,6 @@ public class ElevatorBlock extends HorizontalBlock {
         return adjacentBlockState.getBlock() instanceof BreakableBlock || super.isSideInvisible(state, adjacentBlockState, side);
     }
 
-    @Override
-    public boolean canBeConnectedTo(BlockState state, IBlockReader world, BlockPos pos, Direction facing) {
-        ElevatorTileEntity tile = getElevatorTile(world, pos);
-        if (tile != null && tile.getHeldState() != null)
-            return tile.getHeldState().canBeConnectedTo(world, pos, facing);
-        return super.canBeConnectedTo(state, world, pos, facing);
-    }
-
     // Collision
     @Nonnull
     @Override
@@ -147,6 +139,14 @@ public class ElevatorBlock extends HorizontalBlock {
         if (tile != null && tile.getHeldState() != null)
             return tile.getHeldState().getCollisionShape(worldIn, pos, context);
         return super.getCollisionShape(state, worldIn, pos, context);
+    }
+
+    @Override
+    public boolean collisionExtendsVertically(BlockState state, IBlockReader world, BlockPos pos, Entity collidingEntity) {
+        ElevatorTileEntity tile = getElevatorTile(world, pos);
+        if (tile != null && tile.getHeldState() != null)
+            return tile.getHeldState().collisionExtendsVertically(world, pos, collidingEntity);
+        return false;
     }
 
     // Visual outline

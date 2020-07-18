@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class RemoveCamoPacket {
 
-    private BlockPos pos;
+    private final BlockPos pos;
 
     public RemoveCamoPacket(BlockPos pos) {
         this.pos = pos;

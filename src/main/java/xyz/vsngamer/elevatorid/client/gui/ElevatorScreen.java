@@ -44,68 +44,68 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
     }
 
     @Override
-    public void func_231160_c_() {
-        super.func_231160_c_();
+    public void init() {
+        super.init();
 
         // Toggle directional button
         ITextComponent dirLang = new TranslationTextComponent("screen.elevatorid.elevator.directional");
         dirButton = new FunctionalCheckbox(guiLeft + 8, guiTop + 25, 20, 20, dirLang, tile.getBlockState().get(DIRECTIONAL), value ->
                 NetworkHandler.INSTANCE.sendToServer(new SetDirectionalPacket(value, tile.getPos())));
-        func_230480_a_(dirButton);
+        addButton(dirButton);
 
         // Toggle arrow button
         ITextComponent arrowLang = new TranslationTextComponent("screen.elevatorid.elevator.hide_arrow");
         hideArrowButton = new FunctionalCheckbox(guiLeft + 8, guiTop + 50, 20, 20, arrowLang, !tile.getBlockState().get(SHOW_ARROW), value ->
                 NetworkHandler.INSTANCE.sendToServer(new SetArrowPacket(!value, tile.getPos())));
-        hideArrowButton.field_230694_p_ = tile.getBlockState().get(DIRECTIONAL);
-        func_230480_a_(hideArrowButton);
+        hideArrowButton.visible = tile.getBlockState().get(DIRECTIONAL);
+        addButton(hideArrowButton);
 
         // Reset camouflage button
         ITextComponent resetCamoLang = new TranslationTextComponent("screen.elevatorid.elevator.reset_camo");
         resetCamoButton = new ExtendedButton(guiLeft + 8, guiTop + 75, 110, 20, resetCamoLang, p_onPress_1_ ->
                 NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getPos())));
-        func_230480_a_(resetCamoButton);
+        addButton(resetCamoButton);
 
         // Directional controller
         facingController = new FacingControllerWrapper(guiLeft + 120, guiTop + 20, tile.getPos(), playerFacing);
-        facingController.getButtons().forEach(this::func_230480_a_);
-        facingController.getButtons().forEach(button -> button.field_230694_p_ = tile.getBlockState().get(DIRECTIONAL));
+        facingController.getButtons().forEach(this::addButton);
+        facingController.getButtons().forEach(button -> button.visible = tile.getBlockState().get(DIRECTIONAL));
 
-        resetCamoButton.field_230693_o_ = tile.getHeldState() != null;
+        resetCamoButton.active = tile.getHeldState() != null;
     }
 
     @Override
-    public void func_230430_a_(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        func_230446_a_(matrixStack);
-        super.func_230430_a_(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void func_231023_e_() {
-        super.func_231023_e_();
+    public void tick() {
+        super.tick();
 
         facingController.getButtons().forEach(button -> {
-            button.field_230694_p_ = dirButton.isChecked();
-            button.field_230693_o_ = tile.getBlockState().get(ElevatorBlock.HORIZONTAL_FACING) != button.direction;
+            button.visible = dirButton.isChecked();
+            button.active = tile.getBlockState().get(ElevatorBlock.HORIZONTAL_FACING) != button.direction;
         });
 
-        hideArrowButton.field_230694_p_ = dirButton.isChecked();
-        resetCamoButton.field_230693_o_ = tile.getHeldState() != null;
+        hideArrowButton.visible = dirButton.isChecked();
+        resetCamoButton.active = tile.getHeldState() != null;
     }
 
     @Override
     protected void func_230450_a_(@Nonnull MatrixStack matrixStack, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
-        if (field_230706_i_ != null) {
-            field_230706_i_.getTextureManager().bindTexture(GUI_TEXTURE);
+        if (minecraft != null) {
+            minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
         }
 
-        int relX = (this.field_230708_k_ - this.xSize) / 2;
-        int relY = (this.field_230709_l_ - this.ySize) / 2;
-        this.func_238474_b_(matrixStack, relX, relY, 0, 0, this.xSize, this.ySize);
+        int relX = (this.width - this.xSize) / 2;
+        int relY = (this.height - this.ySize) / 2;
+        this.blit(matrixStack, relX, relY, 0, 0, this.xSize, this.ySize);
     }
 
     @Override
     protected void func_230451_b_(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY) {
-        field_230712_o_.func_238407_a_(matrixStack, field_230704_d_, 8.0F, 8.0F, 14737632);
+        font.func_238407_a_(matrixStack, title, 8.0F, 8.0F, 14737632);
     }
 }

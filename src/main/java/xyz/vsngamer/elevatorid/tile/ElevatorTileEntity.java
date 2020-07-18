@@ -35,12 +35,12 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     }
 
     @Override
-    public void func_230337_a_(@Nonnull BlockState state, CompoundNBT compound) {
+    public void read(@Nonnull BlockState state, CompoundNBT compound) {
         // Get blockstate from compound
         BlockState held_id = NBTUtil.readBlockState(compound.getCompound("held_id"));
         heldState = held_id == Blocks.AIR.getDefaultState() ? null : held_id;
 
-        super.func_230337_a_(state, compound);
+        super.read(state, compound);
     }
 
     @Nonnull

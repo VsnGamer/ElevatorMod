@@ -27,17 +27,16 @@ class FacingButton extends Button {
     }
 
     @Override
-    public void func_230431_b_(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void renderButton(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        if (isHovered())
+            fill(matrixStack, x, y, x + width, y + height, -2130706433);
 
-        if (func_230449_g_())
-            func_238468_a_(matrixStack, field_230690_l_, field_230691_m_, field_230690_l_ + 20, field_230691_m_ + 20, -2130706433,-2130706433);
-
-        func_238471_a_(matrixStack, Minecraft.getInstance().fontRenderer,
-                func_230458_i_().getString(),
-                this.field_230690_l_ + this.field_230688_j_ / 2,
-                this.field_230691_m_ + (this.field_230689_k_ - 8) / 2,
-                field_230693_o_ ? 16777215 : 65280
+        drawCenteredString(matrixStack, Minecraft.getInstance().fontRenderer,
+                getMessage().getString(),
+                this.x + this.width / 2,
+                this.y + (this.height - 8) / 2,
+                active ? 16777215 : 65280
         );
     }
 }
