@@ -94,7 +94,7 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
     }
 
     @Override
-    protected void func_230450_a_(@Nonnull MatrixStack matrixStack, float p_230450_2_, int p_230450_3_, int p_230450_4_) {
+    protected void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack matrixStack, float v, int mouseX, int mouseY) {
         if (minecraft != null) {
             minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
         }
@@ -105,7 +105,7 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
     }
 
     @Override
-    protected void func_230451_b_(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY) {
-        font.func_238407_a_(matrixStack, title, 8.0F, 8.0F, 14737632);
+    protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY) {
+        font.func_243248_b(matrixStack, title, 8.0F, 8.0F, 14737632);
     }
 }

@@ -17,6 +17,6 @@ public class FakeUseContext extends BlockItemUseContext {
     @Nonnull
     @Override
     public BlockPos getPos() {
-        return rayTraceResult.getPos();
+        return func_242401_i().getPos();
     }
 }

@@ -69,7 +69,7 @@ public class TeleportHandler {
                 if (getPlayerExperienceProgress(player) - ModConfig.GENERAL.XPPointsAmount.get() >= 0 || player.experienceLevel > 0) {
                     player.giveExperiencePoints(-ModConfig.GENERAL.XPPointsAmount.get());
                 } else {
-                    player.sendMessage(new TranslationTextComponent("elevatorid.message.missing_xp").func_240699_a_(TextFormatting.RED), player.getUniqueID());
+                    player.sendMessage(new TranslationTextComponent("elevatorid.message.missing_xp").mergeStyle(TextFormatting.RED), player.getUniqueID());
                     return;
                 }
             }

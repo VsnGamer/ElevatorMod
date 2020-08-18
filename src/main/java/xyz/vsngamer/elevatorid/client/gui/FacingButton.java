@@ -20,7 +20,7 @@ class FacingButton extends Button {
     Direction direction;
 
     FacingButton(Point slot, String text, Direction direction, BlockPos pos) {
-        super(slot.x, slot.y, 20, 20, ITextComponent.func_241827_a_(text), but ->
+        super(slot.x, slot.y, 20, 20, ITextComponent.func_244388_a(text), but ->
                 NetworkHandler.INSTANCE.sendToServer(new SetFacingPacket(direction, pos)));
 
         this.direction = direction;
