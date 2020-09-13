@@ -1,0 +1,29 @@
+{
+  "block.elevatorid.elevator_white": "Білий ліфт",
+  "block.elevatorid.elevator_black": "Чорний ліфт",
+  "block.elevatorid.elevator_blue": "Синій ліфт",
+  "block.elevatorid.elevator_brown": "Коричневий ліфт",
+  "block.elevatorid.elevator_cyan": "Блакитний ліфт",
+  "block.elevatorid.elevator_gray": "Сірий ліфт",
+  "block.elevatorid.elevator_green": "Зелений ліфт",
+  "block.elevatorid.elevator_light_blue": "Світло-синій ліфт",
+  "block.elevatorid.elevator_lime": "Лаймовий ліфт",
+  "block.elevatorid.elevator_magenta": "Малиновий ліфт",
+  "block.elevatorid.elevator_orange": "Помаранчевий ліфт",
+  "block.elevatorid.elevator_pink": "Рожевий ліфт",
+  "block.elevatorid.elevator_purple": "Фіолетовий ліфт",
+  "block.elevatorid.elevator_red": "Червоний ліфт",
+  "block.elevatorid.elevator_light_gray": "Срібний ліфт",
+  "block.elevatorid.elevator_yellow": "Жовтий ліфт",
+
+  "elevatorid.subtitle.teleport": "Використовування ліфту",
+
+  "screen.elevatorid.elevator": "Elevator Options",
+  "screen.elevatorid.elevator.directional": "Directional",
+  "screen.elevatorid.elevator.hide_arrow": "Hide arrow",
+  "screen.elevatorid.elevator.reset_camo": "Remove camouflage",
+
+  "elevatorid.message.missing_xp": "You do not have enough XP to teleport",
+
+  "itemGroup.elevators_tab": "Elevator Mod"
+}

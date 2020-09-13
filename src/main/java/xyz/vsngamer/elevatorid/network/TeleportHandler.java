@@ -33,9 +33,6 @@ public class TeleportHandler {
             final double distanceSq = player.getDistanceSq(new Vector3d(from.getX(), from.getY(), from.getZ()).add(0, 1, 0));
             if (distanceSq > 4D) return;
 
-//        double dist = from.distanceSq(to.getX(), to.getY(), to.getZ(), false);
-//        if (dist > Math.pow(ModConfig.GENERAL.range.get(), 2)) return;
-
             if (from.getX() != to.getX() || from.getZ() != to.getZ()) return;
 
             BlockState fromState = world.getBlockState(from);
@@ -64,7 +61,7 @@ public class TeleportHandler {
                 toZ = player.getPosZ();
             }
 
-            // Passed all tests, begin teleport
+            // XP
             if (ModConfig.GENERAL.useXP.get() && !player.isCreative()) {
                 if (getPlayerExperienceProgress(player) - ModConfig.GENERAL.XPPointsAmount.get() >= 0 || player.experienceLevel > 0) {
                     player.giveExperiencePoints(-ModConfig.GENERAL.XPPointsAmount.get());
@@ -74,6 +71,7 @@ public class TeleportHandler {
                 }
             }
 
+            // Passed all tests, begin teleport
             // Teleport prevents sync issues when riding entities
             double blockYOffset = toState.getCollisionShape(world, to).getEnd(Direction.Axis.Y);
             player.teleport(world, toX, to.getY() + (blockYOffset == Double.NEGATIVE_INFINITY ? 1 : blockYOffset), toZ, yaw, pitch);
