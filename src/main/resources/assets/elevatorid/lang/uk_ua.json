@@ -18,12 +18,12 @@
 
   "elevatorid.subtitle.teleport": "Використовування ліфту",
 
-  "screen.elevatorid.elevator": "Elevator Options",
-  "screen.elevatorid.elevator.directional": "Directional",
-  "screen.elevatorid.elevator.hide_arrow": "Hide arrow",
-  "screen.elevatorid.elevator.reset_camo": "Remove camouflage",
+  "screen.elevatorid.elevator": "Параметри ліфта",
+  "screen.elevatorid.elevator.directional": "Спрямований",
+  "screen.elevatorid.elevator.hide_arrow": "Сховати стрілку",
+  "screen.elevatorid.elevator.reset_camo": "Зняти камуфляж",
 
-  "elevatorid.message.missing_xp": "You do not have enough XP to teleport",
+  "elevatorid.message.missing_xp": "У вас недостатньо досвіду для телепортації",
 
   "itemGroup.elevators_tab": "Elevator Mod"
 }
