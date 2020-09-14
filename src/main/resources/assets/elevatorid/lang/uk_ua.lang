@@ -1,0 +1,20 @@
+tile.elevator_white.name=Білий ліфт
+tile.elevator_black.name=Чорний ліфт
+tile.elevator_blue.name=Синій ліфт
+tile.elevator_brown.name=Коричневий ліфт
+tile.elevator_cyan.name=Блакитний ліфт
+tile.elevator_gray.name= Сірий ліфт
+tile.elevator_green.name=Зелений ліфт
+tile.elevator_light_blue.name=Світло-синій ліфт
+tile.elevator_lime.name=Лаймовий ліфт
+tile.elevator_magenta.name=Малиновий ліфт
+tile.elevator_orange.name=Помаранчевий ліфт
+tile.elevator_pink.name=Рожевий ліфт
+tile.elevator_purple.name=Фіолетовий ліфт
+tile.elevator_red.name=Червоний ліфт
+tile.elevator_silver.name=Срібний ліфт
+tile.elevator_yellow.name=Жовтий ліфт
+
+elevatorid.subtitle.teleport=Використовування ліфту
+
+itemGroup.tabElevators=Elevator Mod

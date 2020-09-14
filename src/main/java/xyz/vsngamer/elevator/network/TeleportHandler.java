@@ -21,24 +21,27 @@ public class TeleportHandler implements IMessageHandler<TeleportRequest, IMessag
         EntityPlayerMP player = ctx.getServerHandler().player;
         World world = player.world;
         BlockPos from = message.getFrom(), to = message.getTo();
-        if (from.getX() != to.getX() || from.getZ() != to.getZ()) return null;
-        if (player.getDistanceSqToCenter(from) > 4F) return null;
-        if (!validateTarget(world, to)) return null;
 
-        IBlockState fromState = world.getBlockState(from);
-        IBlockState toState = world.getBlockState(to);
-        if (ModConfig.sameColor) {
-            if (fromState.getBlock() != toState.getBlock()) return null;
-        }
+        player.getServerWorld().addScheduledTask(() -> {
+            if (from.getX() != to.getX() || from.getZ() != to.getZ()) return;
+            if (player.getDistanceSqToCenter(from) > 4F) return;
+            if (!validateTarget(world, to)) return;
 
-        if (ModConfig.precisionTarget) {
-            player.setPositionAndUpdate(to.getX() + 0.5f, to.getY() + 1, to.getZ() + 0.5f);
-        } else {
-            player.setPositionAndUpdate(player.posX, to.getY() + 1, player.posZ);
-        }
+            IBlockState fromState = world.getBlockState(from);
+            IBlockState toState = world.getBlockState(to);
+            if (ModConfig.sameColor) {
+                if (fromState.getBlock() != toState.getBlock()) return;
+            }
 
-        player.motionY = 0;
-        world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            if (ModConfig.precisionTarget) {
+                player.setPositionAndUpdate(to.getX() + 0.5f, to.getY() + 1, to.getZ() + 0.5f);
+            } else {
+                player.setPositionAndUpdate(player.posX, to.getY() + 1, player.posZ);
+            }
+
+            player.motionY = 0;
+            world.playSound(null, to, ModSounds.teleport, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        });
         return null;
     }
 

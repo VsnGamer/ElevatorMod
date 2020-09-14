@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 group = 'xyz.vsngamer'
-version = '1.12.2-1.4.2'
+version = '1.12.2-1.4.3'
 
 sourceCompatibility = targetCompatibility = "1.8"
 
