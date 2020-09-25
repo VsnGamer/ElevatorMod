@@ -21,14 +21,8 @@ archivesBaseName = 'elevatorid'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
-repositories {
-    maven {
-        url 'https://www.dogforce-games.com/maven/'
-    }
-}
-
 minecraft {
-    mappings channel: 'snapshot', version: '20200912-1.16.2'
+    mappings channel: 'snapshot', version: '20200916-1.16.2'
 
     runs {
         client {
