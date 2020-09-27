@@ -19,8 +19,8 @@ class FacingButton extends Button {
 
     Direction direction;
 
-    FacingButton(Point slot, String text, Direction direction, BlockPos pos) {
-        super(slot.x, slot.y, 20, 20, ITextComponent.func_244388_a(text), but ->
+    FacingButton(Point slot, Direction direction, BlockPos pos) {
+        super(slot.x, slot.y, 20, 20, ITextComponent.getTextComponentOrEmpty(direction.getName2().substring(0, 1).toUpperCase()), but ->
                 NetworkHandler.INSTANCE.sendToServer(new SetFacingPacket(direction, pos)));
 
         this.direction = direction;

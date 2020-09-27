@@ -27,10 +27,10 @@ class FacingControllerWrapper {
 
     private void initButtons(Direction playerFacing, BlockPos pos) {
         Collections.rotate(slots, playerFacing.getHorizontalIndex()); // Modifies list
-        bakedButtons.add(new FacingButton(slots.get(0), "S", Direction.SOUTH, pos));
-        bakedButtons.add(new FacingButton(slots.get(1), "W", Direction.WEST, pos));
-        bakedButtons.add(new FacingButton(slots.get(2), "N", Direction.NORTH, pos));
-        bakedButtons.add(new FacingButton(slots.get(3), "E", Direction.EAST, pos));
+        bakedButtons.add(new FacingButton(slots.get(0), Direction.SOUTH, pos));
+        bakedButtons.add(new FacingButton(slots.get(1), Direction.WEST, pos));
+        bakedButtons.add(new FacingButton(slots.get(2), Direction.NORTH, pos));
+        bakedButtons.add(new FacingButton(slots.get(3), Direction.EAST, pos));
     }
 
     HashSet<FacingButton> getButtons() {
