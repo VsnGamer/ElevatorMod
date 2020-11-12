@@ -17,12 +17,6 @@ Simple port of the elevator from OpenBlocks to 1.8+
 [[dependencies.elevatorid]]
     modId="forge"
     mandatory=true
-    versionRange="[33,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.elevatorid]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.16.3]"
+    versionRange="[34,)"
     ordering="NONE"
     side="BOTH"
