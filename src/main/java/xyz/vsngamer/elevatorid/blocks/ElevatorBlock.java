@@ -126,10 +126,10 @@ public class ElevatorBlock extends HorizontalBlock {
 //        return false;
 //    }
 
-    @Override
-    public boolean isSideInvisible(@Nonnull BlockState state, BlockState adjacentBlockState, @Nonnull Direction side) {
-        return adjacentBlockState.getBlock() instanceof BreakableBlock || super.isSideInvisible(state, adjacentBlockState, side);
-    }
+//    @Override
+//    public boolean isSideInvisible(@Nonnull BlockState state, BlockState adjacentBlockState, @Nonnull Direction side) {
+//        return adjacentBlockState.getBlock() instanceof BreakableBlock || super.isSideInvisible(state, adjacentBlockState, side);
+//    }
 
     // Collision
     @Nonnull
@@ -326,12 +326,6 @@ public class ElevatorBlock extends HorizontalBlock {
     private ElevatorTileEntity getElevatorTile(IBlockReader world, BlockPos pos) {
         TileEntity tile = world.getTileEntity(pos);
 
-//        if (world instanceof ServerWorld) {
-//            tile = ((ServerWorld) world).getChunkAt(pos).getTileEntity(pos);
-//        } else if (world instanceof ChunkRenderCache) {
-//            tile = ((ChunkRenderCache) world).getTileEntity(pos, Chunk.CreateEntityType.CHECK);
-//        } else {
-//        }
 
         // Check if it exists and is valid
         if (tile instanceof ElevatorTileEntity && tile.getType().isValidBlock(world.getBlockState(pos).getBlock())) {
