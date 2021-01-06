@@ -10,7 +10,6 @@ import xyz.vsngamer.elevatorid.network.NetworkHandler;
 @Mod(ElevatorMod.ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ElevatorMod {
-
     public static final String ID = "elevatorid";
 
     public ElevatorMod() {
@@ -21,6 +20,4 @@ public class ElevatorMod {
     public static void commonSetup(FMLCommonSetupEvent event) {
         NetworkHandler.init();
     }
-
-
 }

@@ -39,7 +39,7 @@ public class ElevatorBlock extends HorizontalBlock {
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
 
-    private ElevatorBlockItem item;
+    private ElevatorBlockItem blockItem;
     private final DyeColor dyeColor;
 
     public ElevatorBlock(DyeColor color) {
@@ -94,10 +94,9 @@ public class ElevatorBlock extends HorizontalBlock {
             return ActionResultType.FAIL;
         }
 
-        if (isValidItem(handStack)) {
-            Block handBlock = Block.getBlockFromItem(handStack.getItem());
-            BlockState stateToApply = handBlock.getStateForPlacement(new FakeUseContext(player, handIn, hit));
-
+        Block handBlock = Block.getBlockFromItem(handStack.getItem());
+        BlockState stateToApply = handBlock.getStateForPlacement(new FakeUseContext(player, handIn, hit));
+        if (stateToApply != null && isValidState(stateToApply)) {
             // Try set camo
             if (stateToApply != tile.getHeldState()) {
                 setCamoAndUpdate(stateToApply, tile, worldIn);
@@ -296,31 +295,26 @@ public class ElevatorBlock extends HorizontalBlock {
         return dyeColor;
     }
 
-    private boolean isValidItem(ItemStack stack) {
-        Item item = stack.getItem();
-        Block block = Block.getBlockFromItem(item);
-
-        if (stack.isEmpty()) {
+    public static boolean isValidState(BlockState state) {
+        if (state.getBlock() == Blocks.AIR)
             return false;
-        }
 
-        // Don't accept items
-        if (!(item instanceof BlockItem)) {
+        // Tile entities can cause problems
+        if (state.hasTileEntity())
             return false;
-        }
 
         // Don't try to camouflage with itself
-        if (block instanceof ElevatorBlock) {
+        if (state.getBlock() instanceof ElevatorBlock) {
             return false;
         }
 
         // Only normally rendered blocks (not chests, ...)
-        if (block.getDefaultState().getRenderType() != BlockRenderType.MODEL) {
+        if (state.getRenderType() != BlockRenderType.MODEL) {
             return false;
         }
 
         // Only blocks with a collision box
-        return block.getDefaultState().getMaterial().isSolid();
+        return state.getMaterial().isSolid();
     }
 
     private ElevatorTileEntity getElevatorTile(IBlockReader world, BlockPos pos) {
@@ -345,10 +339,10 @@ public class ElevatorBlock extends HorizontalBlock {
     @Nonnull
     @Override
     public Item asItem() {
-        if (item == null) {
-            item = new ElevatorBlockItem();
+        if (blockItem == null) {
+            blockItem = new ElevatorBlockItem();
         }
-        return item;
+        return blockItem;
     }
 
     public class ElevatorBlockItem extends BlockItem {

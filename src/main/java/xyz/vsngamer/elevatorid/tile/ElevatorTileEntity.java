@@ -2,7 +2,6 @@ package xyz.vsngamer.elevatorid.tile;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
@@ -36,9 +35,9 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
 
     @Override
     public void read(@Nonnull BlockState state, CompoundNBT compound) {
-        // Get blockstate from compound
+        // Get blockstate from compound, always check if it's valid
         BlockState held_id = NBTUtil.readBlockState(compound.getCompound("held_id"));
-        heldState = held_id == Blocks.AIR.getDefaultState() ? null : held_id;
+        heldState = ElevatorBlock.isValidState(held_id) ? held_id : null;
 
         super.read(state, compound);
     }
