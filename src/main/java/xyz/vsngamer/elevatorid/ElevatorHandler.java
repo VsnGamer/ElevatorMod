@@ -3,14 +3,20 @@ package xyz.vsngamer.elevatorid;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.Logging;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.logging.log4j.LogManager;
+import org.lwjgl.glfw.GLFW;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
@@ -20,7 +26,6 @@ import xyz.vsngamer.elevatorid.network.TeleportRequest;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = ElevatorMod.ID)
 public class ElevatorHandler {
     private static boolean lastSneaking;
-    private static boolean lastJumping;
 
     @SubscribeEvent
     public static void onInput(InputEvent event) {
@@ -33,13 +38,12 @@ public class ElevatorHandler {
             if (sneaking)
                 tryTeleport(player, Direction.DOWN);
         }
+    }
 
-        boolean jumping = player.movementInput.jump;
-        if (lastJumping != jumping) {
-            lastJumping = jumping;
-            if (jumping)
-                tryTeleport(player, Direction.UP);
-        }
+    @SubscribeEvent
+    public static void jump(LivingEvent.LivingJumpEvent e) {
+        if (e.getEntity() instanceof PlayerEntity && e.getEntity().world.isRemote)
+            tryTeleport((ClientPlayerEntity) e.getEntity(), Direction.UP);
     }
 
     private static void tryTeleport(ClientPlayerEntity player, Direction facing) {

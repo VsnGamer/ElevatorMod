@@ -15,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '1.16.4-1.7.9'
+version = '1.16.4-1.7.10'
 group = 'xyz.vsngamer.elevatorid'
 archivesBaseName = 'elevatorid'
 
@@ -78,7 +78,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.4-35.1.32'
+    minecraft 'net.minecraftforge:forge:1.16.4-35.1.37'
 }
 
 jar {
