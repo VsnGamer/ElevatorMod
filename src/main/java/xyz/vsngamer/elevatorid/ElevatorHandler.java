@@ -30,7 +30,8 @@ public class ElevatorHandler {
     @SubscribeEvent
     public static void onInput(InputEvent event) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player == null || player.isSpectator() || !player.isAlive()) return;
+        if (player == null || player.isSpectator() || !player.isAlive() || player.movementInput == null)
+            return;
 
         boolean sneaking = player.movementInput.sneaking;
         if (lastSneaking != sneaking) {
