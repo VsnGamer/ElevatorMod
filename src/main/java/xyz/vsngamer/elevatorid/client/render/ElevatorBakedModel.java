@@ -60,7 +60,7 @@ public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
         }
 
         // Fallback / original model (renders on solid)
-        if (layer == RenderType.getSolid())
+        if (layer == RenderType.getSolid() || layer == null)
             result.addAll(originalModel.getQuads(state, side, rand, extraData));
 
         return result;
