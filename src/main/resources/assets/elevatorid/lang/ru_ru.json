@@ -1,22 +1,29 @@
 {
   "block.elevatorid.elevator_white": "Белый лифт",
-  "block.elevatorid.elevator_black": "Черный лифт",
+  "block.elevatorid.elevator_black": "Чёрный лифт",
   "block.elevatorid.elevator_blue": "Синий лифт",
   "block.elevatorid.elevator_brown": "Коричневый лифт",
-  "block.elevatorid.elevator_cyan": "Голубой лифт",
-  "block.elevatorid.elevator_gray": "Серый лифт",
-  "block.elevatorid.elevator_green": "Зеленый лифт",
-  "block.elevatorid.elevator_light_blue": "Светло-синий лифт",
+  "block.elevatorid.elevator_cyan": "Бирюзовый лифт",
+  "block.elevatorid.elevator_gray": "Сервый лифт",
+  "block.elevatorid.elevator_green": "Зелёный лифт",
+  "block.elevatorid.elevator_light_blue": "Голубой лифт",
   "block.elevatorid.elevator_lime": "Лаймовый лифт",
-  "block.elevatorid.elevator_magenta": "Малиновый лифт",
+  "block.elevatorid.elevator_magenta": "Пурпурный лифт",
   "block.elevatorid.elevator_orange": "Оранжевый лифт",
   "block.elevatorid.elevator_pink": "Розовый лифт",
-  "block.elevatorid.elevator_purple": "Пурпурный лифт",
+  "block.elevatorid.elevator_purple": "Фиолетовый лифт",
   "block.elevatorid.elevator_red": "Красный лифт",
-  "block.elevatorid.elevator_light_gray": "Светло-серый лифт",
-  "block.elevatorid.elevator_yellow": "Желтый лифт",
+  "block.elevatorid.elevator_light_gray": "Светло-сервый лифт",
+  "block.elevatorid.elevator_yellow": "Жёлтый лифт",
 
-  "elevatorid.subtitle.teleport": "Использование лифта",
+  "elevatorid.subtitle.teleport": "Лифт уже используется",
+
+  "screen.elevatorid.elevator": "Параметры лифта",
+  "screen.elevatorid.elevator.directional": "Направление",
+  "screen.elevatorid.elevator.hide_arrow": "Скрыть указатель",
+  "screen.elevatorid.elevator.reset_camo": "Снять маскировку",
+
+  "elevatorid.message.missing_xp": "У вас недостаточно опыта для телепортации",
 
   "itemGroup.elevators_tab": "Elevators"
 }
