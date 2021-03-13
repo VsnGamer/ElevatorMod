@@ -70,10 +70,8 @@ public class ElevatorBakedModel extends BakedModelWrapper<IBakedModel> {
     @Override
     public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data) {
         BlockState state = data.getData(HELD_STATE);
-        IBakedModel model;
         if (state != null) {
-            model = Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(state);
-            return model.getParticleTexture(data);
+            return Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(state).getParticleTexture(data);
         }
         return super.getParticleTexture(data);
     }

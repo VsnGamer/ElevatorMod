@@ -1,11 +1,8 @@
 package xyz.vsngamer.elevatorid.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -27,7 +24,7 @@ class FacingButton extends Button {
     }
 
     @Override
-    public void renderButton(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         if (isHovered())
             fill(matrixStack, x, y, x + width, y + height, -2130706433);

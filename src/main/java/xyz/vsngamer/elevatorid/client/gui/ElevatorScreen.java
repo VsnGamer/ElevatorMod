@@ -106,6 +106,6 @@ public class ElevatorScreen extends ContainerScreen<ElevatorContainer> {
 
     @Override
     protected void drawGuiContainerForegroundLayer(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY) {
-        font.func_243248_b(matrixStack, title, 8.0F, 8.0F, 14737632);
+        font.drawText(matrixStack, title, 8.0F, 8.0F, 14737632);
     }
 }

@@ -121,11 +121,6 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
 //    @Override
-//    public boolean isNormalCube(BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos) {
-//        return false;
-//    }
-
-//    @Override
 //    public boolean isSideInvisible(@Nonnull BlockState state, BlockState adjacentBlockState, @Nonnull Direction side) {
 //        return adjacentBlockState.getBlock() instanceof BreakableBlock || super.isSideInvisible(state, adjacentBlockState, side);
 //    }
@@ -318,6 +313,9 @@ public class ElevatorBlock extends HorizontalBlock {
     }
 
     private ElevatorTileEntity getElevatorTile(IBlockReader world, BlockPos pos) {
+        if (world == null || pos == null)
+            return null;
+
         TileEntity tile = world.getTileEntity(pos);
 
 
