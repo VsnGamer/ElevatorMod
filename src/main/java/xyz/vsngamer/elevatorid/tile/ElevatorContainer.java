@@ -1,52 +1,36 @@
 package xyz.vsngamer.elevatorid.tile;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 
 import javax.annotation.Nonnull;
 
 import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_CONTAINER;
 
-public class ElevatorContainer extends Container {
+public class ElevatorContainer extends AbstractContainerMenu {
 
     private final Direction playerFacing;
     private ElevatorTileEntity elevatorTile;
 
-    ElevatorContainer(int id, BlockPos pos, PlayerEntity player) {
+    ElevatorContainer(int id, BlockPos pos, Player player) {
         super(ELEVATOR_CONTAINER, id);
 
-        TileEntity tile = player.world.getTileEntity(pos);
+        BlockEntity tile = player.level.getBlockEntity(pos);
         if (tile instanceof ElevatorTileEntity)
             elevatorTile = (ElevatorTileEntity) tile;
 
-        playerFacing = player.getHorizontalFacing();
+        playerFacing = player.getDirection();
     }
 
-    // This will probably not be necessary
-//    private void addInventorySlots() {
-//        // Inventory
-//        for (int l = 0; l < 3; ++l) {
-//            for (int k = 0; k < 9; ++k) {
-//                this.addSlot(new Slot(inventory, k + l * 9 + 9, 8 + k * 18, l * 18 + 51));
-//            }
-//        }
-//
-//        // Hotbar
-//        for (int i1 = 0; i1 < 9; ++i1) {
-//            this.addSlot(new Slot(inventory, i1, 8 + i1 * 18, 109));
-//        }
-//    }
-
     @Override
-    public boolean canInteractWith(@Nonnull PlayerEntity playerIn) {
-        return isWithinUsableDistance(IWorldPosCallable.of(playerIn.world, elevatorTile.getPos()), playerIn, elevatorTile.getBlockState().getBlock());
+    public boolean stillValid(@Nonnull Player playerIn) {
+        return stillValid(ContainerLevelAccess.create(playerIn.level, elevatorTile.getBlockPos()), playerIn, elevatorTile.getBlockState().getBlock());
     }
 
     public ElevatorTileEntity getTile() {
@@ -57,8 +41,8 @@ public class ElevatorContainer extends Container {
         return playerFacing;
     }
 
-    public static ContainerType<ElevatorContainer> buildContainerType() {
-        ContainerType<ElevatorContainer> type = IForgeContainerType.create((windowId, inv, data) ->
+    public static MenuType<ElevatorContainer> buildContainerType() {
+        MenuType<ElevatorContainer> type = IForgeContainerType.create((windowId, inv, data) ->
                 new ElevatorContainer(windowId, data.readBlockPos(), inv.player));
         type.setRegistryName("elevator_container");
         return type;

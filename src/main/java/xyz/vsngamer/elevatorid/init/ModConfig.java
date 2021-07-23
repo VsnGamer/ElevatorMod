@@ -3,10 +3,11 @@ package xyz.vsngamer.elevatorid.init;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import org.apache.logging.log4j.LogManager;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 
-import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
+import static net.minecraftforge.fml.Logging.FORGEMOD;
 
 @Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModConfig {
@@ -27,14 +28,39 @@ public class ModConfig {
         CommonGeneral(ForgeConfigSpec.Builder builder) {
             builder.push("General");
 
-            sameColor = builder.worldRestart().comment("Should elevators have the same color in order to teleport ?").define("sameColor", false);
-            range = builder.worldRestart().comment("Elevator range").defineInRange("range", 256, 3, 256);
-            precisionTarget = builder.comment("Realign players to the center of elevator ?").define("precisionTarget", true);
-            mobSpawn = builder.comment("Can mobs spawn on elevators ?").define("mobSpawn", false);
-            resetPitchNormal = builder.comment("Reset pitch to 0 when teleporting to normal elevators ?").define("resetPitchNormal", false);
-            resetPitchDirectional = builder.comment("Reset pitch to 0 when teleporting to directional elevators ?").define("resetPitchDirectional", true);
-            useXP = builder.comment("Should teleporting require XP ?").define("useXP", false);
-            XPPointsAmount = builder.comment("Amount of XP points to use when useXP is enabled", "Note this is NOT experience levels").defineInRange("XPPointsAmount", 1, 1, Integer.MAX_VALUE);
+            sameColor = builder
+                    .worldRestart()
+                    .comment("Should elevators have the same color in order to teleport ?")
+                    .define("sameColor", false);
+
+            range = builder
+                    .worldRestart()
+                    .comment("Elevator range")
+                    .defineInRange("range", 256, 3, 256);
+
+            precisionTarget = builder
+                    .comment("Realign players to the center of elevator ?")
+                    .define("precisionTarget", true);
+
+            mobSpawn = builder
+                    .comment("Can mobs spawn on elevators ?")
+                    .define("mobSpawn", false);
+
+            resetPitchNormal = builder
+                    .comment("Reset pitch to 0 when teleporting to normal elevators ?")
+                    .define("resetPitchNormal", false);
+
+            resetPitchDirectional = builder
+                    .comment("Reset pitch to 0 when teleporting to directional elevators ?")
+                    .define("resetPitchDirectional", true);
+
+            useXP = builder
+                    .comment("Should teleporting require XP ?")
+                    .define("useXP", false);
+
+            XPPointsAmount = builder
+                    .comment("Amount of XP points to use when useXP is enabled", "Note this is NOT experience levels")
+                    .defineInRange("XPPointsAmount", 1, 1, Integer.MAX_VALUE);
 
             builder.pop();
         }
@@ -43,12 +69,12 @@ public class ModConfig {
     // Same debug messages as forge config
 
     @SubscribeEvent
-    public static void onLoad(final net.minecraftforge.fml.config.ModConfig.Loading configEvent) {
+    public static void onLoad(final ModConfigEvent.Loading configEvent) {
         LogManager.getLogger().debug(FORGEMOD, "Loaded elevator config file {}", configEvent.getConfig().getFileName());
     }
 
     @SubscribeEvent
-    public static void onFileChange(final net.minecraftforge.fml.config.ModConfig.Reloading configEvent) {
+    public static void onFileChange(final ModConfigEvent.Reloading configEvent) {
         LogManager.getLogger().debug(FORGEMOD, "Elevator config just got changed on the file system!");
     }
 }

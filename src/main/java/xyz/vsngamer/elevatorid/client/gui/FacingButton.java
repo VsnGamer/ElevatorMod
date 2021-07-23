@@ -1,11 +1,11 @@
 package xyz.vsngamer.elevatorid.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.network.client.SetFacingPacket;
 
@@ -17,19 +17,19 @@ class FacingButton extends Button {
     Direction direction;
 
     FacingButton(Point slot, Direction direction, BlockPos pos) {
-        super(slot.x, slot.y, 20, 20, ITextComponent.getTextComponentOrEmpty(direction.getName2().substring(0, 1).toUpperCase()), but ->
+        super(slot.x, slot.y, 20, 20, Component.nullToEmpty(direction.getName().substring(0, 1).toUpperCase()), but ->
                 NetworkHandler.INSTANCE.sendToServer(new SetFacingPacket(direction, pos)));
 
         this.direction = direction;
     }
 
     @Override
-    public void renderWidget(@Nonnull MatrixStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void renderButton(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         if (isHovered())
             fill(matrixStack, x, y, x + width, y + height, -2130706433);
 
-        drawCenteredString(matrixStack, Minecraft.getInstance().fontRenderer,
+        drawCenteredString(matrixStack, Minecraft.getInstance().font,
                 getMessage().getString(),
                 this.x + this.width / 2,
                 this.y + (this.height - 8) / 2,

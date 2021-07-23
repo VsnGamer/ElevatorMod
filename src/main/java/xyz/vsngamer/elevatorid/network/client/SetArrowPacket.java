@@ -1,19 +1,19 @@
 package xyz.vsngamer.elevatorid.network.client;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 
 import java.util.function.Supplier;
 
 public class SetArrowPacket {
 
-    private boolean value;
-    private BlockPos pos;
+    private final boolean value;
+    private final BlockPos pos;
 
     public SetArrowPacket(boolean value, BlockPos pos) {
         this.value = value;
@@ -21,28 +21,31 @@ public class SetArrowPacket {
     }
 
 
-    public static void encode(SetArrowPacket msg, PacketBuffer buf) {
+    public static void encode(SetArrowPacket msg, FriendlyByteBuf buf) {
         buf.writeBoolean(msg.value);
         buf.writeBlockPos(msg.pos);
     }
 
-    public static SetArrowPacket decode(PacketBuffer buf) {
+    public static SetArrowPacket decode(FriendlyByteBuf buf) {
         return new SetArrowPacket(buf.readBoolean(), buf.readBlockPos());
     }
 
-    public static boolean handle(SetArrowPacket msg, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(SetArrowPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity player = ctx.get().getSender();
+            ServerPlayer player = ctx.get().getSender();
             if (player == null)
                 return;
 
-            ServerWorld world = player.getServerWorld();
+            ServerLevel world = player.getLevel();
+            if (!world.isLoaded(msg.pos))
+                return;
+
             BlockState curState = world.getBlockState(msg.pos);
             if (curState.getBlock() instanceof ElevatorBlock) {
-                world.setBlockState(msg.pos, curState.with(ElevatorBlock.SHOW_ARROW, msg.value));
+                world.setBlockAndUpdate(msg.pos, curState.setValue(ElevatorBlock.SHOW_ARROW, msg.value));
             }
         });
 
-        return true;
+        ctx.get().setPacketHandled(true);
     }
 }

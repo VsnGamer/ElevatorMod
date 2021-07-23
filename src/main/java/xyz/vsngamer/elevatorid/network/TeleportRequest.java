@@ -1,7 +1,7 @@
 package xyz.vsngamer.elevatorid.network;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class TeleportRequest {
     private final BlockPos from, to;
@@ -19,11 +19,11 @@ public class TeleportRequest {
         return to;
     }
 
-    static TeleportRequest decode(PacketBuffer buf) {
+    static TeleportRequest decode(FriendlyByteBuf buf) {
         return new TeleportRequest(buf.readBlockPos(), buf.readBlockPos());
     }
 
-    static void encode(TeleportRequest msg, PacketBuffer buf) {
+    static void encode(TeleportRequest msg, FriendlyByteBuf buf) {
         buf.writeBlockPos(msg.from);
         buf.writeBlockPos(msg.to);
     }

@@ -1,13 +1,13 @@
 package xyz.vsngamer.elevatorid.network.client;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 
 import java.util.function.Supplier;
@@ -20,28 +20,32 @@ public class RemoveCamoPacket {
         this.pos = pos;
     }
 
-    public static void encode(RemoveCamoPacket msg, PacketBuffer buf) {
+    public static void encode(RemoveCamoPacket msg, FriendlyByteBuf buf) {
         buf.writeBlockPos(msg.pos);
     }
 
-    public static RemoveCamoPacket decode(PacketBuffer buf) {
+    public static RemoveCamoPacket decode(FriendlyByteBuf buf) {
         return new RemoveCamoPacket(buf.readBlockPos());
     }
 
-    public static boolean handle(RemoveCamoPacket msg, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(RemoveCamoPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity player = ctx.get().getSender();
+            ServerPlayer player = ctx.get().getSender();
             if (player == null)
                 return;
 
-            ServerWorld world = player.getServerWorld();
-            TileEntity tile = world.getTileEntity(msg.pos);
+            ServerLevel world = player.getLevel();
+            if (!world.isLoaded(msg.pos))
+                return;
+
+            BlockEntity tile = world.getBlockEntity(msg.pos);
             if (tile instanceof ElevatorTileEntity) {
                 ((ElevatorTileEntity) tile).setHeldState(null);
-                world.playSound(null, msg.pos, SoundEvents.ENTITY_ENDERMAN_TELEPORT, SoundCategory.BLOCKS, 1F, 1F);
+                world.playSound(null, msg.pos, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1F, 1F);
             }
+
         });
 
-        return true;
+        ctx.get().setPacketHandled(true);
     }
 }

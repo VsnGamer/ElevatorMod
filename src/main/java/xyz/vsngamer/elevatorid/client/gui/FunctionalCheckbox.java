@@ -1,13 +1,13 @@
 package xyz.vsngamer.elevatorid.client.gui;
 
-import net.minecraft.client.gui.widget.button.CheckboxButton;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.network.chat.Component;
 
-class FunctionalCheckbox extends CheckboxButton {
+class FunctionalCheckbox extends Checkbox {
 
     private final Toggleable onPress;
 
-    FunctionalCheckbox(int xIn, int yIn, int widthIn, int heightIn, ITextComponent text, boolean defaultValue, Toggleable onPress) {
+    FunctionalCheckbox(int xIn, int yIn, int widthIn, int heightIn, Component text, boolean defaultValue, Toggleable onPress) {
         super(xIn, yIn, widthIn, heightIn, text, defaultValue);
 
         this.onPress = onPress;
@@ -16,7 +16,7 @@ class FunctionalCheckbox extends CheckboxButton {
     @Override
     public void onPress() {
         super.onPress();
-        onPress.onPress(isChecked());
+        onPress.onPress(selected());
     }
 
     @FunctionalInterface

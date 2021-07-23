@@ -1,7 +1,7 @@
 package xyz.vsngamer.elevatorid.client.gui;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ class FacingControllerWrapper {
     }
 
     private void initButtons(Direction playerFacing, BlockPos pos) {
-        Collections.rotate(slots, playerFacing.getHorizontalIndex()); // Modifies list
+        Collections.rotate(slots, playerFacing.get2DDataValue()); // Modifies list
         bakedButtons.add(new FacingButton(slots.get(0), Direction.SOUTH, pos));
         bakedButtons.add(new FacingButton(slots.get(1), Direction.WEST, pos));
         bakedButtons.add(new FacingButton(slots.get(2), Direction.NORTH, pos));

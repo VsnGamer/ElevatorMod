@@ -1,19 +1,20 @@
 package xyz.vsngamer.elevatorid.tile;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
@@ -25,30 +26,34 @@ import javax.annotation.Nullable;
 import static xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel.HELD_STATE;
 import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_TILE_ENTITY;
 
-public class ElevatorTileEntity extends TileEntity implements INamedContainerProvider {
+public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
     private BlockState heldState;
 
-    public ElevatorTileEntity() {
-        super(ELEVATOR_TILE_ENTITY);
+    public ElevatorTileEntity(BlockPos pos, BlockState state) {
+        super(ELEVATOR_TILE_ENTITY, pos, state);
     }
 
     @Override
-    public void read(@Nonnull BlockState state, CompoundNBT compound) {
-        // Get blockstate from compound, always check if it's valid
-        BlockState held_id = NBTUtil.readBlockState(compound.getCompound("held_id"));
-        heldState = ElevatorBlock.isValidState(held_id) ? held_id : null;
+    public void load(@Nonnull CompoundTag compound) {
+        super.load(compound);
 
-        super.read(state, compound);
+        // Get blockstate from compound, always check if it's valid
+        if (compound.contains("held_id")) {
+            BlockState held_id = NbtUtils.readBlockState(compound.getCompound("held_id"));
+            heldState = ElevatorBlock.isValidState(held_id) ? held_id : null;
+        }
     }
 
     @Nonnull
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
-        if (heldState != null)
-            compound.put("held_id", NBTUtil.writeBlockState(heldState));
+    public CompoundTag save(@Nonnull CompoundTag compound) {
+        super.save(compound);
 
-        return super.write(compound);
+        if (heldState != null)
+            compound.put("held_id", NbtUtils.writeBlockState(heldState));
+
+        return compound;
     }
 
     @Nonnull
@@ -59,32 +64,32 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
 
     @Nonnull
     @Override
-    public CompoundNBT getUpdateTag() {
-        return write(new CompoundNBT());
+    public CompoundTag getUpdateTag() {
+        return save(new CompoundTag());
     }
 
     @Nullable
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getPos(), 1, getUpdateTag());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return new ClientboundBlockEntityDataPacket(getBlockPos(), 4, getUpdateTag());
     }
 
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
-        handleUpdateTag(getBlockState(),pkt.getNbtCompound());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        handleUpdateTag(pkt.getTag());
         updateClient();
     }
 
     @Nonnull
     @Override
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent("screen.elevatorid.elevator");
+    public Component getDisplayName() {
+        return new TranslatableComponent("screen.elevatorid.elevator");
     }
 
     @Override
-    public Container createMenu(int id, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player) {
-        return new ElevatorContainer(id, pos, player);
+    public AbstractContainerMenu createMenu(int id, @Nonnull Inventory inv, @Nonnull Player player) {
+        return new ElevatorContainer(id, worldPosition, player);
     }
 
     public void setHeldState(BlockState heldState) {
@@ -97,25 +102,25 @@ public class ElevatorTileEntity extends TileEntity implements INamedContainerPro
     }
 
     private void updateServer() throws IllegalStateException {
-        markDirty();
-        if (world != null && !world.isRemote) {
-            world.markAndNotifyBlock(pos, world.getChunkAt(pos), getBlockState(), getBlockState(), 3, 0);
-            world.getChunkProvider().getLightManager().checkBlock(pos);
+        setChanged();
+        if (level != null && !level.isClientSide) {
+            level.markAndNotifyBlock(worldPosition, level.getChunkAt(worldPosition), getBlockState(), getBlockState(), 3, 0);
+            level.getChunkSource().getLightEngine().checkBlock(worldPosition);
         } else {
             throw new IllegalStateException("Run this on the server");
         }
     }
 
     private void updateClient() {
-        if (world != null && world.isRemote) {
+        if (level != null && level.isClientSide) {
             ModelDataManager.requestModelDataRefresh(this);
-            world.notifyBlockUpdate(pos, getBlockState(), getBlockState(), 1);
-            world.getChunkProvider().getLightManager().checkBlock(pos);
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 1);
+            level.getChunkSource().getLightEngine().checkBlock(worldPosition);
         }
     }
 
-    public static TileEntityType<ElevatorTileEntity> getType(Block... validBlocks) {
-        TileEntityType<ElevatorTileEntity> type = TileEntityType.Builder.create(ElevatorTileEntity::new, validBlocks).build(null);
+    public static BlockEntityType<ElevatorTileEntity> getType(Block... validBlocks) {
+        BlockEntityType<ElevatorTileEntity> type = BlockEntityType.Builder.of(ElevatorTileEntity::new, validBlocks).build(null);
         type.setRegistryName("elevator_tile");
         return type;
     }

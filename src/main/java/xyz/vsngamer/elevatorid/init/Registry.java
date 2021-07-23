@@ -1,10 +1,10 @@
 package xyz.vsngamer.elevatorid.init;
 
-import net.minecraft.block.Block;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,8 +20,8 @@ public class Registry {
 
     public static final EnumMap<DyeColor, ElevatorBlock> ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
     public static final ElevatorBlock[] ELEVATOR_BLOCKS_ARRAY;
-    public static final TileEntityType<ElevatorTileEntity> ELEVATOR_TILE_ENTITY;
-    public static final ContainerType<ElevatorContainer> ELEVATOR_CONTAINER;
+    public static final BlockEntityType<ElevatorTileEntity> ELEVATOR_TILE_ENTITY;
+    public static final MenuType<ElevatorContainer> ELEVATOR_CONTAINER;
 
     static {
         for (DyeColor color : DyeColor.values()) {
@@ -45,12 +45,12 @@ public class Registry {
     }
 
     @SubscribeEvent
-    public static void registerTiles(RegistryEvent.Register<TileEntityType<?>> e) {
+    public static void registerTiles(RegistryEvent.Register<BlockEntityType<?>> e) {
         e.getRegistry().register(ELEVATOR_TILE_ENTITY);
     }
 
     @SubscribeEvent
-    public static void registerContainers(RegistryEvent.Register<ContainerType<?>> e) {
+    public static void registerContainers(RegistryEvent.Register<MenuType<?>> e) {
         e.getRegistry().register(ELEVATOR_CONTAINER);
     }
 

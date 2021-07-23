@@ -1,10 +1,10 @@
 package xyz.vsngamer.elevatorid.client;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -23,11 +23,11 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
-        ScreenManager.registerFactory(Registry.ELEVATOR_CONTAINER, ElevatorScreen::new);
+        MenuScreens.register(Registry.ELEVATOR_CONTAINER, ElevatorScreen::new);
         Minecraft.getInstance().getBlockColors().register(new ColorCamoElevator(), Registry.ELEVATOR_BLOCKS_ARRAY);
 
         Registry.ELEVATOR_BLOCKS.values().forEach(block ->
-                RenderTypeLookup.setRenderLayer(block, renderType -> true));
+                ItemBlockRenderTypes.setRenderLayer(block, renderType -> true));
     }
 
     @SubscribeEvent
@@ -41,7 +41,7 @@ public class ClientRegistry {
         e.getModelRegistry().entrySet().stream()
                 .filter(entry -> "elevatorid".equals(entry.getKey().getNamespace()) && entry.getKey().getPath().contains("elevator_"))
                 .forEach(entry -> {
-                    IBakedModel originalModel = entry.getValue();
+                    BakedModel originalModel = entry.getValue();
                     e.getModelRegistry().put(entry.getKey(), new ElevatorBakedModel(originalModel));
                 });
     }

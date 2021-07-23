@@ -1,12 +1,12 @@
 package xyz.vsngamer.elevatorid.network.client;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 
 import java.util.function.Supplier;
@@ -21,28 +21,31 @@ public class SetFacingPacket {
         this.pos = pos;
     }
 
-    public static void encode(SetFacingPacket msg, PacketBuffer buf) {
-        buf.writeEnumValue(msg.direction);
+    public static void encode(SetFacingPacket msg, FriendlyByteBuf buf) {
+        buf.writeEnum(msg.direction);
         buf.writeBlockPos(msg.pos);
     }
 
-    public static SetFacingPacket decode(PacketBuffer buf) {
-        return new SetFacingPacket(buf.readEnumValue(Direction.class), buf.readBlockPos());
+    public static SetFacingPacket decode(FriendlyByteBuf buf) {
+        return new SetFacingPacket(buf.readEnum(Direction.class), buf.readBlockPos());
     }
 
-    public static boolean handle(SetFacingPacket msg, Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(SetFacingPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity player = ctx.get().getSender();
+            ServerPlayer player = ctx.get().getSender();
             if (player == null)
                 return;
 
-            ServerWorld world = player.getServerWorld();
+            ServerLevel world = player.getLevel();
+            if (!world.isLoaded(msg.pos))
+                return;
+
             BlockState state = world.getBlockState(msg.pos);
             if (state.getBlock() instanceof ElevatorBlock) {
-                world.setBlockState(msg.pos, state.with(ElevatorBlock.HORIZONTAL_FACING, msg.direction));
+                world.setBlockAndUpdate(msg.pos, state.setValue(ElevatorBlock.FACING, msg.direction));
             }
         });
 
-        return true;
+        ctx.get().setPacketHandled(true);
     }
 }

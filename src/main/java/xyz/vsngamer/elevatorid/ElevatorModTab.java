@@ -1,15 +1,15 @@
 package xyz.vsngamer.elevatorid;
 
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import xyz.vsngamer.elevatorid.init.Registry;
 
 import javax.annotation.Nonnull;
 
-public class ElevatorModTab extends ItemGroup {
+public class ElevatorModTab extends CreativeModeTab {
 
-    public static ItemGroup TAB = new ElevatorModTab();
+    public static CreativeModeTab TAB = new ElevatorModTab();
 
     private ElevatorModTab() {
         super("elevators_tab");
@@ -17,7 +17,7 @@ public class ElevatorModTab extends ItemGroup {
 
     @Override
     @Nonnull
-    public ItemStack createIcon() {
+    public ItemStack makeIcon() {
         return new ItemStack(Registry.ELEVATOR_BLOCKS.get(DyeColor.WHITE));
     }
 }

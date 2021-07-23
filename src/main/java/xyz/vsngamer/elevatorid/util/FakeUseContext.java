@@ -1,22 +1,22 @@
 package xyz.vsngamer.elevatorid.util;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nonnull;
 
-public class FakeUseContext extends BlockItemUseContext {
-    public FakeUseContext(PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        super(new ItemUseContext(player, handIn, hit));
+public class FakeUseContext extends BlockPlaceContext {
+    public FakeUseContext(Player player, InteractionHand handIn, BlockHitResult hit) {
+        super(new UseOnContext(player, handIn, hit));
     }
 
     @Nonnull
     @Override
-    public BlockPos getPos() {
-        return func_242401_i().getPos();
+    public BlockPos getClickedPos() {
+        return getHitResult().getBlockPos();
     }
 }
