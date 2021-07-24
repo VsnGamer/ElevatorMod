@@ -14,7 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = '1.17.1-1.8.0'
+version = '1.17.1-1.8.1'
 group = 'xyz.vsngamer.elevatorid'
 archivesBaseName = 'elevatorid'
 
