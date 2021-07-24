@@ -149,7 +149,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
     public static boolean isValidState(BlockState state) {
         if (state == null)
-            return false;
+            return true;
 
         if (state.getBlock() == Blocks.AIR)
             return false;
