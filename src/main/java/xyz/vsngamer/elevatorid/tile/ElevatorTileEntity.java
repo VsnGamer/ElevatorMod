@@ -7,17 +7,21 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.ModelDataManager;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.common.util.Constants.BlockFlags;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 
 import javax.annotation.Nonnull;
@@ -39,10 +43,8 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         super.load(compound);
 
         // Get blockstate from compound, always check if it's valid
-        if (compound.contains("held_id")) {
-            BlockState held_id = NbtUtils.readBlockState(compound.getCompound("held_id"));
-            heldState = ElevatorBlock.isValidState(held_id) ? held_id : null;
-        }
+        BlockState held_id = NbtUtils.readBlockState(compound.getCompound("held_id"));
+        heldState = isValidState(held_id) ? held_id : null;
     }
 
     @Nonnull
@@ -62,6 +64,12 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         return new ModelDataMap.Builder().withInitial(HELD_STATE, heldState).build();
     }
 
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        updateClient();
+    }
+
     @Nonnull
     @Override
     public CompoundTag getUpdateTag() {
@@ -71,14 +79,13 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(getBlockPos(), 4, getUpdateTag());
+        return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, getUpdateTag());
     }
-
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         handleUpdateTag(pkt.getTag());
-        updateClient();
+//        updateClient();
     }
 
     @Nonnull
@@ -92,31 +99,77 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         return new ElevatorContainer(id, worldPosition, player);
     }
 
-    public void setHeldState(BlockState heldState) {
-        this.heldState = heldState;
-        updateServer();
+    public void setHeldState(BlockState state) {
+        this.heldState = state;
+        markUpdated();
+    }
+
+    private void markUpdated() {
+        this.setChanged();
+
+        if (getLevel() != null)
+            this.getLevel().sendBlockUpdated(
+                    this.getBlockPos(),
+                    this.getBlockState(),
+                    this.getBlockState(),
+                    BlockFlags.DEFAULT_AND_RERENDER
+            );
     }
 
     public BlockState getHeldState() {
         return heldState;
     }
 
-    private void updateServer() throws IllegalStateException {
-        setChanged();
-        if (level != null && !level.isClientSide) {
-            level.markAndNotifyBlock(worldPosition, level.getChunkAt(worldPosition), getBlockState(), getBlockState(), 3, 0);
-            level.getChunkSource().getLightEngine().checkBlock(worldPosition);
-        } else {
-            throw new IllegalStateException("Run this on the server");
+    private void updateClient() {
+        if (level != null && level.isClientSide) {
+            requestModelDataUpdate();
+            level.sendBlockUpdated(
+                    getBlockPos(),
+                    getBlockState(),
+                    getBlockState(),
+                    BlockFlags.DEFAULT_AND_RERENDER
+            );
+            level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
         }
     }
 
-    private void updateClient() {
-        if (level != null && level.isClientSide) {
-            ModelDataManager.requestModelDataRefresh(this);
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 1);
-            level.getChunkSource().getLightEngine().checkBlock(worldPosition);
+    public boolean setCamoAndUpdate(BlockState newState) {
+        if (heldState == newState)
+            return false;
+
+        if (!isValidState(newState))
+            return false;
+
+        setHeldState(newState);
+        if (getLevel() != null)
+            getLevel().playSound(null, getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1F, 1F);
+
+        return true;
+    }
+
+    public static boolean isValidState(BlockState state) {
+        if (state == null)
+            return false;
+
+        if (state.getBlock() == Blocks.AIR)
+            return false;
+
+        // Tile entities can cause problems
+        if (state.hasBlockEntity())
+            return false;
+
+        // Don't try to camouflage with itself
+        if (state.getBlock() instanceof ElevatorBlock) {
+            return false;
         }
+
+        // Only normally rendered blocks (not chests, ...)
+        if (state.getRenderShape() != RenderShape.MODEL) {
+            return false;
+        }
+
+        // Only blocks with a collision box
+        return state.getMaterial().isSolid();
     }
 
     public static BlockEntityType<ElevatorTileEntity> getType(Block... validBlocks) {

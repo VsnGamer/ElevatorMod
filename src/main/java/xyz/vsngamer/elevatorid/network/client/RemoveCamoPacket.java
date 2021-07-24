@@ -4,9 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 
@@ -38,12 +35,9 @@ public class RemoveCamoPacket {
             if (!world.isLoaded(msg.pos))
                 return;
 
-            BlockEntity tile = world.getBlockEntity(msg.pos);
-            if (tile instanceof ElevatorTileEntity) {
-                ((ElevatorTileEntity) tile).setHeldState(null);
-                world.playSound(null, msg.pos, SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1F, 1F);
+            if (world.getBlockEntity(msg.pos) instanceof ElevatorTileEntity tile) {
+                tile.setCamoAndUpdate(null);
             }
-
         });
 
         ctx.get().setPacketHandled(true);

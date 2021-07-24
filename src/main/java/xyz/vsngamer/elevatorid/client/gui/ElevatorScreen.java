@@ -1,13 +1,14 @@
 package xyz.vsngamer.elevatorid.client.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.fmlclient.gui.widget.ExtendedButton;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
@@ -30,7 +31,7 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
     private FunctionalCheckbox dirButton;
     private FunctionalCheckbox hideArrowButton;
-    private ExtendedButton resetCamoButton;
+    private Button resetCamoButton;
     private FacingControllerWrapper facingController;
 
     public ElevatorScreen(ElevatorContainer container, Inventory inv, Component titleIn) {
@@ -54,15 +55,16 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
         // Toggle arrow button
         Component arrowLang = new TranslatableComponent("screen.elevatorid.elevator.hide_arrow");
-        hideArrowButton = new FunctionalCheckbox(leftPos + 8, topPos + 50, 20, 20, arrowLang, !tile.getBlockState().getValue(SHOW_ARROW), value ->
-                NetworkHandler.INSTANCE.sendToServer(new SetArrowPacket(!value, tile.getBlockPos())));
+        hideArrowButton = new FunctionalCheckbox(leftPos + 8, topPos + 50, 20, 20, arrowLang, !tile.getBlockState().getValue(SHOW_ARROW),
+                value -> NetworkHandler.INSTANCE.sendToServer(new SetArrowPacket(!value, tile.getBlockPos())));
         hideArrowButton.visible = tile.getBlockState().getValue(DIRECTIONAL);
         addRenderableWidget(hideArrowButton);
 
         // Reset camouflage button
         Component resetCamoLang = new TranslatableComponent("screen.elevatorid.elevator.reset_camo");
-        resetCamoButton = new ExtendedButton(leftPos + 8, topPos + 75, 110, 20, resetCamoLang, p_onPress_1_ ->
-                NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getBlockPos())));
+        resetCamoButton = new Button(leftPos + 8, topPos + 75, 110, 20, resetCamoLang,
+                button -> NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getBlockPos()))
+        );
         addRenderableWidget(resetCamoButton);
 
         // Directional controller
@@ -94,9 +96,7 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
     @Override
     protected void renderBg(@Nonnull PoseStack matrixStack, float v, int mouseX, int mouseY) {
-        if (minecraft != null) {
-            minecraft.getTextureManager().bindForSetup(GUI_TEXTURE);
-        }
+        RenderSystem.setShaderTexture(0, GUI_TEXTURE);
 
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;

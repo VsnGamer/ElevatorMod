@@ -4,8 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -21,7 +19,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -34,8 +35,6 @@ import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.init.ModConfig;
-import xyz.vsngamer.elevatorid.network.NetworkHandler;
-import xyz.vsngamer.elevatorid.network.client.RemoveCamoPacket;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
 
@@ -100,18 +99,12 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
         Block handBlock = Block.byItem(handStack.getItem());
         BlockState stateToApply = handBlock.getStateForPlacement(new FakeUseContext(player, handIn, hit));
-        if (stateToApply != null && isValidState(stateToApply)) {
-            // Try set camo
-            if (stateToApply != tile.getHeldState()) {
-                setCamoAndUpdate(stateToApply, tile, worldIn);
-                // If we successfully set camo, don't open the menu
-                return InteractionResult.SUCCESS;
-            }
-        }
+        if (tile.setCamoAndUpdate(stateToApply))// Try set camo
+            return InteractionResult.SUCCESS; // If we successfully set camo, don't open the menu
 
         // Remove camo
         if (player.isCrouching() && tile.getHeldState() != null) {
-            NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(pos));
+            tile.setCamoAndUpdate(null);
             return InteractionResult.SUCCESS;
         }
 
@@ -123,11 +116,6 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType) {
         return ModConfig.GENERAL.mobSpawn.get() && super.canCreatureSpawn(state, world, pos, type, entityType);
     }
-
-//    @Override
-//    public boolean isSideInvisible(@Nonnull BlockState state, BlockState adjacentBlockState, @Nonnull Direction side) {
-//        return adjacentBlockState.getBlock() instanceof BreakableBlock || super.isSideInvisible(state, adjacentBlockState, side);
-//    }
 
     // Collision
     @Nonnull
@@ -170,10 +158,9 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
         if (tile != null && tile.getHeldState() != null) {
             try {
-                tile.getHeldState().getBlock().entityInside(state, worldIn, pos, entityIn);
+                tile.getHeldState().entityInside(worldIn, pos, entityIn);
                 return;
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
+            } catch (IllegalArgumentException ignored) {
             }
         }
         super.entityInside(state, worldIn, pos, entityIn);
@@ -207,10 +194,10 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     // Redstone
-    @Override
-    public boolean isSignalSource(@Nonnull BlockState state) {
-        return true;
-    }
+//    @Override
+//    public boolean isSignalSource(@Nonnull BlockState state) {
+//        return true;
+//    }
 
 //    @Override
 //    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
@@ -220,33 +207,33 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 //        }
 //        return false;
 //    }
-
-    @Override
-    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side) {
-        ElevatorTileEntity tile = getElevatorTile(world, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().shouldCheckWeakPower(world, pos, side);
-        }
-        return true;
-    }
-
-    @Override
-    public int getSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
-        ElevatorTileEntity tile = getElevatorTile(reader, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getSignal(reader, pos, direction);
-        }
-        return 0;
-    }
-
-    @Override
-    public int getDirectSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
-        ElevatorTileEntity tile = getElevatorTile(reader, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getDirectSignal(reader, pos, direction);
-        }
-        return 0;
-    }
+//
+//    @Override
+//    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side) {
+//        ElevatorTileEntity tile = getElevatorTile(world, pos);
+//        if (tile != null && tile.getHeldState() != null) {
+//            return tile.getHeldState().shouldCheckWeakPower(world, pos, side);
+//        }
+//        return super.shouldCheckWeakPower(state, world, pos, side);
+//    }
+//
+//    @Override
+//    public int getSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
+//        ElevatorTileEntity tile = getElevatorTile(reader, pos);
+//        if (tile != null && tile.getHeldState() != null) {
+//            return tile.getHeldState().getSignal(reader, pos, direction);
+//        }
+//        return 0;
+//    }
+//
+//    @Override
+//    public int getDirectSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
+//        ElevatorTileEntity tile = getElevatorTile(reader, pos);
+//        if (tile != null && tile.getHeldState() != null) {
+//            return tile.getHeldState().getDirectSignal(reader, pos, direction);
+//        }
+//        return 0;
+//    }
 
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
@@ -294,28 +281,6 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         return dyeColor;
     }
 
-    public static boolean isValidState(BlockState state) {
-        if (state.getBlock() == Blocks.AIR)
-            return false;
-
-        // Tile entities can cause problems
-        if (state.hasBlockEntity())
-            return false;
-
-        // Don't try to camouflage with itself
-        if (state.getBlock() instanceof ElevatorBlock) {
-            return false;
-        }
-
-        // Only normally rendered blocks (not chests, ...)
-        if (state.getRenderShape() != RenderShape.MODEL) {
-            return false;
-        }
-
-        // Only blocks with a collision box
-        return state.getMaterial().isSolid();
-    }
-
     private ElevatorTileEntity getElevatorTile(BlockGetter world, BlockPos pos) {
         if (world == null || pos == null)
             return null;
@@ -330,12 +295,6 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 //        LogManager.getLogger(ElevatorMod.ID).debug("NULL TILE, " + world.toString());
         return null;
     }
-
-    private void setCamoAndUpdate(BlockState newState, ElevatorTileEntity tile, Level world) {
-        tile.setHeldState(newState);
-        world.playSound(null, tile.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1F, 1F);
-    }
-
 
     @Nonnull
     @Override
