@@ -7,20 +7,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
+import xyz.vsngamer.elevatorid.network.NetworkHandler;
 
 import java.util.function.Supplier;
 
-public class SetArrowPacket {
-
-    private final boolean value;
-    private final BlockPos pos;
-
-    public SetArrowPacket(boolean value, BlockPos pos) {
-        this.value = value;
-        this.pos = pos;
-    }
-
-
+public record SetArrowPacket(boolean value, BlockPos pos) {
     public static void encode(SetArrowPacket msg, FriendlyByteBuf buf) {
         buf.writeBoolean(msg.value);
         buf.writeBlockPos(msg.pos);
@@ -33,16 +24,13 @@ public class SetArrowPacket {
     public static void handle(SetArrowPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
-            if (player == null)
+            if (NetworkHandler.isBadPacket(player, msg.pos))
                 return;
 
             ServerLevel world = player.getLevel();
-            if (!world.isLoaded(msg.pos))
-                return;
-
-            BlockState curState = world.getBlockState(msg.pos);
-            if (curState.getBlock() instanceof ElevatorBlock) {
-                world.setBlockAndUpdate(msg.pos, curState.setValue(ElevatorBlock.SHOW_ARROW, msg.value));
+            BlockState state = world.getBlockState(msg.pos);
+            if (state.getBlock() instanceof ElevatorBlock) {
+                world.setBlockAndUpdate(msg.pos, state.setValue(ElevatorBlock.SHOW_ARROW, msg.value));
             }
         });
 

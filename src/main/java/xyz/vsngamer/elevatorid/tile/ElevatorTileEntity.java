@@ -7,7 +7,6 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,6 +22,7 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import net.minecraftforge.common.util.Constants.BlockFlags;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
+import xyz.vsngamer.elevatorid.init.ModSounds;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -142,7 +142,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
         setHeldState(newState);
         if (getLevel() != null)
-            getLevel().playSound(null, getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1F, 1F);
+            getLevel().playSound(null, getBlockPos(), ModSounds.CAMOUFLAGE, SoundSource.BLOCKS, 1F, 1F);
 
         return true;
     }

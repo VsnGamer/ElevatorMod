@@ -36,7 +36,7 @@ public class ModConfig {
             range = builder
                     .worldRestart()
                     .comment("Elevator range")
-                    .defineInRange("range", 256, 3, 256);
+                    .defineInRange("range", 384, 3, 4064);
 
             precisionTarget = builder
                     .comment("Realign players to the center of elevator ?")

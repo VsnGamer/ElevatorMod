@@ -1,6 +1,9 @@
 package xyz.vsngamer.elevatorid.network;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import xyz.vsngamer.elevatorid.ElevatorMod;
@@ -8,6 +11,7 @@ import xyz.vsngamer.elevatorid.network.client.RemoveCamoPacket;
 import xyz.vsngamer.elevatorid.network.client.SetArrowPacket;
 import xyz.vsngamer.elevatorid.network.client.SetDirectionalPacket;
 import xyz.vsngamer.elevatorid.network.client.SetFacingPacket;
+import xyz.vsngamer.elevatorid.tile.ElevatorContainer;
 
 public class NetworkHandler {
     private static final String PROTOCOL_VERSION = "1";
@@ -25,5 +29,19 @@ public class NetworkHandler {
         INSTANCE.registerMessage(i++, SetArrowPacket.class, SetArrowPacket::encode, SetArrowPacket::decode, SetArrowPacket::handle);
         INSTANCE.registerMessage(i++, RemoveCamoPacket.class, RemoveCamoPacket::encode, RemoveCamoPacket::decode, RemoveCamoPacket::handle);
         INSTANCE.registerMessage(i++, SetFacingPacket.class, SetFacingPacket::encode, SetFacingPacket::decode, SetFacingPacket::handle);
+    }
+
+    public static boolean isBadPacket(ServerPlayer player, BlockPos pos) {
+        if (player == null || player.isDeadOrDying() || player.isRemoved())
+            return true;
+
+        ServerLevel world = player.getLevel();
+        if (!world.isLoaded(pos))
+            return true;
+
+        if (!(player.containerMenu instanceof ElevatorContainer container))
+            return true;
+
+        return !container.getPos().equals(pos);
     }
 }

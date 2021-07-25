@@ -14,7 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
-version = '1.17.1-1.8.1'
+version = '1.17.1-1.8.2'
 group = 'xyz.vsngamer.elevatorid'
 archivesBaseName = 'elevatorid'
 
@@ -78,7 +78,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.17.1-37.0.7'
+    minecraft 'net.minecraftforge:forge:1.17.1-37.0.8'
 }
 
 jar {

@@ -1,3 +1,12 @@
 {
-	"teleport": { "category": "block", "sounds": ["elevatorid:teleport"], "subtitle": "elevatorid.subtitle.teleport" }
+  "teleport": {
+    "category": "block",
+    "sounds": ["elevatorid:teleport"],
+    "subtitle": "elevatorid.subtitle.teleport"
+  },
+  "camouflage": {
+    "category": "block",
+    "sounds": ["mob/endermen/portal", "mob/endermen/portal2"],
+    "subtitle": "elevatorid.subtitle.camouflage"
+  }
 }

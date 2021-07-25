@@ -8,19 +8,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
+import xyz.vsngamer.elevatorid.network.NetworkHandler;
 
 import java.util.function.Supplier;
 
-public class SetFacingPacket {
-
-    private final Direction direction;
-    private final BlockPos pos;
-
-    public SetFacingPacket(Direction value, BlockPos pos) {
-        this.direction = value;
-        this.pos = pos;
-    }
-
+public record SetFacingPacket(Direction direction, BlockPos pos) {
     public static void encode(SetFacingPacket msg, FriendlyByteBuf buf) {
         buf.writeEnum(msg.direction);
         buf.writeBlockPos(msg.pos);
@@ -33,13 +25,10 @@ public class SetFacingPacket {
     public static void handle(SetFacingPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
-            if (player == null)
+            if (NetworkHandler.isBadPacket(player, msg.pos))
                 return;
 
             ServerLevel world = player.getLevel();
-            if (!world.isLoaded(msg.pos))
-                return;
-
             BlockState state = world.getBlockState(msg.pos);
             if (state.getBlock() instanceof ElevatorBlock) {
                 world.setBlockAndUpdate(msg.pos, state.setValue(ElevatorBlock.FACING, msg.direction));

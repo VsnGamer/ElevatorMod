@@ -7,19 +7,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
+import xyz.vsngamer.elevatorid.network.NetworkHandler;
 
 import java.util.function.Supplier;
 
-public class SetDirectionalPacket {
-
-    private final boolean value;
-    private final BlockPos pos;
-
-    public SetDirectionalPacket(boolean value, BlockPos pos) {
-        this.value = value;
-        this.pos = pos;
-    }
-
+public record SetDirectionalPacket(boolean value, BlockPos pos) {
     public static void encode(SetDirectionalPacket msg, FriendlyByteBuf buf) {
         buf.writeBoolean(msg.value);
         buf.writeBlockPos(msg.pos);
@@ -32,17 +24,13 @@ public class SetDirectionalPacket {
     public static void handle(SetDirectionalPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
-            if (player == null)
+            if (NetworkHandler.isBadPacket(player, msg.pos))
                 return;
 
             ServerLevel world = player.getLevel();
-            if (!world.isLoaded(msg.pos))
-                return;
-
-            BlockState currState = world.getBlockState(msg.pos);
-
-            if (currState.getBlock() instanceof ElevatorBlock) {
-                world.setBlockAndUpdate(msg.pos, currState.setValue(ElevatorBlock.DIRECTIONAL, msg.value));
+            BlockState state = world.getBlockState(msg.pos);
+            if (state.getBlock() instanceof ElevatorBlock) {
+                world.setBlockAndUpdate(msg.pos, state.setValue(ElevatorBlock.DIRECTIONAL, msg.value));
             }
         });
 

@@ -56,7 +56,7 @@ public class ElevatorHandler {
 
         while (true) {
             toPos.setY(toPos.getY() + facing.getStepY());
-            if (Math.abs(toPos.getY() - fromPos.getY()) > ModConfig.GENERAL.range.get())
+            if (world.isOutsideBuildHeight(toPos) || Math.abs(toPos.getY() - fromPos.getY()) > ModConfig.GENERAL.range.get())
                 break;
 
             BlockState toState = world.getBlockState(toPos);
@@ -72,6 +72,7 @@ public class ElevatorHandler {
 
     /**
      * Checks if a player(lower part) is in or has an elevator up to 2 blocks below
+     *
      * @param player the player trying to teleport
      * @return the position of the first valid elevator or null if it doesn't exist
      */

@@ -13,17 +13,18 @@
   "block.elevatorid.elevator_pink": "Elevador Rosa",
   "block.elevatorid.elevator_purple": "Elevador Roxo",
   "block.elevatorid.elevator_red": "Elevador Vermelho",
-  "block.elevatorid.elevator_silver": "Elevador Cinza Claro",
+  "block.elevatorid.elevator_light_gray": "Elevador Cinza Claro",
   "block.elevatorid.elevator_yellow": "Elevador Amarelo",
 
   "elevatorid.subtitle.teleport": "Elevador usado",
+  "elevatorid.subtitle.camouflage": "Elevador camuflado",
 
   "screen.elevatorid.elevator": "Opções do Elevator",
   "screen.elevatorid.elevator.directional": "Direcional",
   "screen.elevatorid.elevator.hide_arrow": "Esconder seta",
   "screen.elevatorid.elevator.reset_camo": "Remover camuflagem",
 
-  "elevatorid.message.missing_xp": "Não tens experiêcia suficiente para teleportar",
+  "elevatorid.message.missing_xp": "Não tens experiência suficiente para teleportar",
 
   "itemGroup.elevators_tab": "Elevadores"
 }

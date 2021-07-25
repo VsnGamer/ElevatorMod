@@ -17,6 +17,7 @@ public class ElevatorContainer extends AbstractContainerMenu {
 
     private final Direction playerFacing;
     private ElevatorTileEntity elevatorTile;
+    private final BlockPos pos;
 
     ElevatorContainer(int id, BlockPos pos, Player player) {
         super(ELEVATOR_CONTAINER, id);
@@ -26,11 +27,16 @@ public class ElevatorContainer extends AbstractContainerMenu {
             elevatorTile = (ElevatorTileEntity) tile;
 
         playerFacing = player.getDirection();
+        this.pos = pos;
     }
 
     @Override
     public boolean stillValid(@Nonnull Player playerIn) {
         return stillValid(ContainerLevelAccess.create(playerIn.level, elevatorTile.getBlockPos()), playerIn, elevatorTile.getBlockState().getBlock());
+    }
+
+    public BlockPos getPos() {
+        return pos;
     }
 
     public ElevatorTileEntity getTile() {
