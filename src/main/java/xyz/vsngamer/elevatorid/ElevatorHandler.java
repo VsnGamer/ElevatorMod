@@ -7,7 +7,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -59,10 +58,9 @@ public class ElevatorHandler {
             if (world.isOutsideBuildHeight(toPos) || Math.abs(toPos.getY() - fromPos.getY()) > ModConfig.GENERAL.range.get())
                 break;
 
-            BlockState toState = world.getBlockState(toPos);
-            if (TeleportHandler.isElevator(toState) && TeleportHandler.validateTarget(world, toPos)) {
-                toElevator = (ElevatorBlock) toState.getBlock();
-                if (!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
+            ElevatorBlock elevator = TeleportHandler.getElevator(world.getBlockState(toPos));
+            if (elevator != null && TeleportHandler.isBlocked(world, toPos)) {
+                if (!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == elevator.getColor()) {
                     NetworkHandler.INSTANCE.sendToServer(new TeleportRequest(fromPos, toPos));
                     break;
                 }
@@ -78,11 +76,11 @@ public class ElevatorHandler {
      */
     private static BlockPos getOriginElevator(LocalPlayer player) {
         Level world = player.getCommandSenderWorld();
-        BlockPos pos = new BlockPos(player.getX(), player.getY(), player.getZ());
+        BlockPos pos = new BlockPos(player.position());
 
         // Check the player's feet and the 2 blocks under it
         for (int i = 0; i < 3; i++) {
-            if (TeleportHandler.isElevator(world.getBlockState(pos)) && TeleportHandler.validateTarget(world, pos))
+            if (TeleportHandler.getElevator(world.getBlockState(pos)) != null && TeleportHandler.isBlocked(world, pos))
                 return pos;
             pos = pos.below();
         }

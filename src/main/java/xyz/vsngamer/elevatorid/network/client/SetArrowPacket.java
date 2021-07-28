@@ -24,7 +24,7 @@ public record SetArrowPacket(boolean value, BlockPos pos) {
     public static void handle(SetArrowPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
-            if (NetworkHandler.isBadPacket(player, msg.pos))
+            if (NetworkHandler.isBadClientPacket(player, msg.pos))
                 return;
 
             ServerLevel world = player.getLevel();

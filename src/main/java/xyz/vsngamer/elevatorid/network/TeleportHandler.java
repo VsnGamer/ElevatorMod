@@ -16,32 +16,33 @@ import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.ModSounds;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class TeleportHandler {
     static void handle(TeleportRequest message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
-            if (player == null || !player.isAlive()) return;
-
-            ServerLevel world = player.getLevel();
-            BlockPos from = message.getFrom(), to = message.getTo();
-
-            if (!world.isLoaded(from) || !world.isLoaded(to))
+            if (isBadTeleportPacket(message, player))
                 return;
 
-            // This ensures the player is still standing on the "from" elevator
-            final double distanceSq = player.distanceToSqr(new Vec3(from.getX(), from.getY(), from.getZ()).add(0, 1, 0));
-            if (distanceSq > 4D) return;
+            // XP
+            if (ModConfig.GENERAL.useXP.get() && !player.isCreative()) {
+                Integer xpCost = ModConfig.GENERAL.XPPointsAmount.get();
+                if (getPlayerExperienceProgress(player) - xpCost >= 0 || player.experienceLevel > 0) {
+                    player.giveExperiencePoints(-xpCost);
+                } else {
+                    player.sendMessage(
+                            new TranslatableComponent("elevatorid.message.missing_xp")
+                                    .withStyle(ChatFormatting.RED), player.getUUID()
+                    );
+                    return;
+                }
+            }
 
-            if (from.getX() != to.getX() || from.getZ() != to.getZ()) return;
-
-            BlockState fromState = world.getBlockState(from);
-            BlockState toState = world.getBlockState(to);
-
-            if (!isElevator(fromState) || !isElevator(toState)) return;
-
-            if (!validateTarget(world, to)) return;
+            ServerLevel world = player.getLevel();
+            BlockPos toPos = message.getTo();
+            BlockState toState = world.getBlockState(message.getTo());
 
             // Check yaw and pitch
             final float yaw, pitch;
@@ -52,52 +53,75 @@ public class TeleportHandler {
                     || (!toState.getValue(ElevatorBlock.DIRECTIONAL) && ModConfig.GENERAL.resetPitchNormal.get())
                     ? 0F : player.getXRot();
 
-            // Set X and Z
+            // Check X and Z
             final double toX, toZ;
             if (ModConfig.GENERAL.precisionTarget.get()) {
-                toX = to.getX() + .5D;
-                toZ = to.getZ() + .5D;
+                toX = toPos.getX() + .5D;
+                toZ = toPos.getZ() + .5D;
             } else {
                 toX = player.getX();
                 toZ = player.getZ();
             }
 
-            // XP
-            if (ModConfig.GENERAL.useXP.get() && !player.isCreative()) {
-                if (getPlayerExperienceProgress(player) - ModConfig.GENERAL.XPPointsAmount.get() >= 0 || player.experienceLevel > 0) {
-                    player.giveExperiencePoints(-ModConfig.GENERAL.XPPointsAmount.get());
-                } else {
-                    player.sendMessage(
-                            new TranslatableComponent("elevatorid.message.missing_xp")
-                                    .withStyle(ChatFormatting.RED), player.getUUID()
-                    );
-                    return;
-                }
-            }
-
-            // Passed all tests, begin teleport
-            double blockYOffset = toState.getBlockSupportShape(world, to).max(Direction.Axis.Y);
-            player.teleportTo(world, toX, to.getY() + (blockYOffset == Double.NEGATIVE_INFINITY ? 1 : blockYOffset), toZ, yaw, pitch);
+            double blockYOffset = toState.getBlockSupportShape(world, toPos).max(Direction.Axis.Y);
+            player.teleportTo(world, toX, toPos.getY() + blockYOffset, toZ, yaw, pitch);
             player.setDeltaMovement(player.getDeltaMovement().multiply(new Vec3(1D, 0D, 1D)));
-            world.playSound(null, to, ModSounds.TELEPORT, SoundSource.BLOCKS, 1F, 1F);
+            world.playSound(null, toPos, ModSounds.TELEPORT, SoundSource.BLOCKS, 1F, 1F);
         });
 
         ctx.get().setPacketHandled(true);
+    }
+
+    private static boolean isBadTeleportPacket(TeleportRequest msg, ServerPlayer player) {
+        if (player == null || !player.isAlive())
+            return true;
+
+        ServerLevel world = player.getLevel();
+        BlockPos fromPos = msg.getFrom();
+        BlockPos toPos = msg.getTo();
+
+        if (!world.isLoaded(fromPos) || !world.isLoaded(toPos))
+            return true;
+
+        // This ensures the player is still standing on the "from" elevator
+        final double distanceSq = player.distanceToSqr(Vec3.atCenterOf(fromPos.north()));
+        if (distanceSq > 4D)
+            return true;
+
+        if (fromPos.getX() != toPos.getX() || fromPos.getZ() != toPos.getZ())
+            return true;
+
+        ElevatorBlock fromElevator = getElevator(world.getBlockState(fromPos));
+        ElevatorBlock toElevator = getElevator(world.getBlockState(toPos));
+
+        if (fromElevator == null || toElevator == null)
+            return true;
+
+        if (!isBlocked(world, toPos))
+            return true;
+
+        return ModConfig.GENERAL.sameColor.get() && fromElevator.getColor() != toElevator.getColor();
     }
 
     private static int getPlayerExperienceProgress(Player player) {
         return Math.round(player.experienceProgress * player.getXpNeededForNextLevel());
     }
 
-    public static boolean validateTarget(BlockGetter world, BlockPos target) {
-        return validateTarget(world.getBlockState(target.above(1))) && validateTarget(world.getBlockState(target.above(2)));
+    public static boolean isBlocked(BlockGetter world, BlockPos target) {
+        return validateTargets(world.getBlockState(target.above()), world.getBlockState(target.above(2)));
     }
 
-    private static boolean validateTarget(BlockState blockState) {
+    private static boolean validTarget(BlockState blockState) {
         return !blockState.getMaterial().isSolid(); // TODO maybe change this
     }
 
-    public static boolean isElevator(BlockState blockState) {
-        return blockState.getBlock() instanceof ElevatorBlock;
+    private static boolean validateTargets(BlockState... states) {
+        return Arrays.stream(states).allMatch(TeleportHandler::validTarget);
+    }
+
+    public static ElevatorBlock getElevator(BlockState blockState) {
+        if (blockState.getBlock() instanceof ElevatorBlock elevator)
+            return elevator;
+        return null;
     }
 }

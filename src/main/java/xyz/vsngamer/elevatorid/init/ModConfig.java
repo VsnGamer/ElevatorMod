@@ -29,12 +29,10 @@ public class ModConfig {
             builder.push("General");
 
             sameColor = builder
-                    .worldRestart()
                     .comment("Should elevators have the same color in order to teleport ?")
                     .define("sameColor", false);
 
             range = builder
-                    .worldRestart()
                     .comment("Elevator range")
                     .defineInRange("range", 384, 3, 4064);
 
@@ -43,6 +41,7 @@ public class ModConfig {
                     .define("precisionTarget", true);
 
             mobSpawn = builder
+                    .worldRestart()
                     .comment("Can mobs spawn on elevators ?")
                     .define("mobSpawn", false);
 

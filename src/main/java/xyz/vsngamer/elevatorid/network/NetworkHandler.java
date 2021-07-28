@@ -31,7 +31,7 @@ public class NetworkHandler {
         INSTANCE.registerMessage(i++, SetFacingPacket.class, SetFacingPacket::encode, SetFacingPacket::decode, SetFacingPacket::handle);
     }
 
-    public static boolean isBadPacket(ServerPlayer player, BlockPos pos) {
+    public static boolean isBadClientPacket(ServerPlayer player, BlockPos pos) {
         if (player == null || player.isDeadOrDying() || player.isRemoved())
             return true;
 
