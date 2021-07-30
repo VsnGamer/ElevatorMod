@@ -16,7 +16,8 @@
   "block.elevatorid.elevator_light_gray": "회백색 엘리베이터",
   "block.elevatorid.elevator_yellow": "노랑색 엘리베이터",
 
-  "elevatorid.subtitle.teleport": "엘리베이터 작동됨",
+  "elevatorid.subtitle.teleport": "엘리베이터가 작동됩니다.",
+  "elevatorid.subtitle.camouflage": "엘리베이터가 위장되었습니다.",
 
   "screen.elevatorid.elevator": "엘리베이터 설정",
   "screen.elevatorid.elevator.directional": "방향",
