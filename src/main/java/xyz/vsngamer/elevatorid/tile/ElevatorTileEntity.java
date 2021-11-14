@@ -107,13 +107,17 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     private void markUpdated() {
         this.setChanged();
 
-        if (getLevel() != null)
-            this.getLevel().sendBlockUpdated(
+        if (level != null) {
+            level.sendBlockUpdated(
                     this.getBlockPos(),
                     this.getBlockState(),
                     this.getBlockState(),
                     BlockFlags.DEFAULT_AND_RERENDER
             );
+
+            getBlockState().updateNeighbourShapes(level, worldPosition, 512);
+            level.updateNeighborsAt(getBlockPos(),getBlockState().getBlock());
+        }
     }
 
     public BlockState getHeldState() {

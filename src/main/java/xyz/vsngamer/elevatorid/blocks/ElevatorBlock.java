@@ -194,47 +194,58 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     // Redstone
-//    @Override
-//    public boolean isSignalSource(@Nonnull BlockState state) {
-//        return true;
-//    }
+    @Override
+    public boolean isSignalSource(@Nonnull BlockState state) {
+        return true;
+    }
 
-//    @Override
-//    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
-//        ElevatorTileEntity tile = getElevatorTile(world, pos);
-//        if (tile != null && tile.getHeldState() != null) {
-//            return tile.getHeldState().canConnectRedstone(world, pos, side);
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side) {
-//        ElevatorTileEntity tile = getElevatorTile(world, pos);
-//        if (tile != null && tile.getHeldState() != null) {
-//            return tile.getHeldState().shouldCheckWeakPower(world, pos, side);
-//        }
-//        return super.shouldCheckWeakPower(state, world, pos, side);
-//    }
-//
-//    @Override
-//    public int getSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
-//        ElevatorTileEntity tile = getElevatorTile(reader, pos);
-//        if (tile != null && tile.getHeldState() != null) {
-//            return tile.getHeldState().getSignal(reader, pos, direction);
-//        }
-//        return 0;
-//    }
-//
-//    @Override
-//    public int getDirectSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
-//        ElevatorTileEntity tile = getElevatorTile(reader, pos);
-//        if (tile != null && tile.getHeldState() != null) {
-//            return tile.getHeldState().getDirectSignal(reader, pos, direction);
-//        }
-//        return 0;
-//    }
+    @Override
+    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
+        ElevatorTileEntity tile = getElevatorTile(world, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().canRedstoneConnectTo(world, pos, side);
+        }
+        return super.canConnectRedstone(state, world, pos, side);
+    }
 
+    @Override
+    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side) {
+        ElevatorTileEntity tile = getElevatorTile(world, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().shouldCheckWeakPower(world, pos, side);
+        }
+        return super.shouldCheckWeakPower(state, world, pos, side);
+    }
+
+    @Override
+    public int getSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
+        ElevatorTileEntity tile = getElevatorTile(reader, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().getSignal(reader, pos, direction);
+        }
+        return super.getSignal(state, reader, pos, direction);
+    }
+
+    @Override
+    public int getDirectSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
+        ElevatorTileEntity tile = getElevatorTile(reader, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().getDirectSignal(reader, pos, direction);
+        }
+        return super.getDirectSignal(state, reader, pos, direction);
+    }
+
+    @Override
+    public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
+        return false;
+    }
+
+    @Override
+    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+        return 0;
+    }
+
+    // Light
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
         ElevatorTileEntity tile = getElevatorTile(world, pos);
