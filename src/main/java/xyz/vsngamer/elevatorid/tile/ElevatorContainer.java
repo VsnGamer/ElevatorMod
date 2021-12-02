@@ -7,7 +7,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.extensions.IForgeContainerType;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 
 import javax.annotation.Nonnull;
 
@@ -48,7 +48,7 @@ public class ElevatorContainer extends AbstractContainerMenu {
     }
 
     public static MenuType<ElevatorContainer> buildContainerType() {
-        MenuType<ElevatorContainer> type = IForgeContainerType.create((windowId, inv, data) ->
+        MenuType<ElevatorContainer> type = IForgeMenuType.create((windowId, inv, data) ->
                 new ElevatorContainer(windowId, data.readBlockPos(), inv.player));
         type.setRegistryName("elevator_container");
         return type;

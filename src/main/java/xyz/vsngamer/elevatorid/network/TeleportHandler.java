@@ -11,7 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.ModSounds;

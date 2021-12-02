@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.common.util.Constants.BlockFlags;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModSounds;
 
@@ -79,7 +78,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     @Nullable
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, getUpdateTag());
+        return ClientboundBlockEntityDataPacket.create(this, blockEntity -> getUpdateTag());
     }
 
     @Override
@@ -112,7 +111,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
                     this.getBlockPos(),
                     this.getBlockState(),
                     this.getBlockState(),
-                    BlockFlags.DEFAULT_AND_RERENDER
+                    Block.UPDATE_ALL_IMMEDIATE
             );
 
             getBlockState().updateNeighbourShapes(level, worldPosition, 512);
@@ -131,7 +130,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
                     getBlockPos(),
                     getBlockState(),
                     getBlockState(),
-                    BlockFlags.DEFAULT_AND_RERENDER
+                    Block.UPDATE_ALL_IMMEDIATE
             );
             level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
         }

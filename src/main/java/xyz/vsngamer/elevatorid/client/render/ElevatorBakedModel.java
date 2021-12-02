@@ -36,7 +36,7 @@ public class ElevatorBakedModel extends BakedModelWrapper<BakedModel> {
     @Override
     public List<BakedQuad> getQuads(BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
         List<BakedQuad> result = new ArrayList<>();
-        RenderType layer = MinecraftForgeClient.getRenderLayer();
+        RenderType layer = MinecraftForgeClient.getRenderType();
         BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
 
         if (layer == RenderType.cutoutMipped() && side == null) {
