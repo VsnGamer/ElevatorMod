@@ -6,6 +6,8 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
@@ -20,7 +22,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
-import net.minecraftforge.common.util.Constants.BlockFlags;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModSounds;
 
@@ -39,23 +40,20 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    public void load(@Nonnull CompoundTag compound) {
-        super.load(compound);
+    public void load(@Nonnull CompoundTag tag) {
+        super.load(tag);
 
         // Get blockstate from compound, always check if it's valid
-        BlockState held_id = NbtUtils.readBlockState(compound.getCompound("held_id"));
+        BlockState held_id = NbtUtils.readBlockState(tag.getCompound("held_id"));
         heldState = isValidState(held_id) ? held_id : null;
     }
 
-    @Nonnull
     @Override
-    public CompoundTag save(@Nonnull CompoundTag compound) {
-        super.save(compound);
+    protected void saveAdditional(@Nonnull CompoundTag tag) {
+        super.saveAdditional(tag);
 
         if (heldState != null)
-            compound.put("held_id", NbtUtils.writeBlockState(heldState));
-
-        return compound;
+            tag.put("held_id", NbtUtils.writeBlockState(heldState));
     }
 
     @Nonnull
@@ -73,19 +71,18 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     @Nonnull
     @Override
     public CompoundTag getUpdateTag() {
-        return save(new CompoundTag());
+        return saveWithId();
     }
 
     @Nullable
     @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(getBlockPos(), 1, getUpdateTag());
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this, tile -> getUpdateTag());
     }
 
     @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         handleUpdateTag(pkt.getTag());
-//        updateClient();
     }
 
     @Nonnull
@@ -109,14 +106,15 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
         if (level != null) {
             level.sendBlockUpdated(
-                    this.getBlockPos(),
-                    this.getBlockState(),
-                    this.getBlockState(),
-                    BlockFlags.DEFAULT_AND_RERENDER
+                    getBlockPos(),
+                    getBlockState(),
+                    getBlockState(),
+                    Block.UPDATE_ALL
             );
 
-            getBlockState().updateNeighbourShapes(level, worldPosition, 512);
-            level.updateNeighborsAt(getBlockPos(),getBlockState().getBlock());
+            level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
+            getBlockState().updateNeighbourShapes(level, worldPosition, 2);
+            level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
         }
     }
 
@@ -131,7 +129,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
                     getBlockPos(),
                     getBlockState(),
                     getBlockState(),
-                    BlockFlags.DEFAULT_AND_RERENDER
+                    Block.UPDATE_ALL
             );
             level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
         }

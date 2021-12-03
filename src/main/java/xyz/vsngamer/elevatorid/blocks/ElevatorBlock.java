@@ -31,7 +31,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.init.ModConfig;
@@ -113,8 +114,8 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public boolean canCreatureSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType) {
-        return ModConfig.GENERAL.mobSpawn.get() && super.canCreatureSpawn(state, world, pos, type, entityType);
+    public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType) {
+        return ModConfig.GENERAL.mobSpawn.get() && super.isValidSpawn(state, world, pos, type, entityType);
     }
 
     // Collision
@@ -205,7 +206,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().canRedstoneConnectTo(world, pos, side);
         }
-        return super.canConnectRedstone(state, world, pos, side);
+        return false;
     }
 
     @Override
@@ -241,7 +242,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos) {
+    public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos) {
         return 0;
     }
 

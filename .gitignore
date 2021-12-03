@@ -17,7 +17,6 @@ logs
 # gradle
 build
 .gradle
-logs
 
 # other
 eclipse

@@ -26,7 +26,7 @@ class FacingButton extends Button {
     @Override
     public void renderButton(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        if (isHovered())
+        if (isHoveredOrFocused())
             fill(matrixStack, x, y, x + width, y + height, -2130706433);
 
         drawCenteredString(matrixStack, Minecraft.getInstance().font,
