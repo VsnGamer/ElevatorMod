@@ -2,7 +2,6 @@ package xyz.vsngamer.elevatorid.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -10,9 +9,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -33,8 +30,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
-import xyz.vsngamer.elevatorid.ElevatorMod;
-import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
@@ -47,7 +42,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
 
-    private ElevatorBlockItem blockItem;
+    //    private ElevatorBlockItem blockItem;
     private final DyeColor dyeColor;
 
     public ElevatorBlock(DyeColor color) {
@@ -58,7 +53,6 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                 .dynamicShape()
                 .noOcclusion());
 
-        setRegistryName(ElevatorMod.ID, "elevator_" + color.getName());
         dyeColor = color;
     }
 
@@ -306,24 +300,5 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
 //        LogManager.getLogger(ElevatorMod.ID).debug("NULL TILE, " + world.toString());
         return null;
-    }
-
-    @Nonnull
-    @Override
-    public Item asItem() {
-        if (blockItem == null) {
-            blockItem = new ElevatorBlockItem();
-        }
-        return blockItem;
-    }
-
-    public class ElevatorBlockItem extends BlockItem {
-        ElevatorBlockItem() {
-            super(ElevatorBlock.this, new Item.Properties().tab(ElevatorModTab.TAB));
-            ResourceLocation name = ElevatorBlock.this.getRegistryName();
-            if (name != null) {
-                setRegistryName(name);
-            }
-        }
     }
 }

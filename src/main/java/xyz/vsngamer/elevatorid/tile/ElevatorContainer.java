@@ -5,9 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.extensions.IForgeMenuType;
 
 import javax.annotation.Nonnull;
 
@@ -19,8 +17,8 @@ public class ElevatorContainer extends AbstractContainerMenu {
     private ElevatorTileEntity elevatorTile;
     private final BlockPos pos;
 
-    ElevatorContainer(int id, BlockPos pos, Player player) {
-        super(ELEVATOR_CONTAINER, id);
+    public ElevatorContainer(int id, BlockPos pos, Player player) {
+        super(ELEVATOR_CONTAINER.get(), id);
 
         BlockEntity tile = player.level.getBlockEntity(pos);
         if (tile instanceof ElevatorTileEntity)
@@ -45,12 +43,5 @@ public class ElevatorContainer extends AbstractContainerMenu {
 
     public Direction getPlayerFacing() {
         return playerFacing;
-    }
-
-    public static MenuType<ElevatorContainer> buildContainerType() {
-        MenuType<ElevatorContainer> type = IForgeMenuType.create((windowId, inv, data) ->
-                new ElevatorContainer(windowId, data.readBlockPos(), inv.player));
-        type.setRegistryName("elevator_container");
-        return type;
     }
 }

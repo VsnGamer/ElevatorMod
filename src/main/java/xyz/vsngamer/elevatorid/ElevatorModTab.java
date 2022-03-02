@@ -18,6 +18,6 @@ public class ElevatorModTab extends CreativeModeTab {
     @Override
     @Nonnull
     public ItemStack makeIcon() {
-        return new ItemStack(Registry.ELEVATOR_BLOCKS.get(DyeColor.WHITE));
+        return new ItemStack(Registry.ELEVATOR_BLOCKS.get(DyeColor.WHITE).get());
     }
 }

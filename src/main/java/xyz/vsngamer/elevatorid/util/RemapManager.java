@@ -15,22 +15,24 @@ public class RemapManager {
 
     @SubscribeEvent
     public static void missingBlocks(RegistryEvent.MissingMappings<Block> e) {
-        final String str = "dir_elevator_";
         ModList.get().getModContainerById(ElevatorMod.ID).ifPresent(e::setModContainer); // as pointed out by DaemonUmbra https://github.com/MinecraftForge/MinecraftForge/issues/6252#issuecomment-543415663
         e.getMappings(ElevatorMod.ID).forEach(blockMapping -> {
-            if (blockMapping.key.getPath().contains(str)) {
-                blockMapping.remap(Registry.ELEVATOR_BLOCKS.get(DyeColor.valueOf(blockMapping.key.getPath().substring(str.length()).toUpperCase())));
+            if (blockMapping.key.getPath().contains("dir_elevator_")) {
+                blockMapping.remap(
+                        Registry.ELEVATOR_BLOCKS.get(DyeColor.byName(blockMapping.key.getPath().substring("dir_elevator_".length()), DyeColor.WHITE)).get()
+                );
             }
         });
     }
 
     @SubscribeEvent
     public static void missingItems(RegistryEvent.MissingMappings<Item> e) {
-        final String str = "dir_elevator_";
         ModList.get().getModContainerById(ElevatorMod.ID).ifPresent(e::setModContainer);
         e.getMappings(ElevatorMod.ID).forEach(itemMapping -> {
-            if (itemMapping.key.getPath().contains(str)) {
-                itemMapping.remap(Registry.ELEVATOR_BLOCKS.get(DyeColor.valueOf(itemMapping.key.getPath().substring(str.length()).toUpperCase())).asItem());
+            if (itemMapping.key.getPath().contains("dir_elevator_")) {
+                itemMapping.remap(
+                        Registry.ELEVATOR_BLOCKS.get(DyeColor.byName(itemMapping.key.getPath().substring("dir_elevator_".length()), DyeColor.WHITE)).get().asItem()
+                );
             }
         });
     }

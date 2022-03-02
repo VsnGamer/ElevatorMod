@@ -50,7 +50,7 @@ public class ElevatorHandler {
 
         BlockPos.MutableBlockPos toPos = fromPos.mutable();
 
-        ElevatorBlock fromElevator, toElevator;
+        ElevatorBlock fromElevator;
         fromElevator = (ElevatorBlock) world.getBlockState(fromPos).getBlock();
 
         while (true) {
@@ -58,9 +58,9 @@ public class ElevatorHandler {
             if (world.isOutsideBuildHeight(toPos) || Math.abs(toPos.getY() - fromPos.getY()) > ModConfig.GENERAL.range.get())
                 break;
 
-            ElevatorBlock elevator = TeleportHandler.getElevator(world.getBlockState(toPos));
-            if (elevator != null && TeleportHandler.isBlocked(world, toPos)) {
-                if (!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == elevator.getColor()) {
+            ElevatorBlock toElevator = TeleportHandler.getElevator(world.getBlockState(toPos));
+            if (toElevator != null && TeleportHandler.isBlocked(world, toPos)) {
+                if (!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
                     NetworkHandler.INSTANCE.sendToServer(new TeleportRequest(fromPos, toPos));
                     break;
                 }

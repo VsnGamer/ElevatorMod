@@ -64,7 +64,7 @@ public class TeleportHandler {
             }
 
             double blockYOffset = toState.getBlockSupportShape(world, toPos).max(Direction.Axis.Y);
-            player.teleportTo(world, toX, toPos.getY() + blockYOffset, toZ, yaw, pitch);
+            player.teleportTo(world, toX, Math.max(toPos.getY(), toPos.getY() + blockYOffset), toZ, yaw, pitch);
             player.setDeltaMovement(player.getDeltaMovement().multiply(new Vec3(1D, 0D, 1D)));
             world.playSound(null, toPos, ModSounds.TELEPORT, SoundSource.BLOCKS, 1F, 1F);
         });

@@ -1,57 +1,69 @@
 package xyz.vsngamer.elevatorid.init;
 
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.common.extensions.IForgeMenuType;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import xyz.vsngamer.elevatorid.ElevatorMod;
+import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.tile.ElevatorContainer;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 
-@Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Registry {
-
-    public static final EnumMap<DyeColor, ElevatorBlock> ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
-    public static final ElevatorBlock[] ELEVATOR_BLOCKS_ARRAY;
-    public static final BlockEntityType<ElevatorTileEntity> ELEVATOR_TILE_ENTITY;
-    public static final MenuType<ElevatorContainer> ELEVATOR_CONTAINER;
+    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ElevatorMod.ID);
+    public static final EnumMap<DyeColor, RegistryObject<ElevatorBlock>> ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
 
     static {
-        for (DyeColor color : DyeColor.values()) {
-            ELEVATOR_BLOCKS.put(color, new ElevatorBlock(color));
-        }
-
-        ELEVATOR_BLOCKS_ARRAY = ELEVATOR_BLOCKS.values().toArray(new ElevatorBlock[0]);
-
-        ELEVATOR_TILE_ENTITY = ElevatorTileEntity.getType(ELEVATOR_BLOCKS_ARRAY);
-        ELEVATOR_CONTAINER = ElevatorContainer.buildContainerType();
+        Arrays.stream(DyeColor.values()).forEach(color ->
+                ELEVATOR_BLOCKS.put(color, BLOCKS.register("elevator_" + color.getName(), () -> new ElevatorBlock(color)))
+        );
     }
 
-    @SubscribeEvent
-    public static void registerBlocks(RegistryEvent.Register<Block> e) {
-        ELEVATOR_BLOCKS.values().forEach(block -> e.getRegistry().register(block));
+    private static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, ElevatorMod.ID);
+    public static final RegistryObject<BlockEntityType<ElevatorTileEntity>> ELEVATOR_TILE_ENTITY = BLOCK_ENTITIES.register(
+            "elevator_tile", () ->
+                    BlockEntityType.Builder.of(
+                            ElevatorTileEntity::new,
+                            ELEVATOR_BLOCKS
+                                    .values()
+                                    .stream()
+                                    .map(RegistryObject::get)
+                                    .toArray(Block[]::new)
+                    ).build(null)
+    );
+
+    private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ElevatorMod.ID);
+
+    static {
+        ELEVATOR_BLOCKS.forEach((color, o) ->
+                ITEMS.register("elevator_" + color.getName(), () -> new BlockItem(o.get(), new Item.Properties().tab(ElevatorModTab.TAB)))
+        );
     }
 
-    @SubscribeEvent
-    public static void registerItems(RegistryEvent.Register<Item> e) {
-        ELEVATOR_BLOCKS.values().forEach(block -> e.getRegistry().register(block.asItem()));
-    }
+    private static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, ElevatorMod.ID);
+    public static final RegistryObject<MenuType<ElevatorContainer>> ELEVATOR_CONTAINER = CONTAINERS.register(
+            "elevator_container", () ->
+                    IForgeMenuType.create((windowId, inv, data) ->
+                            new ElevatorContainer(windowId, data.readBlockPos(), inv.player)
+                    )
+    );
 
-    @SubscribeEvent
-    public static void registerTiles(RegistryEvent.Register<BlockEntityType<?>> e) {
-        e.getRegistry().register(ELEVATOR_TILE_ENTITY);
-    }
-
-    @SubscribeEvent
-    public static void registerContainers(RegistryEvent.Register<MenuType<?>> e) {
-        e.getRegistry().register(ELEVATOR_CONTAINER);
+    public static void init() {
+        BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        BLOCK_ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        CONTAINERS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     // TODO: Config GUI
