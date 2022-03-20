@@ -1,0 +1,29 @@
+{
+  "block.elevatorid.elevator_white": "Ascenseur blanc",
+  "block.elevatorid.elevator_black": "Ascenseur noir",
+  "block.elevatorid.elevator_blue": "Ascenseur bleu",
+  "block.elevatorid.elevator_brown": "Ascenseur marron",
+  "block.elevatorid.elevator_cyan": "Ascenseur cyan",
+  "block.elevatorid.elevator_gray": "Ascenseur gris",
+  "block.elevatorid.elevator_green": "Ascenseur vert",
+  "block.elevatorid.elevator_light_blue": "Ascenseur bleu clair",
+  "block.elevatorid.elevator_lime": "Ascenseur citron vert",
+  "block.elevatorid.elevator_magenta": "Ascenseur magenta",
+  "block.elevatorid.elevator_orange": "Ascenseur orange",
+  "block.elevatorid.elevator_pink": "Ascenseur rose",
+  "block.elevatorid.elevator_purple": "Ascenseur violet",
+  "block.elevatorid.elevator_red": "Ascenseur rouge",
+  "block.elevatorid.elevator_light_gray": "Ascenseur gris clair",
+  "block.elevatorid.elevator_yellow": "Ascenseur jaune",
+
+  "elevatorid.subtitle.teleport": "Ascenseur utilisé",
+
+  "screen.elevatorid.elevator": "Options d'ascenseur",
+  "screen.elevatorid.elevator.directional": "Directionnel",
+  "screen.elevatorid.elevator.hide_arrow": "Masquer la flèche",
+  "screen.elevatorid.elevator.reset_camo": "Supprimer le camouflage",
+
+  "elevatorid.message.missing_xp": "Vous n'avez pas assez d'XP pour vous téléporter",
+
+  "itemGroup.elevators_tab": "Ascenseurs"
+}
