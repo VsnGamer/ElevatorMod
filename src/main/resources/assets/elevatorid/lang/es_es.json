@@ -16,14 +16,15 @@
   "block.elevatorid.elevator_light_gray": "Ascensor gris claro",
   "block.elevatorid.elevator_yellow": "Ascensor amarillo",
 
-  "elevatorid.subtitle.teleport": "Ascensor es utilizado",
+  "elevatorid.subtitle.teleport": "Ascensor usado",
+  "elevatorid.subtitle.camouflage": "Ascensor camuflado",
 
   "screen.elevatorid.elevator": "Opciones de ascensor",
-  "screen.elevatorid.elevator.directional": "Direccional",
+  "screen.elevatorid.elevator.directional": "Dirección",
   "screen.elevatorid.elevator.hide_arrow": "Esconder flecha",
-  "screen.elevatorid.elevator.reset_camo": "Quitar camuflage",
+  "screen.elevatorid.elevator.reset_camo": "Eliminar camuflaje",
 
-  "elevatorid.message.missing_xp": "Necesitas más XP para poder teletransportarte",
+  "elevatorid.message.missing_xp": "Necesitas más experiencia para teletransportarte",
 
   "itemGroup.elevators_tab": "Ascensores"
 }
