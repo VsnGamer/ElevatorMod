@@ -1,0 +1,30 @@
+{
+  "block.elevatorid.elevator_white": "Ascensore bianco",
+  "block.elevatorid.elevator_black": "Ascensore nero",
+  "block.elevatorid.elevator_blue": "Ascensore blu",
+  "block.elevatorid.elevator_brown": "Ascensore marrone",
+  "block.elevatorid.elevator_cyan": "Ascensore ciano",
+  "block.elevatorid.elevator_gray": "Ascensore grigio",
+  "block.elevatorid.elevator_green": "Ascensore verde",
+  "block.elevatorid.elevator_light_blue": "Ascensore azzurro",
+  "block.elevatorid.elevator_lime": "Ascensore lime",
+  "block.elevatorid.elevator_magenta": "Ascensore magenta",
+  "block.elevatorid.elevator_orange": "Ascensore arancione",
+  "block.elevatorid.elevator_pink": "Ascensore rosa",
+  "block.elevatorid.elevator_purple": "Ascensore viola",
+  "block.elevatorid.elevator_red": "Ascensore rosso",
+  "block.elevatorid.elevator_light_gray": "Ascensore grigio chiaro",
+  "block.elevatorid.elevator_yellow": "Ascensore giallo",
+
+  "elevatorid.subtitle.teleport": "Ascensore in azione",
+  "elevatorid.subtitle.camouflage": "Ascensore camuffato",
+
+  "screen.elevatorid.elevator": "Opzioni ascensore",
+  "screen.elevatorid.elevator.directional": "Direzionale",
+  "screen.elevatorid.elevator.hide_arrow": "Nascondi freccia",
+  "screen.elevatorid.elevator.reset_camo": "Rimuovi occultamento",
+
+  "elevatorid.message.missing_xp": "Non hai abbastanza esperienza per teletrasportarti",
+
+  "itemGroup.elevators_tab": "Elevators"
+}
