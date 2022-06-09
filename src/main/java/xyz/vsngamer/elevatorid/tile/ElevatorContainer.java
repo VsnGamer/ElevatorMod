@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,7 @@ public class ElevatorContainer extends AbstractContainerMenu {
     @Override
     @NotNull
     public ItemStack quickMoveStack(@NotNull Player player, int id) {
-        return this.slots.get(id).getItem();
+        return ItemStack.EMPTY; // TODO: Handle this properly if in the future we start using items
     }
 
     @Override

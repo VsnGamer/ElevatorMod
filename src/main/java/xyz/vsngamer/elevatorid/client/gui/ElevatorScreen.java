@@ -84,12 +84,16 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
     public void containerTick() {
         super.containerTick();
 
+        dirButton.selected = tile.getBlockState().getValue(ElevatorBlock.DIRECTIONAL);
+
         facingController.getButtons().forEach(button -> {
-            button.visible = dirButton.selected();
+            button.visible = tile.getBlockState().getValue(DIRECTIONAL);
             button.active = tile.getBlockState().getValue(ElevatorBlock.FACING) != button.direction;
         });
 
-        hideArrowButton.visible = dirButton.selected();
+        hideArrowButton.visible = tile.getBlockState().getValue(DIRECTIONAL);
+        hideArrowButton.selected = !tile.getBlockState().getValue(SHOW_ARROW);
+
         resetCamoButton.active = tile.getHeldState() != null;
     }
 
