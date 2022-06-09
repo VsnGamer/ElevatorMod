@@ -10,6 +10,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.BakedModelWrapper;
@@ -34,7 +35,7 @@ public class ElevatorBakedModel extends BakedModelWrapper<BakedModel> {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData) {
+    public List<BakedQuad> getQuads(BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData) {
         List<BakedQuad> result = new ArrayList<>();
         RenderType layer = MinecraftForgeClient.getRenderType();
         BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();

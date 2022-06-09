@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -22,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
-import xyz.vsngamer.elevatorid.init.ModSounds;
+import xyz.vsngamer.elevatorid.init.Registry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -87,7 +86,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     @Nonnull
     @Override
     public Component getDisplayName() {
-        return new TranslatableComponent("screen.elevatorid.elevator");
+        return Component.translatable("screen.elevatorid.elevator");
     }
 
     @Override
@@ -143,7 +142,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
         setHeldState(newState);
         if (getLevel() != null)
-            getLevel().playSound(null, getBlockPos(), ModSounds.CAMOUFLAGE, SoundSource.BLOCKS, 1F, 1F);
+            getLevel().playSound(null, getBlockPos(), Registry.CAMOUFLAGE_SOUND.get(), SoundSource.BLOCKS, 1F, 1F);
 
         return true;
     }

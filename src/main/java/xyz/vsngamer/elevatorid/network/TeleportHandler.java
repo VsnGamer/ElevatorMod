@@ -3,7 +3,9 @@ package xyz.vsngamer.elevatorid.network;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -14,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
-import xyz.vsngamer.elevatorid.init.ModSounds;
+import xyz.vsngamer.elevatorid.init.Registry;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -32,9 +34,9 @@ public class TeleportHandler {
                 if (getPlayerExperienceProgress(player) - xpCost >= 0 || player.experienceLevel > 0) {
                     player.giveExperiencePoints(-xpCost);
                 } else {
-                    player.sendMessage(
-                            new TranslatableComponent("elevatorid.message.missing_xp")
-                                    .withStyle(ChatFormatting.RED), player.getUUID()
+                    player.sendChatMessage(
+                            PlayerChatMessage.unsigned(Component.translatable("elevatorid.message.missing_xp")
+                                    .withStyle(ChatFormatting.RED)), player.asChatSender(), ChatType.SYSTEM
                     );
                     return;
                 }
@@ -66,7 +68,7 @@ public class TeleportHandler {
             double blockYOffset = toState.getBlockSupportShape(world, toPos).max(Direction.Axis.Y);
             player.teleportTo(world, toX, Math.max(toPos.getY(), toPos.getY() + blockYOffset), toZ, yaw, pitch);
             player.setDeltaMovement(player.getDeltaMovement().multiply(new Vec3(1D, 0D, 1D)));
-            world.playSound(null, toPos, ModSounds.TELEPORT, SoundSource.BLOCKS, 1F, 1F);
+            world.playSound(null, toPos, Registry.TELEPORT_SOUND.get(), SoundSource.BLOCKS, 1F, 1F);
         });
 
         ctx.get().setPacketHandled(true);
