@@ -4,7 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '5.1.+'
 }
 
-version = '1.19-1.8.5'
+version = '1.19-1.8.6'
 group = 'xyz.vsngamer.elevatorid'
 archivesBaseName = 'elevatorid'
 
@@ -69,7 +69,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19-41.0.5'
+    minecraft 'net.minecraftforge:forge:1.19-41.0.98'
 }
 
 jar {

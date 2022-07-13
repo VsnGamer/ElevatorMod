@@ -1,7 +1,6 @@
 package xyz.vsngamer.elevatorid.client.render;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -12,18 +11,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
-import net.minecraftforge.client.model.QuadTransformer;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.IQuadTransformer;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+import org.jetbrains.annotations.NotNull;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class ElevatorBakedModel extends BakedModelWrapper<BakedModel> {
 
@@ -35,45 +34,55 @@ public class ElevatorBakedModel extends BakedModelWrapper<BakedModel> {
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData) {
-        List<BakedQuad> result = new ArrayList<>();
-        RenderType layer = MinecraftForgeClient.getRenderType();
-        BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
-
-        if (layer == RenderType.cutoutMipped() && side == null) {
-            if (state.getValue(ElevatorBlock.DIRECTIONAL) && state.getValue(ElevatorBlock.SHOW_ARROW)) {
-                BakedModel arrowModel = dispatcher.getBlockModelShaper().getModelManager().getModel(new ResourceLocation("elevatorid", "arrow"));
-                BlockModelRotation rot = BlockModelRotation.by(0, (int) state.getValue(ElevatorBlock.FACING).toYRot());
-                QuadTransformer transformer = new QuadTransformer(rot.getRotation().blockCenterToCorner());
-
-                result.addAll(transformer.processMany(arrowModel.getQuads(state, null, rand, extraData)));
-            }
+    public TextureAtlasSprite getParticleIcon(@Nonnull ModelData data) {
+        BlockState state = data.get(HELD_STATE);
+        if (state != null) {
+            return Minecraft.getInstance().getBlockRenderer().getBlockModel(state).getParticleIcon(data);
         }
 
-        BlockState heldState = extraData.getData(HELD_STATE);
-        if (heldState != null) {
-            // Render camouflage in the correct layer
-            if (ItemBlockRenderTypes.canRenderInLayer(heldState, layer)) {
-                BakedModel model = dispatcher.getBlockModel(heldState);
-                result.addAll(model.getQuads(heldState, side, rand, extraData));
-            }
-            return result;
-        }
+        return super.getParticleIcon(data);
+    }
 
-        // Fallback / original model (renders on solid)
-        if (layer == RenderType.solid() || layer == null)
-            result.addAll(originalModel.getQuads(state, side, rand, extraData));
+    @NotNull
+    @Override
+    public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data) {
+        BlockState heldState = data.get(HELD_STATE);
+        ChunkRenderTypeSet types;
+        if (heldState != null)
+            types = Minecraft.getInstance().getBlockRenderer().getBlockModel(heldState).getRenderTypes(heldState, rand, data);
+        else
+            types = super.getRenderTypes(state, rand, data);
 
-        return result;
+        return ChunkRenderTypeSet.union(types, ChunkRenderTypeSet.of(RenderType.cutoutMipped()));
     }
 
     @Nonnull
     @Override
-    public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data) {
-        BlockState state = data.getData(HELD_STATE);
-        if (state != null) {
-            return Minecraft.getInstance().getBlockRenderer().getBlockModel(state).getParticleIcon(data);
+    public List<BakedQuad> getQuads(BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull ModelData extraData, RenderType renderType) {
+        List<BakedQuad> result = new ArrayList<>();
+        BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
+
+        // Directional arrow
+        if (renderType == RenderType.cutoutMipped() && side == null) {
+            if (state.getValue(ElevatorBlock.DIRECTIONAL) && state.getValue(ElevatorBlock.SHOW_ARROW)) {
+                BakedModel arrowModel = dispatcher.getBlockModelShaper().getModelManager().getModel(new ResourceLocation("elevatorid", "arrow"));
+                BlockModelRotation rot = BlockModelRotation.by(0, (int) state.getValue(ElevatorBlock.FACING).toYRot());
+                IQuadTransformer transformer = IQuadTransformer.applying(rot.getRotation().blockCenterToCorner());
+
+
+                result.addAll(transformer.process(arrowModel.getQuads(state, null, rand, extraData, renderType)));
+            }
         }
-        return super.getParticleIcon(data);
+
+        BlockState heldState = extraData.get(HELD_STATE);
+        if (heldState != null) {
+            BakedModel model = dispatcher.getBlockModel(heldState);
+            result.addAll(model.getQuads(heldState, side, rand, extraData, renderType));
+            return result;
+        }
+
+        // Fallback / original model
+        result.addAll(originalModel.getQuads(state, side, rand, extraData, renderType));
+        return result;
     }
 }

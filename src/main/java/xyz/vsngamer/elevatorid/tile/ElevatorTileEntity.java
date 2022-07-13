@@ -18,8 +18,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.data.ModelDataMap;
+import net.minecraftforge.client.model.data.ModelData;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.Registry;
 
@@ -56,8 +55,8 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
     @Nonnull
     @Override
-    public IModelData getModelData() {
-        return new ModelDataMap.Builder().withInitial(HELD_STATE, heldState).build();
+    public ModelData getModelData() {
+        return ModelData.builder().with(HELD_STATE, heldState).build();
     }
 
     @Override

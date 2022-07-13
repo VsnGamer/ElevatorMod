@@ -103,7 +103,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
             return InteractionResult.SUCCESS;
         }
 
-        NetworkHooks.openGui((ServerPlayer) player, tile, pos);
+        NetworkHooks.openScreen((ServerPlayer) player, tile, pos);
         return InteractionResult.SUCCESS;
     }
 
