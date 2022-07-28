@@ -1,0 +1,30 @@
+{
+  "block.elevatorid.elevator_white": "Ақ лифт",
+  "block.elevatorid.elevator_black": "Қара лифт",
+  "block.elevatorid.elevator_blue": "Көк лифт",
+  "block.elevatorid.elevator_brown": "Қоңыр лифт",
+  "block.elevatorid.elevator_cyan": "Көкзеңгір лифт",
+  "block.elevatorid.elevator_gray": "Сұр лифт",
+  "block.elevatorid.elevator_green": "Жасыл лифт",
+  "block.elevatorid.elevator_light_blue": "Көгілдір лифт",
+  "block.elevatorid.elevator_lime": "Лайм лифт",
+  "block.elevatorid.elevator_magenta": "Ашық жасыл лифт",
+  "block.elevatorid.elevator_orange": "Қызғылт сары лифт",
+  "block.elevatorid.elevator_pink": "Қызғылт лифт",
+  "block.elevatorid.elevator_purple": "Күлгін лифт",
+  "block.elevatorid.elevator_red": "Қызыл лифт",
+  "block.elevatorid.elevator_light_gray": "Боз лифт",
+  "block.elevatorid.elevator_yellow": "Сары лифт",
+
+  "elevatorid.subtitle.teleport": "Лифт қолданылды",
+  "elevatorid.subtitle.camouflage": "Лифт жасырылды",
+
+  "screen.elevatorid.elevator": "Лифтті баптау",
+  "screen.elevatorid.elevator.directional": "Бағытты",
+  "screen.elevatorid.elevator.hide_arrow": "Оқшаны жасыру",
+  "screen.elevatorid.elevator.reset_camo": "Камуфляжды алып тастау",
+
+  "elevatorid.message.missing_xp": "Телепорттануға тәжірибеңіз жетпейді",
+
+  "itemGroup.elevators_tab": "Elevators"
+}
