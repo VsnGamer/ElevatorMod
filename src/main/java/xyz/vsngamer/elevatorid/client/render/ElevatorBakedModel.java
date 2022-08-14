@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.IQuadTransformer;
+import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
@@ -67,7 +68,7 @@ public class ElevatorBakedModel extends BakedModelWrapper<BakedModel> {
             if (state.getValue(ElevatorBlock.DIRECTIONAL) && state.getValue(ElevatorBlock.SHOW_ARROW)) {
                 BakedModel arrowModel = dispatcher.getBlockModelShaper().getModelManager().getModel(new ResourceLocation("elevatorid", "arrow"));
                 BlockModelRotation rot = BlockModelRotation.by(0, (int) state.getValue(ElevatorBlock.FACING).toYRot());
-                IQuadTransformer transformer = IQuadTransformer.applying(rot.getRotation().blockCenterToCorner());
+                IQuadTransformer transformer = QuadTransformers.applying(rot.getRotation().blockCenterToCorner());
 
 
                 result.addAll(transformer.process(arrowModel.getQuads(state, null, rand, extraData, renderType)));

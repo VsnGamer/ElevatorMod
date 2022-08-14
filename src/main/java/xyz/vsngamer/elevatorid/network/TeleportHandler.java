@@ -3,9 +3,7 @@ package xyz.vsngamer.elevatorid.network;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -34,10 +32,7 @@ public class TeleportHandler {
                 if (getPlayerExperienceProgress(player) - xpCost >= 0 || player.experienceLevel > 0) {
                     player.giveExperiencePoints(-xpCost);
                 } else {
-                    player.sendChatMessage(
-                            PlayerChatMessage.unsigned(Component.translatable("elevatorid.message.missing_xp")
-                                    .withStyle(ChatFormatting.RED)), player.asChatSender(), ChatType.SYSTEM
-                    );
+                    player.displayClientMessage(Component.translatable("elevatorid.message.missing_xp").withStyle(ChatFormatting.RED), true);
                     return;
                 }
             }
@@ -47,11 +42,10 @@ public class TeleportHandler {
             BlockState toState = world.getBlockState(message.getTo());
 
             // Check yaw and pitch
-            final float yaw, pitch;
-            yaw = toState.getValue(ElevatorBlock.DIRECTIONAL)
+            final float yaw = toState.getValue(ElevatorBlock.DIRECTIONAL)
                     ? toState.getValue(ElevatorBlock.FACING).toYRot() : player.getYRot();
 
-            pitch = (toState.getValue(ElevatorBlock.DIRECTIONAL) && ModConfig.GENERAL.resetPitchDirectional.get())
+            final float pitch = (toState.getValue(ElevatorBlock.DIRECTIONAL) && ModConfig.GENERAL.resetPitchDirectional.get())
                     || (!toState.getValue(ElevatorBlock.DIRECTIONAL) && ModConfig.GENERAL.resetPitchNormal.get())
                     ? 0F : player.getXRot();
 
