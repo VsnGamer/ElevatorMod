@@ -1,0 +1,30 @@
+{
+  "block.elevatorid.elevator_white": "Vit hiss",
+  "block.elevatorid.elevator_black": "Svart hiss",
+  "block.elevatorid.elevator_blue": "Blå hiss",
+  "block.elevatorid.elevator_brown": "Brun hiss",
+  "block.elevatorid.elevator_cyan": "Turkos hiss",
+  "block.elevatorid.elevator_gray": "Grå hiss",
+  "block.elevatorid.elevator_green": "Grön hiss",
+  "block.elevatorid.elevator_light_blue": "Ljusblå hiss",
+  "block.elevatorid.elevator_lime": "Limegrön hiss",
+  "block.elevatorid.elevator_magenta": "Ljuslila hiss",
+  "block.elevatorid.elevator_orange": "Orange hiss",
+  "block.elevatorid.elevator_pink": "Rosa hiss",
+  "block.elevatorid.elevator_purple": "Lila hiss",
+  "block.elevatorid.elevator_red": "Röd hiss",
+  "block.elevatorid.elevator_light_gray": "Ljusgrå hiss",
+  "block.elevatorid.elevator_yellow": "Gul hiss",
+
+  "elevatorid.subtitle.teleport": "Hiss används",
+  "elevatorid.subtitle.camouflage": "Hiss kamoufleras",
+
+  "screen.elevatorid.elevator": "Hissalternativ",
+  "screen.elevatorid.elevator.directional": "Riktning",
+  "screen.elevatorid.elevator.hide_arrow": "Dölj pil",
+  "screen.elevatorid.elevator.reset_camo": "Ta bort kamouflage",
+
+  "elevatorid.message.missing_xp": "Du har inte tillräckligt mycket erfarenhet för att teleportera",
+
+  "itemGroup.elevators_tab": "Elevators"
+}
