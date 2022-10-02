@@ -21,6 +21,10 @@
 
   "screen.elevatorid.elevator": "Hissalternativ",
   "screen.elevatorid.elevator.directional": "Riktning",
+  "screen.elevatorid.elevator.directional_north": "N",
+  "screen.elevatorid.elevator.directional_east": "Ö",
+  "screen.elevatorid.elevator.directional_south": "S",
+  "screen.elevatorid.elevator.directional_west": "V",
   "screen.elevatorid.elevator.hide_arrow": "Dölj pil",
   "screen.elevatorid.elevator.reset_camo": "Ta bort kamouflage",
 
