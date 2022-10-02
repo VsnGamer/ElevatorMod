@@ -21,6 +21,10 @@
 
   "screen.elevatorid.elevator": "Elevator Options",
   "screen.elevatorid.elevator.directional": "Directional",
+  "screen.elevatorid.elevator.directional_north": "N",
+  "screen.elevatorid.elevator.directional_east": "E",
+  "screen.elevatorid.elevator.directional_south": "S",
+  "screen.elevatorid.elevator.directional_west": "W",
   "screen.elevatorid.elevator.hide_arrow": "Hide arrow",
   "screen.elevatorid.elevator.reset_camo": "Remove camouflage",
 

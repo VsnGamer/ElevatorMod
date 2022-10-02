@@ -14,10 +14,10 @@ import java.awt.*;
 
 class FacingButton extends Button {
 
-    Direction direction;
+    final Direction direction;
 
     FacingButton(Point slot, Direction direction, BlockPos pos) {
-        super(slot.x, slot.y, 20, 20, Component.nullToEmpty(direction.getName().substring(0, 1).toUpperCase()), but ->
+        super(slot.x, slot.y, 20, 20, Component.translatable("screen.elevatorid.elevator.directional_" + direction.getName()), but ->
                 NetworkHandler.INSTANCE.sendToServer(new SetFacingPacket(direction, pos)));
 
         this.direction = direction;
