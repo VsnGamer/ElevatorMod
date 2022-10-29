@@ -2,21 +2,33 @@
   "block.elevatorid.elevator_white": "Elevador Branco",
   "block.elevatorid.elevator_black": "Elevador Preto",
   "block.elevatorid.elevator_blue": "Elevador Azul",
-  "block.elevatorid.elevator_brown": "Elevador Marrom",
+  "block.elevatorid.elevator_brown": "Elevador marrom",
   "block.elevatorid.elevator_cyan": "Elevador Ciano",
   "block.elevatorid.elevator_gray": "Elevador Cinza",
   "block.elevatorid.elevator_green": "Elevador Verde",
   "block.elevatorid.elevator_light_blue": "Elevador Azul Claro",
-  "block.elevatorid.elevator_lime": "Elevador Lima",
+  "block.elevatorid.elevator_lime": "Elevador de Lima",
   "block.elevatorid.elevator_magenta": "Elevador Magenta",
   "block.elevatorid.elevator_orange": "Elevador Laranja",
-  "block.elevatorid.elevator_pink": "Elevador Rosinha",
+  "block.elevatorid.elevator_pink": "Elevador Rosa",
   "block.elevatorid.elevator_purple": "Elevador Roxo",
   "block.elevatorid.elevator_red": "Elevador Vermelho",
-  "block.elevatorid.elevator_light_gray": "Elevador Cinza Claro",
+  "block.elevatorid.elevator_light_gray": "Elevador cinza claro",
   "block.elevatorid.elevator_yellow": "Elevador Amarelo",
 
   "elevatorid.subtitle.teleport": "Elevador usado",
+  "elevatorid.subtitle.camouflage": "Elevador camuflado",
+
+  "screen.elevatorid.elevator": "Opções de elevador",
+  "screen.elevatorid.elevator.directional": "Direcional",
+  "screen.elevatorid.elevator.directional_north": "N",
+  "screen.elevatorid.elevator.directional_east": "L",
+  "screen.elevatorid.elevator.directional_south": "S",
+  "screen.elevatorid.elevator.directional_west": "O",
+  "screen.elevatorid.elevator.hide_arrow": "Ocultar seta",
+  "screen.elevatorid.elevator.reset_camo": "Remover camuflagem",
+
+  "elevatorid.message.missing_xp": "Você não tem XP suficiente para se teletransportar",
 
   "itemGroup.elevators_tab": "Elevadores"
 }
