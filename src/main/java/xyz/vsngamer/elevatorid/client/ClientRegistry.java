@@ -42,6 +42,7 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void onModelBake(ModelEvent.BakingCompleted e) {
+        // TODO: Wait for a build with this: https://github.com/MinecraftForge/MinecraftForge/pull/9190
         e.getModels().entrySet().stream()
                 .filter(entry -> "elevatorid".equals(entry.getKey().getNamespace()) && entry.getKey().getPath().contains("elevator_"))
                 .forEach(entry -> e.getModels().put(entry.getKey(), new ElevatorBakedModel(entry.getValue())));
