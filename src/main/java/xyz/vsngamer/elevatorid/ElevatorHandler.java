@@ -59,7 +59,7 @@ public class ElevatorHandler {
                 break;
 
             ElevatorBlock toElevator = TeleportHandler.getElevator(world.getBlockState(toPos));
-            if (toElevator != null && TeleportHandler.isBlocked(world, toPos)) {
+            if (toElevator != null && TeleportHandler.isValidPos(world, toPos)) {
                 if (!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
                     NetworkHandler.INSTANCE.sendToServer(new TeleportRequest(fromPos, toPos));
                     break;
@@ -80,7 +80,7 @@ public class ElevatorHandler {
 
         // Check the player's feet and the 2 blocks under it
         for (int i = 0; i < 3; i++) {
-            if (TeleportHandler.getElevator(world.getBlockState(pos)) != null && TeleportHandler.isBlocked(world, pos))
+            if (TeleportHandler.getElevator(world.getBlockState(pos)) != null)
                 return pos;
             pos = pos.below();
         }

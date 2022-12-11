@@ -77,8 +77,16 @@ public class ElevatorBakedModel extends BakedModelWrapper<BakedModel> {
 
         BlockState heldState = extraData.get(HELD_STATE);
         if (heldState != null) {
-            BakedModel model = dispatcher.getBlockModel(heldState);
-            result.addAll(model.getQuads(heldState, side, rand, extraData, renderType));
+            var types = Minecraft.getInstance()
+                    .getBlockRenderer()
+                    .getBlockModel(heldState)
+                    .getRenderTypes(heldState, rand, ModelData.EMPTY);
+
+            if (types.contains(renderType)) {
+                BakedModel model = dispatcher.getBlockModel(heldState);
+                result.addAll(model.getQuads(heldState, side, rand, extraData, renderType));
+            }
+
             return result;
         }
 
