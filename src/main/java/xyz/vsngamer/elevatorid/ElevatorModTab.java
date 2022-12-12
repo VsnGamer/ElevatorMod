@@ -12,18 +12,7 @@ import xyz.vsngamer.elevatorid.init.Registry;
 
 @Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ElevatorModTab {
-
     public static CreativeModeTab TAB;
-
-//    private ElevatorModTab() {
-//        super("elevators_tab");
-//    }
-
-//    @Override
-//    @Nonnull
-//    public ItemStack makeIcon() {
-//        return new ItemStack(Registry.ELEVATOR_BLOCKS.get(DyeColor.WHITE).get());
-//    }
 
     @SubscribeEvent
     public static void register(CreativeModeTabEvent.Register event) {

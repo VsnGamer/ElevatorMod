@@ -22,8 +22,6 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         MenuScreens.register(Registry.ELEVATOR_CONTAINER.get(), ElevatorScreen::new);
-
-//        Registry.ELEVATOR_BLOCKS.values().forEach(o -> ItemBlockRenderTypes.setRenderLayer(o.get(), t -> true));
     }
 
     @SubscribeEvent

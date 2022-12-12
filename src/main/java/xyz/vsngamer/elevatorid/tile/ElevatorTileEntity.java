@@ -158,10 +158,4 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         // Only blocks with a collision box
         return state.getMaterial().isSolid();
     }
-
-//    public static BlockEntityType<ElevatorTileEntity> getType(Block... validBlocks) {
-//        BlockEntityType<ElevatorTileEntity> type = BlockEntityType.Builder.of(ElevatorTileEntity::new, validBlocks).build(null);
-//        type.setRegistryName("elevator_tile");
-//        return type;
-//    }
 }
