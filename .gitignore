@@ -14,6 +14,9 @@ out
 .idea
 logs
 
+# vscode
+.vscode
+
 # gradle
 build
 .gradle

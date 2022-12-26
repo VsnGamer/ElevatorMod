@@ -18,7 +18,7 @@ class FacingButton extends Button {
 
     FacingButton(Point slot, Direction direction, BlockPos pos) {
         super(slot.x, slot.y, 20, 20, Component.translatable("screen.elevatorid.elevator.directional_" + direction.getName()), but ->
-                NetworkHandler.INSTANCE.sendToServer(new SetFacingPacket(direction, pos)));
+                NetworkHandler.INSTANCE.sendToServer(new SetFacingPacket(direction, pos)), DEFAULT_NARRATION);
 
         this.direction = direction;
     }
@@ -27,12 +27,12 @@ class FacingButton extends Button {
     public void renderButton(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         if (isHoveredOrFocused())
-            fill(matrixStack, x, y, x + width, y + height, -2130706433);
+            fill(matrixStack, getX(), getY(), getX() + width, getY() + height, -2130706433);
 
         drawCenteredString(matrixStack, Minecraft.getInstance().font,
                 getMessage().getString(),
-                this.x + this.width / 2,
-                this.y + (this.height - 8) / 2,
+                getX() + this.width / 2,
+                getY() + (this.height - 8) / 2,
                 active ? 16777215 : 65280
         );
     }

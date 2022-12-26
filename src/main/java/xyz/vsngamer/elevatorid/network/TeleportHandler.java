@@ -16,7 +16,6 @@ import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.Registry;
 
-import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class TeleportHandler {
@@ -62,6 +61,7 @@ public class TeleportHandler {
             double blockYOffset = toState.getBlockSupportShape(world, toPos).max(Direction.Axis.Y);
             player.teleportTo(world, toX, Math.max(toPos.getY(), toPos.getY() + blockYOffset), toZ, yaw, pitch);
             player.setDeltaMovement(player.getDeltaMovement().multiply(new Vec3(1D, 0D, 1D)));
+
             world.playSound(null, toPos, Registry.TELEPORT_SOUND.get(), SoundSource.BLOCKS, 1F, 1F);
         });
 
@@ -93,7 +93,7 @@ public class TeleportHandler {
         if (fromElevator == null || toElevator == null)
             return true;
 
-        if (!isBlocked(world, toPos))
+        if (!isValidPos(world, toPos))
             return true;
 
         return ModConfig.GENERAL.sameColor.get() && fromElevator.getColor() != toElevator.getColor();
@@ -103,16 +103,12 @@ public class TeleportHandler {
         return Math.round(player.experienceProgress * player.getXpNeededForNextLevel());
     }
 
-    public static boolean isBlocked(BlockGetter world, BlockPos target) {
-        return validateTargets(world.getBlockState(target.above()), world.getBlockState(target.above(2)));
+    public static boolean isValidPos(BlockGetter world, BlockPos pos) {
+        return validTarget(world.getBlockState(pos.above()));
     }
 
     private static boolean validTarget(BlockState blockState) {
         return !blockState.getMaterial().isSolid(); // TODO maybe change this
-    }
-
-    private static boolean validateTargets(BlockState... states) {
-        return Arrays.stream(states).allMatch(TeleportHandler::validTarget);
     }
 
     public static ElevatorBlock getElevator(BlockState blockState) {

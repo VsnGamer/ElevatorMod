@@ -15,7 +15,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import xyz.vsngamer.elevatorid.ElevatorMod;
-import xyz.vsngamer.elevatorid.ElevatorModTab;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.tile.ElevatorContainer;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
@@ -24,8 +23,8 @@ import java.util.Arrays;
 import java.util.EnumMap;
 
 public class Registry {
-    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ElevatorMod.ID);
     public static final EnumMap<DyeColor, RegistryObject<ElevatorBlock>> ELEVATOR_BLOCKS = new EnumMap<>(DyeColor.class);
+    private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ElevatorMod.ID);
 
     static {
         Arrays.stream(DyeColor.values()).forEach(color ->
@@ -46,11 +45,12 @@ public class Registry {
                     ).build(null)
     );
 
+    public static final EnumMap<DyeColor, RegistryObject<BlockItem>> ELEVATOR_ITEMS = new EnumMap<>(DyeColor.class);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ElevatorMod.ID);
 
     static {
         ELEVATOR_BLOCKS.forEach((color, o) ->
-                ITEMS.register("elevator_" + color.getName(), () -> new BlockItem(o.get(), new Item.Properties().tab(ElevatorModTab.TAB)))
+                ELEVATOR_ITEMS.put(color, ITEMS.register("elevator_" + color.getName(), () -> new BlockItem(o.get(), new Item.Properties())))
         );
     }
 
@@ -64,10 +64,10 @@ public class Registry {
 
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ElevatorMod.ID);
     public static final RegistryObject<SoundEvent> TELEPORT_SOUND = SOUNDS.register(
-            "teleport", () -> new SoundEvent(new ResourceLocation(ElevatorMod.ID, "teleport"))
+            "teleport", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ElevatorMod.ID, "teleport"))
     );
     public static final RegistryObject<SoundEvent> CAMOUFLAGE_SOUND = SOUNDS.register(
-            "camouflage", () -> new SoundEvent(new ResourceLocation(ElevatorMod.ID, "camouflage"))
+            "camouflage", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ElevatorMod.ID, "camouflage"))
     );
 
     public static void init() {

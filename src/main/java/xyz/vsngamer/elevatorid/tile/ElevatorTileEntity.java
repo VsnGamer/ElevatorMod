@@ -1,6 +1,8 @@
 package xyz.vsngamer.elevatorid.tile;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
@@ -38,19 +40,20 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public void load(@Nonnull CompoundTag tag) {
-        super.load(tag);
+        if (tag.contains("held_id")) {
+            // Get blockstate from compound, always check if it's valid
+            BlockState state = NbtUtils.readBlockState(this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("held_id"));
+            heldState = isValidState(state) ? state : null;
+        }
 
-        // Get blockstate from compound, always check if it's valid
-        BlockState held_id = NbtUtils.readBlockState(tag.getCompound("held_id"));
-        heldState = isValidState(held_id) ? held_id : null;
+        super.load(tag);
     }
 
     @Override
     protected void saveAdditional(@Nonnull CompoundTag tag) {
-        super.saveAdditional(tag);
+        if (heldState != null) tag.put("held_id", NbtUtils.writeBlockState(heldState));
 
-        if (heldState != null)
-            tag.put("held_id", NbtUtils.writeBlockState(heldState));
+        super.saveAdditional(tag);
     }
 
     @Nonnull
@@ -102,12 +105,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         this.setChanged();
 
         if (level != null) {
-            level.sendBlockUpdated(
-                    getBlockPos(),
-                    getBlockState(),
-                    getBlockState(),
-                    Block.UPDATE_ALL
-            );
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
 
             level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
             getBlockState().updateNeighbourShapes(level, worldPosition, 2);
@@ -122,22 +120,15 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     private void updateClient() {
         if (level != null && level.isClientSide) {
             requestModelDataUpdate();
-            level.sendBlockUpdated(
-                    getBlockPos(),
-                    getBlockState(),
-                    getBlockState(),
-                    Block.UPDATE_ALL
-            );
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
             level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
         }
     }
 
     public boolean setCamoAndUpdate(BlockState newState) {
-        if (heldState == newState)
-            return false;
+        if (heldState == newState) return false;
 
-        if (!isValidState(newState))
-            return false;
+        if (!isValidState(newState)) return false;
 
         setHeldState(newState);
         if (getLevel() != null)
@@ -147,15 +138,12 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     }
 
     public static boolean isValidState(BlockState state) {
-        if (state == null)
-            return true;
+        if (state == null) return true;
 
-        if (state.getBlock() == Blocks.AIR)
-            return false;
+        if (state.getBlock() == Blocks.AIR) return false;
 
         // Tile entities can cause problems
-        if (state.hasBlockEntity())
-            return false;
+        if (state.hasBlockEntity()) return false;
 
         // Don't try to camouflage with itself
         if (state.getBlock() instanceof ElevatorBlock) {
@@ -170,10 +158,4 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         // Only blocks with a collision box
         return state.getMaterial().isSolid();
     }
-
-//    public static BlockEntityType<ElevatorTileEntity> getType(Block... validBlocks) {
-//        BlockEntityType<ElevatorTileEntity> type = BlockEntityType.Builder.of(ElevatorTileEntity::new, validBlocks).build(null);
-//        type.setRegistryName("elevator_tile");
-//        return type;
-//    }
 }

@@ -22,8 +22,6 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         MenuScreens.register(Registry.ELEVATOR_CONTAINER.get(), ElevatorScreen::new);
-
-//        Registry.ELEVATOR_BLOCKS.values().forEach(o -> ItemBlockRenderTypes.setRenderLayer(o.get(), t -> true));
     }
 
     @SubscribeEvent
@@ -41,7 +39,7 @@ public class ClientRegistry {
     }
 
     @SubscribeEvent
-    public static void onModelBake(ModelEvent.BakingCompleted e) {
+    public static void onModelBake(ModelEvent.ModifyBakingResult e) {
         e.getModels().entrySet().stream()
                 .filter(entry -> "elevatorid".equals(entry.getKey().getNamespace()) && entry.getKey().getPath().contains("elevator_"))
                 .forEach(entry -> e.getModels().put(entry.getKey(), new ElevatorBakedModel(entry.getValue())));

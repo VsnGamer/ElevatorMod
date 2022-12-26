@@ -61,9 +61,10 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
         // Reset camouflage button
         Component resetCamoLang = Component.translatable("screen.elevatorid.elevator.reset_camo");
-        resetCamoButton = new Button(leftPos + 8, topPos + 75, 110, 20, resetCamoLang,
-                button -> NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getBlockPos()))
-        );
+        resetCamoButton = Button.builder(resetCamoLang, but -> NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getBlockPos()))).pos(leftPos + 8, topPos + 75).size(100, 20).build();
+//        resetCamoButton = new Button(leftPos + 8, topPos + 75, 110, 20, resetCamoLang,
+//                button -> NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getBlockPos()))
+//        );
         addRenderableWidget(resetCamoButton);
 
         // Directional controller
