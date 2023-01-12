@@ -40,20 +40,21 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
     @Override
     public void load(@Nonnull CompoundTag tag) {
+        super.load(tag);
         if (tag.contains("held_id")) {
             // Get blockstate from compound, always check if it's valid
             BlockState state = NbtUtils.readBlockState(this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("held_id"));
             heldState = isValidState(state) ? state : null;
+        } else {
+            heldState = null;
         }
-
-        super.load(tag);
     }
 
     @Override
     protected void saveAdditional(@Nonnull CompoundTag tag) {
-        if (heldState != null) tag.put("held_id", NbtUtils.writeBlockState(heldState));
-
         super.saveAdditional(tag);
+
+        if (heldState != null) tag.put("held_id", NbtUtils.writeBlockState(heldState));
     }
 
     @Nonnull
@@ -62,22 +63,22 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         return ModelData.builder().with(HELD_STATE, heldState).build();
     }
 
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        updateClient();
-    }
-
     @Nonnull
     @Override
     public CompoundTag getUpdateTag() {
         return saveWithId();
     }
 
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        markUpdated();
+    }
+
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, tile -> getUpdateTag());
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -98,11 +99,13 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
     public void setHeldState(BlockState state) {
         this.heldState = state;
+        this.setChanged();
+
         markUpdated();
     }
 
     private void markUpdated() {
-        this.setChanged();
+        requestModelDataUpdate();
 
         if (level != null) {
             level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
@@ -115,14 +118,6 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
     public BlockState getHeldState() {
         return heldState;
-    }
-
-    private void updateClient() {
-        if (level != null && level.isClientSide) {
-            requestModelDataUpdate();
-            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
-            level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
-        }
     }
 
     public boolean setCamoAndUpdate(BlockState newState) {

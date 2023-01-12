@@ -82,7 +82,7 @@ public class ElevatorBakedModel extends BakedModelWrapper<BakedModel> {
                     .getBlockModel(heldState)
                     .getRenderTypes(heldState, rand, ModelData.EMPTY);
 
-            if (types.contains(renderType)) {
+            if (renderType == null || types.contains(renderType)) {
                 BakedModel model = dispatcher.getBlockModel(heldState);
                 result.addAll(model.getQuads(heldState, side, rand, extraData, renderType));
             }
