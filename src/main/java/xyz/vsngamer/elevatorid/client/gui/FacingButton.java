@@ -24,7 +24,7 @@ class FacingButton extends Button {
     }
 
     @Override
-    public void renderButton(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         if (isHoveredOrFocused())
             fill(matrixStack, getX(), getY(), getX() + width, getY() + height, -2130706433);

@@ -19,7 +19,7 @@ public class ElevatorModTab {
         TAB = event.registerCreativeModeTab(
                 new ResourceLocation("elevators_tab", ElevatorMod.ID), builder -> builder
                         .icon(() -> new ItemStack(Registry.ELEVATOR_BLOCKS.get(DyeColor.WHITE).get()))
-                        .displayItems((featureFlags, output, hasOp) -> Registry.ELEVATOR_ITEMS.values().forEach(o -> output.accept(o.get())))
+                        .displayItems((featureFlags, output) -> Registry.ELEVATOR_ITEMS.values().forEach(o -> output.accept(o.get())))
                         .title(Component.translatable("itemGroup.elevators_tab"))
         );
     }

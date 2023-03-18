@@ -76,7 +76,7 @@ public class ElevatorHandler {
      */
     private static BlockPos getOriginElevator(LocalPlayer player) {
         Level world = player.getCommandSenderWorld();
-        BlockPos pos = new BlockPos(player.position());
+        BlockPos pos = player.blockPosition();
 
         // Check the player's feet and the 2 blocks under it
         for (int i = 0; i < 3; i++) {
