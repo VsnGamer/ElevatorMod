@@ -16,14 +16,19 @@
   "block.elevatorid.elevator_light_gray": "Светло-серый лифт",
   "block.elevatorid.elevator_yellow": "Жёлтый лифт",
 
-  "elevatorid.subtitle.teleport": "Лифт уже используется",
+  "elevatorid.subtitle.teleport": "Лифт использовался",
+  "elevatorid.subtitle.camouflage": "Лифт замаскирован",
 
-  "screen.elevatorid.elevator": "Параметры лифта",
+  "screen.elevatorid.elevator": "Настройки лифта",
   "screen.elevatorid.elevator.directional": "Направление",
+  "screen.elevatorid.elevator.directional_north": "С",
+  "screen.elevatorid.elevator.directional_east": "В",
+  "screen.elevatorid.elevator.directional_south": "Ю",
+  "screen.elevatorid.elevator.directional_west": "З",
   "screen.elevatorid.elevator.hide_arrow": "Скрыть указатель",
   "screen.elevatorid.elevator.reset_camo": "Снять маскировку",
 
-  "elevatorid.message.missing_xp": "У вас недостаточно опыта для телепортации",
+  "elevatorid.message.missing_xp": "Недостаточно опыта для телепортации.",
 
   "itemGroup.elevators_tab": "Elevators"
 }
