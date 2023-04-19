@@ -17,6 +17,18 @@
   "block.elevatorid.elevator_yellow": "Sarı Asansör",
 
   "elevatorid.subtitle.teleport": "Asansör Kullanımı",
+  "elevatorid.subtitle.camouflage": "Asansör kamuflajı",
 
-  "itemGroup.elevators_tab": "Elevators"
+  "screen.elevatorid.elevator": "Asansör Ayarları",
+  "screen.elevatorid.elevator.directional": "Directional",
+  "screen.elevatorid.elevator.directional_north": "K",
+  "screen.elevatorid.elevator.directional_east": "D",
+  "screen.elevatorid.elevator.directional_south": "G",
+  "screen.elevatorid.elevator.directional_west": "B",
+  "screen.elevatorid.elevator.hide_arrow": "Oku gizle",
+  "screen.elevatorid.elevator.reset_camo": "Kamuflajı kaldır",
+
+  "elevatorid.message.missing_xp": "Işınlanmak için yeterli tecrübe puanınız yok",
+
+  "itemGroup.elevators_tab": "Asansörler"
 }
