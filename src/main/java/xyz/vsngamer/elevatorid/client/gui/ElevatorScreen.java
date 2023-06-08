@@ -1,14 +1,13 @@
 package xyz.vsngamer.elevatorid.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import org.jetbrains.annotations.NotNull;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
@@ -77,9 +76,10 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
     }
 
     @Override
-    public void render(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+//        renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -100,16 +100,16 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
     }
 
     @Override
-    protected void renderBg(@Nonnull PoseStack matrixStack, float v, int mouseX, int mouseY) {
-        RenderSystem.setShaderTexture(0, GUI_TEXTURE);
+    protected void renderBg(@NotNull GuiGraphics guiGraphics, float v, int mouseX, int mouseY) {
+//        RenderSystem.setShaderTexture(0, GUI_TEXTURE);
 
         int relX = (this.width - this.imageWidth) / 2;
         int relY = (this.height - this.imageHeight) / 2;
-        blit(matrixStack, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
+        guiGraphics.blit(GUI_TEXTURE, relX, relY, 0, 0, this.imageWidth, this.imageHeight);
     }
 
     @Override
-    protected void renderLabels(@Nonnull PoseStack matrixStack, int mouseX, int mouseY) {
-        font.draw(matrixStack, title, 8.0F, 8.0F, 14737632);
+    protected void renderLabels(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        guiGraphics.drawString(font, title, 8, 8, 14737632);
     }
 }

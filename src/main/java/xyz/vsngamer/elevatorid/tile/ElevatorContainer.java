@@ -22,7 +22,8 @@ public class ElevatorContainer extends AbstractContainerMenu {
     public ElevatorContainer(int id, BlockPos pos, Player player) {
         super(ELEVATOR_CONTAINER.get(), id);
 
-        BlockEntity tile = player.level.getBlockEntity(pos);
+        // TODO: 08/06/2023 Check if this is the correct way to get the level
+        BlockEntity tile = player.level().getBlockEntity(pos);
         if (tile instanceof ElevatorTileEntity)
             elevatorTile = (ElevatorTileEntity) tile;
 
@@ -38,7 +39,7 @@ public class ElevatorContainer extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(@Nonnull Player playerIn) {
-        return stillValid(ContainerLevelAccess.create(playerIn.level, elevatorTile.getBlockPos()), playerIn, elevatorTile.getBlockState().getBlock());
+        return stillValid(ContainerLevelAccess.create(playerIn.level(), elevatorTile.getBlockPos()), playerIn, elevatorTile.getBlockState().getBlock());
     }
 
     public BlockPos getPos() {

@@ -12,10 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -24,7 +21,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -47,7 +43,8 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
     public ElevatorBlock(DyeColor color) {
         super(Block.Properties
-                .of(Material.WOOL, color)
+                .of()
+                .mapColor(color)
                 .sound(SoundType.WOOL)
                 .strength(0.8F)
                 .dynamicShape()
@@ -204,12 +201,13 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public boolean shouldCheckWeakPower(BlockState state, LevelReader world, BlockPos pos, Direction side) {
-        ElevatorTileEntity tile = getElevatorTile(world, pos);
+    public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
+        ElevatorTileEntity tile = getElevatorTile(level, pos);
         if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().shouldCheckWeakPower(world, pos, side);
+            return tile.getHeldState().shouldCheckWeakPower(level, pos, side);
         }
-        return super.shouldCheckWeakPower(state, world, pos, side);
+
+        return super.shouldCheckWeakPower(state, level, pos, side);
     }
 
     @Override

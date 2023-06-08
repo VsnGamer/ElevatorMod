@@ -1,28 +1,28 @@
 modLoader="javafml" 
-loaderVersion="[45,)"
-license="MIT"
+loaderVersion="${loader_version_range}"
+license="${mod_license}"
 issueTrackerURL="https://github.com/VsnGamer/ElevatorMod/issues/"
-logoFile="logo.png"
+
 [[mods]]
-modId="elevatorid"
-version="${file.jarVersion}"
-displayName="Elevator Mod"
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
 #updateJSONURL="http://myurl.me/"
 displayURL="https://minecraft.curseforge.com/projects/openblocks-elevator/"
+logoFile="logo.png"
 credits="OpenBlocks Team"
-authors="VsnGamer"
-description='''
-Simple port of the elevator from OpenBlocks to 1.8+
-'''
-[[dependencies.elevatorid]]
+authors="${mod_authors}"
+description='''${mod_description}'''
+
+[[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
-    versionRange="[45.0.9,)"
+    versionRange="${forge_version_range}"
     ordering="NONE"
     side="BOTH"
-[[dependencies.elevatorid]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.4,1.20)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

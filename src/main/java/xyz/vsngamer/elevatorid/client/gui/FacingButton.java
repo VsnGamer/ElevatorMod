@@ -1,7 +1,7 @@
 package xyz.vsngamer.elevatorid.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,12 +24,12 @@ class FacingButton extends Button {
     }
 
     @Override
-    public void renderWidget(@Nonnull PoseStack matrixStack, int mouseX, int mouseY, float partial) {
+    public void renderWidget(@Nonnull GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         if (isHoveredOrFocused())
-            fill(matrixStack, getX(), getY(), getX() + width, getY() + height, -2130706433);
+            guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, -2130706433);
 
-        drawCenteredString(matrixStack, Minecraft.getInstance().font,
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font,
                 getMessage().getString(),
                 getX() + this.width / 2,
                 getY() + (this.height - 8) / 2,

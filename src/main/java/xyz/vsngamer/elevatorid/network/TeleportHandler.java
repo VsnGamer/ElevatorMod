@@ -9,8 +9,10 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
@@ -36,7 +38,9 @@ public class TeleportHandler {
                 }
             }
 
-            ServerLevel world = player.getLevel();
+            if (!(player.level() instanceof ServerLevel world))
+                return;
+
             BlockPos toPos = message.getTo();
             BlockState toState = world.getBlockState(message.getTo());
 
@@ -72,7 +76,7 @@ public class TeleportHandler {
         if (player == null || !player.isAlive())
             return true;
 
-        ServerLevel world = player.getLevel();
+        Level world = player.level();
         BlockPos fromPos = msg.getFrom();
         BlockPos toPos = msg.getTo();
 
@@ -85,6 +89,9 @@ public class TeleportHandler {
             return true;
 
         if (fromPos.getX() != toPos.getX() || fromPos.getZ() != toPos.getZ())
+            return true;
+
+        if (fromPos.getY() == toPos.getY())
             return true;
 
         ElevatorBlock fromElevator = getElevator(world.getBlockState(fromPos));
@@ -104,11 +111,8 @@ public class TeleportHandler {
     }
 
     public static boolean isValidPos(BlockGetter world, BlockPos pos) {
-        return validTarget(world.getBlockState(pos.above()));
-    }
-
-    private static boolean validTarget(BlockState blockState) {
-        return !blockState.getMaterial().isSolid(); // TODO maybe change this
+        VoxelShape collisionShape = world.getBlockState(pos.above()).getCollisionShape(world, pos);
+        return collisionShape.isEmpty();
     }
 
     public static ElevatorBlock getElevator(BlockState blockState) {

@@ -1,9 +1,11 @@
 package xyz.vsngamer.elevatorid.init;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -70,6 +72,13 @@ public class Registry {
             "camouflage", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ElevatorMod.ID, "camouflage"))
     );
 
+    private static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ElevatorMod.ID);
+
+    private static final RegistryObject<CreativeModeTab> ELEVATORS_TAB = CREATIVE_TABS.register("elevators_tab",
+            () -> CreativeModeTab.builder().icon(() -> ELEVATOR_ITEMS.get(DyeColor.WHITE).get().getDefaultInstance()).displayItems(
+                    (params, output) -> ELEVATOR_ITEMS.values().forEach(item -> output.accept(item.get()))
+            ).build());
+
     public static void init() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         BLOCKS.register(modEventBus);
@@ -77,6 +86,7 @@ public class Registry {
         BLOCK_ENTITIES.register(modEventBus);
         CONTAINERS.register(modEventBus);
         SOUNDS.register(modEventBus);
+        CREATIVE_TABS.register(modEventBus);
     }
 
     // TODO: Config GUI

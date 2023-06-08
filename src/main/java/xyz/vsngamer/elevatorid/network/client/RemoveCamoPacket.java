@@ -24,7 +24,7 @@ public record RemoveCamoPacket(BlockPos pos) {
             if (NetworkHandler.isBadClientPacket(player, msg.pos))
                 return;
 
-            if (player.getLevel().getBlockEntity(msg.pos) instanceof ElevatorTileEntity tile) {
+            if (player.level().getBlockEntity(msg.pos) instanceof ElevatorTileEntity tile) {
                 tile.setCamoAndUpdate(null);
             }
         });

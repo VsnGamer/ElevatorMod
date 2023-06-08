@@ -22,6 +22,7 @@ import xyz.vsngamer.elevatorid.network.TeleportRequest;
 public class ElevatorHandler {
     private static boolean lastSneaking;
 
+    // TODO: 08/06/2023 Maybe use LivingTickEvent so we only try to teleport if the player is allowed to crouch
     @SubscribeEvent
     public static void onInput(InputEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
@@ -38,7 +39,7 @@ public class ElevatorHandler {
 
     @SubscribeEvent
     public static void jump(LivingEvent.LivingJumpEvent e) {
-        if (e.getEntity() instanceof Player && e.getEntity().level.isClientSide)
+        if (e.getEntity() instanceof Player && e.getEntity().level().isClientSide)
             tryTeleport((LocalPlayer) e.getEntity(), Direction.UP);
     }
 
@@ -75,7 +76,7 @@ public class ElevatorHandler {
      * @return the position of the first valid elevator or null if it doesn't exist
      */
     private static BlockPos getOriginElevator(LocalPlayer player) {
-        Level world = player.getCommandSenderWorld();
+        Level world = player.level();
         BlockPos pos = player.blockPosition();
 
         // Check the player's feet and the 2 blocks under it

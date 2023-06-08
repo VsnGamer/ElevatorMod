@@ -2,8 +2,8 @@ package xyz.vsngamer.elevatorid.network;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import xyz.vsngamer.elevatorid.ElevatorMod;
@@ -35,7 +35,7 @@ public class NetworkHandler {
         if (player == null || player.isDeadOrDying() || player.isRemoved())
             return true;
 
-        ServerLevel world = player.getLevel();
+        Level world = player.level();
         if (!world.isLoaded(pos))
             return true;
 
