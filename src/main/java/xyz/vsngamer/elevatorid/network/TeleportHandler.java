@@ -12,7 +12,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
@@ -111,8 +110,7 @@ public class TeleportHandler {
     }
 
     public static boolean isValidPos(BlockGetter world, BlockPos pos) {
-        VoxelShape collisionShape = world.getBlockState(pos.above()).getCollisionShape(world, pos);
-        return collisionShape.isEmpty();
+        return world.getBlockState(pos.above()).getCollisionShape(world, pos.above()).isEmpty();
     }
 
     public static ElevatorBlock getElevator(BlockState blockState) {

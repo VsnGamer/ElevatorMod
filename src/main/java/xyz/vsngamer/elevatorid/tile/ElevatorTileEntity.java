@@ -151,6 +151,6 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         }
 
         // Only blocks with a collision box
-        return state.isSolid(); // TODO: 08/06/2023
+        return !state.getCollisionShape(null, null).isEmpty();
     }
 }

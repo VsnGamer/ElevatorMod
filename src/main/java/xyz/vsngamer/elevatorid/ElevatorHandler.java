@@ -4,12 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
@@ -21,8 +20,8 @@ import xyz.vsngamer.elevatorid.network.TeleportRequest;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = ElevatorMod.ID)
 public class ElevatorHandler {
     private static boolean lastSneaking;
+    private static boolean lastJumping;
 
-    // TODO: 08/06/2023 Maybe use LivingTickEvent so we only try to teleport if the player is allowed to crouch
     @SubscribeEvent
     public static void onInput(InputEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
@@ -35,12 +34,38 @@ public class ElevatorHandler {
             if (sneaking)
                 tryTeleport(player, Direction.DOWN);
         }
+
+        boolean jumping = player.input.jumping;
+        if (lastJumping != jumping) {
+            lastJumping = jumping;
+            if (jumping)
+                tryTeleport(player, Direction.UP);
+        }
     }
 
     @SubscribeEvent
-    public static void jump(LivingEvent.LivingJumpEvent e) {
-        if (e.getEntity() instanceof Player && e.getEntity().level().isClientSide)
-            tryTeleport((LocalPlayer) e.getEntity(), Direction.UP);
+    public static void onLivingUpdate(TickEvent.PlayerTickEvent event) {
+//        if (event.phase != TickEvent.Phase.END || !event.player.level().isClientSide)
+//            return;
+//
+//        LocalPlayer player = (LocalPlayer) event.player;
+//
+//        boolean jumping = (player.getDeltaMovement().y > 0 || player.input.jumping) // for 2 block gaps where the player hits the ceiling
+//                && !player.onGround();
+//        if (lastJumping != jumping) {
+//            lastJumping = jumping;
+//            if (jumping) {
+//                tryTeleport(player, Direction.UP);
+//            }
+//        }
+//
+//        boolean crouching = player.isCrouching();
+//        if (lastSneaking != crouching) {
+//            lastSneaking = crouching;
+//            if (crouching) {
+//                tryTeleport(player, Direction.DOWN);
+//            }
+//        }
     }
 
     private static void tryTeleport(LocalPlayer player, Direction facing) {

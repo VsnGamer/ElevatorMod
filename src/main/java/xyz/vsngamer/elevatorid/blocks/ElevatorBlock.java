@@ -48,7 +48,8 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                 .sound(SoundType.WOOL)
                 .strength(0.8F)
                 .dynamicShape()
-                .noOcclusion());
+                .noOcclusion()
+        );
 
         dyeColor = color;
     }
@@ -91,7 +92,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
         Block handBlock = Block.byItem(handStack.getItem());
         BlockState stateToApply = handBlock.getStateForPlacement(new FakeUseContext(player, handIn, hit));
-        if (tile.setCamoAndUpdate(stateToApply))// Try set camo
+        if (stateToApply != null && tile.setCamoAndUpdate(stateToApply))// Try set camo
             return InteractionResult.SUCCESS; // If we successfully set camo, don't open the menu
 
         // Remove camo
