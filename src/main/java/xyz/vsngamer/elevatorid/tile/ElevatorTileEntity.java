@@ -112,7 +112,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
             level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
             getBlockState().updateNeighbourShapes(level, worldPosition, 2);
-            level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
+            level.getLightEngine().checkBlock(worldPosition);
         }
     }
 

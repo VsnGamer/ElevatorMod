@@ -1,6 +1,7 @@
 package xyz.vsngamer.elevatorid.init;
 
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
@@ -75,9 +76,12 @@ public class Registry {
     private static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ElevatorMod.ID);
 
     private static final RegistryObject<CreativeModeTab> ELEVATORS_TAB = CREATIVE_TABS.register("elevators_tab",
-            () -> CreativeModeTab.builder().icon(() -> ELEVATOR_ITEMS.get(DyeColor.WHITE).get().getDefaultInstance()).displayItems(
-                    (params, output) -> ELEVATOR_ITEMS.values().forEach(item -> output.accept(item.get()))
-            ).build());
+            () -> CreativeModeTab.builder()
+                    .icon(() -> ELEVATOR_ITEMS.get(DyeColor.WHITE).get().getDefaultInstance())
+                    .displayItems((params, output) -> ELEVATOR_ITEMS.values().forEach(item -> output.accept(item.get())))
+                    .title(Component.translatable("itemGroup.elevators_tab"))
+                    .build()
+    );
 
     public static void init() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();

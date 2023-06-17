@@ -229,16 +229,6 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         return super.getDirectSignal(state, reader, pos, direction);
     }
 
-    @Override
-    public boolean hasAnalogOutputSignal(@Nonnull BlockState state) {
-        return false;
-    }
-
-    @Override
-    public int getAnalogOutputSignal(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos) {
-        return 0;
-    }
-
     // Light
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
