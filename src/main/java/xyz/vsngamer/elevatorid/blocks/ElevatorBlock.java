@@ -25,7 +25,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.NotNull;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
@@ -49,6 +48,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                 .strength(0.8F)
                 .dynamicShape()
                 .noOcclusion()
+                .forceSolidOn() // prevents rain/snow from falling through. TODO: check if this has any unintended side effects
         );
 
         dyeColor = color;
@@ -125,7 +125,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         ElevatorTileEntity tile = getElevatorTile(world, pos);
         if (tile != null && tile.getHeldState() != null)
             return tile.getHeldState().collisionExtendsVertically(world, pos, collidingEntity);
-        return false;
+        return super.collisionExtendsVertically(state, world, pos, collidingEntity);
     }
 
     // Visual outline
@@ -180,6 +180,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                 final BlockState updatedState = tile.getHeldState().updateShape(facing, facingState, worldIn, currentPos, facingPos);
                 if (updatedState != tile.getHeldState()) {
                     tile.setHeldState(updatedState);
+                    tile.setChanged();
                 }
             }
         }
@@ -242,7 +243,11 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
-        return true;
+        ElevatorTileEntity tile = getElevatorTile(reader, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().propagatesSkylightDown(reader, pos);
+        }
+        return super.propagatesSkylightDown(state, reader, pos);
     }
 
     @Override
@@ -260,7 +265,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getLightBlock(worldIn, pos);
         }
-        return worldIn.getMaxLightLevel();
+        return super.getLightBlock(state, worldIn, pos);
     }
 
     @Override
@@ -280,7 +285,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         if (world == null || pos == null)
             return null;
 
-        BlockEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = world.getExistingBlockEntity(pos);
 
         // Check if it exists and is valid
         if (tile instanceof ElevatorTileEntity && tile.getType().isValid(world.getBlockState(pos))) {
