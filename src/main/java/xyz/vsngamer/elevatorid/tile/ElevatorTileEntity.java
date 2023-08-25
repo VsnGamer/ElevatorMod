@@ -139,7 +139,7 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         if (state.getBlock() == Blocks.AIR) return false;
 
         // Tile entities can cause problems
-        if (state.hasBlockEntity()) return false;
+//        if (state.hasBlockEntity()) return false;
 
         // Don't try to camouflage with itself
         if (state.getBlock() instanceof ElevatorBlock) {
