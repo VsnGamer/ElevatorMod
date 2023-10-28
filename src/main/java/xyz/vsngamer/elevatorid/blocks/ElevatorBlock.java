@@ -265,7 +265,21 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getLightBlock(worldIn, pos);
         }
-        return super.getLightBlock(state, worldIn, pos);
+        return worldIn.getMaxLightLevel();
+    }
+
+    @Override
+    public boolean supportsExternalFaceHiding(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState queryState, @Nullable BlockPos queryPos) {
+        ElevatorTileEntity tile = getElevatorTile(level, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().getAppearance(level, pos, side, queryState, queryPos);
+        }
+        return super.getAppearance(state, level, pos, side, queryState, queryPos);
     }
 
     @Override
