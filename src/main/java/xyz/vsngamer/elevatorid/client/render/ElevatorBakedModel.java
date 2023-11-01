@@ -64,7 +64,7 @@ public class ElevatorBakedModel extends BakedModelWrapper<BakedModel> {
         BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
 
         // Directional arrow
-        if (renderType == RenderType.cutoutMipped() && side == null) {
+        if (renderType == RenderType.cutoutMipped()) {
             if (state.getValue(ElevatorBlock.DIRECTIONAL) && state.getValue(ElevatorBlock.SHOW_ARROW)) {
                 BakedModel arrowModel = dispatcher.getBlockModelShaper().getModelManager().getModel(new ResourceLocation("elevatorid", "arrow"));
                 BlockModelRotation rot = BlockModelRotation.by(0, (int) state.getValue(ElevatorBlock.FACING).toYRot());
