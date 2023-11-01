@@ -12,17 +12,15 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.Registry;
 
-import java.util.function.Supplier;
-
 public class TeleportHandler {
-    static void handle(TeleportRequest message, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            ServerPlayer player = ctx.get().getSender();
+    static void handle(TeleportRequest message, NetworkEvent.Context ctx) {
+        ctx.enqueueWork(() -> {
+            ServerPlayer player = ctx.getSender();
             if (isBadTeleportPacket(message, player))
                 return;
 
@@ -68,7 +66,7 @@ public class TeleportHandler {
             world.playSound(null, toPos, Registry.TELEPORT_SOUND.get(), SoundSource.BLOCKS, 1F, 1F);
         });
 
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 
     private static boolean isBadTeleportPacket(TeleportRequest msg, ServerPlayer player) {

@@ -1,31 +1,31 @@
 package xyz.vsngamer.elevatorid.init;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.logging.log4j.LogManager;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 
-import static net.minecraftforge.fml.Logging.FORGEMOD;
+import static net.neoforged.fml.Logging.FORGEMOD;
 
 @Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModConfig {
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final CommonGeneral GENERAL = new CommonGeneral(BUILDER);
-    public static final ForgeConfigSpec SPEC = BUILDER.build();
+    public static final ModConfigSpec SPEC = BUILDER.build();
 
     public static class CommonGeneral {
-        public final ForgeConfigSpec.BooleanValue sameColor;
-        public final ForgeConfigSpec.BooleanValue precisionTarget;
-        public final ForgeConfigSpec.BooleanValue mobSpawn;
-        public final ForgeConfigSpec.BooleanValue resetPitchNormal;
-        public final ForgeConfigSpec.BooleanValue resetPitchDirectional;
-        public final ForgeConfigSpec.IntValue range;
-        public final ForgeConfigSpec.BooleanValue useXP;
-        public final ForgeConfigSpec.IntValue XPPointsAmount;
+        public final ModConfigSpec.BooleanValue sameColor;
+        public final ModConfigSpec.BooleanValue precisionTarget;
+        public final ModConfigSpec.BooleanValue mobSpawn;
+        public final ModConfigSpec.BooleanValue resetPitchNormal;
+        public final ModConfigSpec.BooleanValue resetPitchDirectional;
+        public final ModConfigSpec.IntValue range;
+        public final ModConfigSpec.BooleanValue useXP;
+        public final ModConfigSpec.IntValue XPPointsAmount;
 
-        CommonGeneral(ForgeConfigSpec.Builder builder) {
+        CommonGeneral(ModConfigSpec.Builder builder) {
             builder.push("General");
 
             sameColor = builder

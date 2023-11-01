@@ -77,7 +77,7 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(guiGraphics);
+//        renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 //        renderTooltip(guiGraphics, mouseX, mouseY);
     }

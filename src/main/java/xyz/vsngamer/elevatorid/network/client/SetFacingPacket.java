@@ -6,11 +6,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.NetworkEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
-
-import java.util.function.Supplier;
 
 public record SetFacingPacket(Direction direction, BlockPos pos) {
     public static void encode(SetFacingPacket msg, FriendlyByteBuf buf) {
@@ -22,9 +20,9 @@ public record SetFacingPacket(Direction direction, BlockPos pos) {
         return new SetFacingPacket(buf.readEnum(Direction.class), buf.readBlockPos());
     }
 
-    public static void handle(SetFacingPacket msg, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            ServerPlayer player = ctx.get().getSender();
+    public static void handle(SetFacingPacket msg, NetworkEvent.Context ctx) {
+        ctx.enqueueWork(() -> {
+            ServerPlayer player = ctx.getSender();
             if (NetworkHandler.isBadClientPacket(player, msg.pos))
                 return;
 
@@ -35,6 +33,6 @@ public record SetFacingPacket(Direction direction, BlockPos pos) {
             }
         });
 
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 }

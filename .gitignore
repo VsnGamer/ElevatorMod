@@ -24,6 +24,8 @@ build
 # other
 eclipse
 run
+runs
+run-data
 libs
 
 # Files from Forge MDK

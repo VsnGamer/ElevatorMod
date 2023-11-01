@@ -1,91 +1,81 @@
 plugins {
+    id 'java-library'
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle' version '[6.0.13, 6.2)'
+    id 'net.neoforged.gradle.userdev' version '7.0.5'
 
-    id 'org.spongepowered.mixin' version '0.7.+'
+//    id 'net.neoforged.gradle.mixin' version '[7.0.5,)'
 }
 
 version = mod_version
 group = mod_group_id
 
+repositories {
+    mavenLocal()
+
+//    exclusiveContent {
+//        forRepository {
+//            maven {
+//                name = "Modrinth"
+//                url = "https://api.modrinth.com/maven"
+//            }
+//        }
+//        forRepositories(fg.repository)
+//        filter {
+//            includeGroup "maven.modrinth"
+//        }
+//    }
+}
+
 base {
-    archivesName = 'elevatorid'
+    archivesName = mod_id
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 
-minecraft {
-    mappings channel: mapping_channel, version: mapping_version
+minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    copyIdeResources = true
+runs {
+    configureEach {
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+        systemProperty 'forge.logging.console.level', 'debug'
 
-    runs {
-        configureEach {
-            workingDirectory project.file("run/${it.name}")
+        modSource project.sourceSets.main
+    }
 
-            property 'forge.logging.markers', 'REGISTRIES'
+    client {
+        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
 
-            property 'forge.logging.console.level', 'debug'
+        programArguments.addAll '--username', 'Dev##'
+    }
 
-            mods {
-                "${mod_id}" {
-                    source sourceSets.main
-                }
-            }
-        }
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
 
-        client {
-            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', mod_id
+    // This run config launches GameTestServer and runs all registered gametests, then exits.
+    // By default, the server will crash when no gametests are provided.
+    // The gametest system is also enabled by default for other run configs under the /test command.
+    gameTestServer {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
 
-            args '--username', 'Dev##'
-        }
-
-        server {
-            property 'forge.enabledGameTestNamespaces', mod_id
-
-            args '--nogui'
-        }
-
-        // This run config launches GameTestServer and runs all registered gametests, then exits.
-        // By default, the server will crash when no gametests are provided.
-        // The gametest system is also enabled by default for other run configs under the /test command.
-        gameTestServer {
-            property 'forge.enabledGameTestNamespaces', mod_id
-        }
-
-        data {
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-        }
+    data {
+        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = "https://api.modrinth.com/maven"
-            }
-        }
-        forRepositories(fg.repository)
-        filter {
-            includeGroup "maven.modrinth"
-        }
-    }
-}
-
 dependencies {
-    minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
+    implementation "net.neoforged:neoforge:${neo_version}"
 
-    implementation fg.deobf("maven.modrinth:rubidium:0.7.0a")
+//    implementation fg.deobf("maven.modrinth:rubidium:0.7.0a")
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -101,22 +91,6 @@ tasks.withType(ProcessResources).configureEach {
     filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
         expand replaceProperties + [project: project]
     }
-}
-
-tasks.named('jar', Jar).configure {
-    manifest {
-        attributes([
-                "Specification-Title"     : mod_id,
-                "Specification-Vendor"    : mod_authors,
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : mod_authors,
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
-
-    finalizedBy 'reobfJar'
 }
 
 publishing {

@@ -6,11 +6,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.InputEvent;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
@@ -23,7 +22,16 @@ public class ElevatorHandler {
     private static boolean lastJumping;
 
     @SubscribeEvent
-    public static void onInput(InputEvent event) {
+    public static void onInput(InputEvent.Key event) {
+        handleInput();
+    }
+
+    @SubscribeEvent
+    private static void onMouseInput(InputEvent.MouseButton.Post event) {
+        handleInput();
+    }
+
+    private static void handleInput() {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null || player.isSpectator() || !player.isAlive() || player.input == null)
             return;
@@ -43,8 +51,8 @@ public class ElevatorHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void onLivingUpdate(TickEvent.PlayerTickEvent event) {
+//    @SubscribeEvent
+//    public static void onLivingUpdate(TickEvent.PlayerTickEvent event) {
 //        if (event.phase != TickEvent.Phase.END || !event.player.level().isClientSide)
 //            return;
 //
@@ -66,7 +74,7 @@ public class ElevatorHandler {
 //                tryTeleport(player, Direction.DOWN);
 //            }
 //        }
-    }
+//    }
 
     private static void tryTeleport(LocalPlayer player, Direction facing) {
         BlockGetter world = player.getCommandSenderWorld();
