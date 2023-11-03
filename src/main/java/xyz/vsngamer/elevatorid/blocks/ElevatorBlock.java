@@ -10,13 +10,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.*;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -25,19 +21,22 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
+
+import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_TILE_ENTITY;
 
 @SuppressWarnings("deprecation")
 public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
 
-    //    private ElevatorBlockItem blockItem;
     private final DyeColor dyeColor;
 
     public ElevatorBlock(DyeColor color) {
@@ -48,7 +47,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                 .strength(0.8F)
                 .dynamicShape()
                 .noOcclusion()
-                .forceSolidOn() // prevents rain/snow from falling through. TODO: check if this has any unintended side effects
+                .forceSolidOn()
         );
 
         dyeColor = color;
@@ -62,7 +61,10 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(DIRECTIONAL, false);
+        return defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite())
+                .setValue(DIRECTIONAL, false)
+                .setValue(SHOW_ARROW, true);
     }
 
 
@@ -84,25 +86,23 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
             return InteractionResult.SUCCESS;
         }
 
-        ItemStack handStack = player.getItemInHand(handIn);
-        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
-        if (tile == null) {
-            return InteractionResult.FAIL;
-        }
+        return getElevatorTile(worldIn, pos)
+                .map(tile -> {
+                    Block handBlock = Block.byItem(player.getItemInHand(handIn).getItem());
+                    BlockState stateToApply = handBlock.getStateForPlacement(new FakeUseContext(player, handIn, hit));
+                    if (stateToApply != null && tile.setCamoAndUpdate(stateToApply))
+                        return InteractionResult.SUCCESS; // If we successfully set camo, don't open the menu
 
-        Block handBlock = Block.byItem(handStack.getItem());
-        BlockState stateToApply = handBlock.getStateForPlacement(new FakeUseContext(player, handIn, hit));
-        if (stateToApply != null && tile.setCamoAndUpdate(stateToApply))// Try set camo
-            return InteractionResult.SUCCESS; // If we successfully set camo, don't open the menu
+                    // Remove camo
+                    if (player.isCrouching() && tile.getHeldState() != null) {
+                        tile.setCamoAndUpdate(null);
+                        return InteractionResult.SUCCESS;
+                    }
 
-        // Remove camo
-        if (player.isCrouching() && tile.getHeldState() != null) {
-            tile.setCamoAndUpdate(null);
-            return InteractionResult.SUCCESS;
-        }
-
-        NetworkHooks.openScreen((ServerPlayer) player, tile, pos);
-        return InteractionResult.SUCCESS;
+                    NetworkHooks.openScreen((ServerPlayer) player, tile, pos);
+                    return InteractionResult.SUCCESS;
+                })
+                .orElse(InteractionResult.FAIL);
     }
 
     @Override
@@ -114,50 +114,53 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     @Nonnull
     @Override
     public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
-        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
-        if (tile != null && tile.getHeldState() != null)
-            return tile.getHeldState().getCollisionShape(worldIn, pos, context);
-        return super.getCollisionShape(state, worldIn, pos, context);
+        return getHeldState(worldIn, pos)
+                .map(s -> s.getCollisionShape(worldIn, pos, context))
+                .orElse(super.getCollisionShape(state, worldIn, pos, context));
     }
 
     @Override
     public boolean collisionExtendsVertically(BlockState state, BlockGetter world, BlockPos pos, Entity collidingEntity) {
-        ElevatorTileEntity tile = getElevatorTile(world, pos);
-        if (tile != null && tile.getHeldState() != null)
-            return tile.getHeldState().collisionExtendsVertically(world, pos, collidingEntity);
-        return super.collisionExtendsVertically(state, world, pos, collidingEntity);
+        return getHeldState(world, pos)
+                .map(s -> s.collisionExtendsVertically(world, pos, collidingEntity))
+                .orElse(super.collisionExtendsVertically(state, world, pos, collidingEntity));
+    }
+
+    @Override
+    public boolean isCollisionShapeFullBlock(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+        return getHeldState(world, pos)
+                .map(s -> s.isCollisionShapeFullBlock(world, pos))
+                .orElse(super.isCollisionShapeFullBlock(state, world, pos));
     }
 
     // Visual outline
     @Nonnull
     @Override
     public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
-        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
-        if (tile != null && tile.getHeldState() != null)
-            return tile.getHeldState().getShape(worldIn, pos, context);
-        return super.getShape(state, worldIn, pos, context);
+        return getHeldState(worldIn, pos)
+                .map(s -> s.getShape(worldIn, pos, context))
+                .orElse(super.getShape(state, worldIn, pos, context));
     }
 
     @Override
     public float getFriction(@Nonnull BlockState state, @Nonnull LevelReader world, @Nonnull BlockPos pos, @Nullable Entity entity) {
-        ElevatorTileEntity tile = getElevatorTile(world, pos);
-        if (tile != null && tile.getHeldState() != null)
-            return tile.getHeldState().getFriction(world, pos, entity);
-        return super.getFriction(state, world, pos, entity);
+        return getHeldState(world, pos)
+                .map(s -> s.getFriction(world, pos, entity))
+                .orElse(super.getFriction(state, world, pos, entity));
     }
 
-    @Override
-    public void entityInside(@Nonnull BlockState state, @Nonnull Level worldIn, @Nonnull BlockPos pos, @Nonnull Entity entityIn) {
-        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            try {
-                tile.getHeldState().entityInside(worldIn, pos, entityIn);
-                return;
-            } catch (IllegalArgumentException ignored) {
-            }
-        }
-        super.entityInside(state, worldIn, pos, entityIn);
-    }
+//    @Override
+//    public void entityInside(@Nonnull BlockState state, @Nonnull Level worldIn, @Nonnull BlockPos pos, @Nonnull Entity entityIn) {
+//        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
+//        if (tile != null && tile.getHeldState() != null) {
+//            try {
+//                tile.getHeldState().entityInside(worldIn, pos, entityIn);
+//                return;
+//            } catch (IllegalArgumentException ignored) {
+//            }
+//        }
+//        super.entityInside(state, worldIn, pos, entityIn);
+//    }
 
     // TODO soulsand and honey use this
     @Override
@@ -175,15 +178,21 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     @Override
     public BlockState updateShape(@Nonnull BlockState stateIn, @Nonnull Direction facing, @Nonnull BlockState facingState, LevelAccessor worldIn, @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
         if (!worldIn.isClientSide()) {
-            ElevatorTileEntity tile = getElevatorTile(worldIn, currentPos);
-            if (tile != null && tile.getHeldState() != null) {
-                final BlockState updatedState = tile.getHeldState().updateShape(facing, facingState, worldIn, currentPos, facingPos);
-                if (updatedState != tile.getHeldState()) {
-                    tile.setHeldState(updatedState);
-                    tile.setChanged();
-                }
-            }
+            getElevatorTile(worldIn, currentPos)
+                    .ifPresent(t -> {
+                        if (t.getHeldState() == null) {
+                            return;
+                        }
+
+                        BlockState appearance = facingState.getAppearance(worldIn, facingPos, facing.getOpposite(), t.getHeldState(), currentPos);
+                        BlockState updatedState = t.getHeldState().updateShape(facing, appearance, worldIn, currentPos, facingPos);
+                        if (updatedState != t.getHeldState()) {
+                            t.setHeldState(updatedState);
+                            t.setChanged();
+                        }
+                    });
         }
+
         return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
     }
 
@@ -195,77 +204,71 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
-        ElevatorTileEntity tile = getElevatorTile(world, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().canRedstoneConnectTo(world, pos, side);
-        }
-        return false;
+        return getHeldState(world, pos)
+                .map(s -> s.getBlock().canConnectRedstone(s, world, pos, side))
+                .orElse(super.canConnectRedstone(state, world, pos, side));
     }
 
     @Override
     public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
-        ElevatorTileEntity tile = getElevatorTile(level, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().shouldCheckWeakPower(level, pos, side);
-        }
-
-        return super.shouldCheckWeakPower(state, level, pos, side);
+        return getHeldState(level, pos)
+                .map(s -> s.shouldCheckWeakPower(level, pos, side))
+                .orElse(super.shouldCheckWeakPower(state, level, pos, side));
     }
 
     @Override
     public int getSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
-        ElevatorTileEntity tile = getElevatorTile(reader, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getSignal(reader, pos, direction);
-        }
-        return super.getSignal(state, reader, pos, direction);
+        return getHeldState(reader, pos)
+                .map(s -> s.getSignal(reader, pos, direction))
+                .orElse(super.getSignal(state, reader, pos, direction));
     }
 
     @Override
     public int getDirectSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
-        ElevatorTileEntity tile = getElevatorTile(reader, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getDirectSignal(reader, pos, direction);
-        }
-        return super.getDirectSignal(state, reader, pos, direction);
+        return getHeldState(reader, pos)
+                .map(s -> s.getDirectSignal(reader, pos, direction))
+                .orElse(super.getDirectSignal(state, reader, pos, direction));
     }
 
     // Light
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        ElevatorTileEntity tile = getElevatorTile(world, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getLightEmission(world, pos);
-        }
+        return getHeldState(world, pos)
+                .map(s -> s.getLightEmission(world, pos))
+                .orElse(super.getLightEmission(state, world, pos));
+    }
 
-        return super.getLightEmission(state, world, pos);
+    @Override
+    public boolean useShapeForLightOcclusion(@NotNull BlockState state) {
+        return true;
     }
 
     @Override
     public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
-        ElevatorTileEntity tile = getElevatorTile(reader, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().propagatesSkylightDown(reader, pos);
-        }
-        return super.propagatesSkylightDown(state, reader, pos);
-    }
-
-    @Override
-    public float getShadeBrightness(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos) {
-        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getShadeBrightness(worldIn, pos);
-        }
-        return super.getShadeBrightness(state, worldIn, pos);
+        return getHeldState(reader, pos)
+                .map(s -> s.propagatesSkylightDown(reader, pos))
+                .orElse(false);
     }
 
     @Override
     public int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos) {
-        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getLightBlock(worldIn, pos);
-        }
-        return worldIn.getMaxLightLevel();
+        return getHeldState(worldIn, pos)
+                .map(s -> s.getLightBlock(worldIn, pos))
+                .orElse(worldIn.getMaxLightLevel());
+    }
+
+    @Override
+    public @NotNull VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+        return getHeldState(world, pos)
+                .map(s -> s.getOcclusionShape(world, pos))
+                .orElse(super.getOcclusionShape(state, world, pos));
+    }
+
+
+    @Override
+    public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState otherState, @NotNull Direction side) {
+        // hack...
+        return otherState.getBlock() instanceof HalfTransparentBlock || super.skipRendering(state, otherState, side);
     }
 
     @Override
@@ -274,39 +277,44 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState queryState, @Nullable BlockPos queryPos) {
-        ElevatorTileEntity tile = getElevatorTile(level, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getAppearance(level, pos, side, queryState, queryPos);
+    public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
+        // more hacks...
+        Optional<BlockState> heldState = getHeldState(level, pos);
+        Optional<BlockState> otherHeldState = getHeldState(level, pos.relative(dir));
+        if (heldState.isPresent() && otherHeldState.isPresent()) {
+            return heldState.get().skipRendering(otherHeldState.get(), dir);
         }
-        return super.getAppearance(state, level, pos, side, queryState, queryPos);
+
+        return heldState
+                .map(s -> s.skipRendering(neighborState, dir))
+                .orElse(super.hidesNeighborFace(level, pos, state, neighborState, dir));
+    }
+
+    @Override
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState queryState, @Nullable BlockPos queryPos) {
+        return getHeldState(level, pos).orElse(super.getAppearance(state, level, pos, side, queryState, queryPos));
     }
 
     @Override
     public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, @Nullable Entity entity) {
-        ElevatorTileEntity tile = getElevatorTile(world, pos);
-        if (tile != null && tile.getHeldState() != null) {
-            return tile.getHeldState().getSoundType(world, pos, entity);
-        }
-        return super.getSoundType(state, world, pos, entity);
+        return getHeldState(world, pos)
+                .map(s -> s.getSoundType(world, pos, entity))
+                .orElse(super.getSoundType(state, world, pos, entity));
     }
 
     public DyeColor getColor() {
         return dyeColor;
     }
 
-    private ElevatorTileEntity getElevatorTile(BlockGetter world, BlockPos pos) {
-        if (world == null || pos == null)
-            return null;
-
-        BlockEntity tile = world.getExistingBlockEntity(pos);
-
-        // Check if it exists and is valid
-        if (tile instanceof ElevatorTileEntity && tile.getType().isValid(world.getBlockState(pos))) {
-            return (ElevatorTileEntity) tile;
+    private Optional<ElevatorTileEntity> getElevatorTile(BlockGetter world, BlockPos pos) {
+        if (world == null || pos == null) {
+            return Optional.empty();
         }
 
-//        LogManager.getLogger(ElevatorMod.ID).debug("NULL TILE, " + world.toString());
-        return null;
+        return world.getBlockEntity(pos, ELEVATOR_TILE_ENTITY.get());
+    }
+
+    private Optional<BlockState> getHeldState(BlockGetter world, BlockPos pos) {
+        return getElevatorTile(world, pos).map(ElevatorTileEntity::getHeldState);
     }
 }
