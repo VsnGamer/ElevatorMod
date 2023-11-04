@@ -265,7 +265,8 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getLightBlock(worldIn, pos);
         }
-        return super.getLightBlock(state, worldIn, pos);
+
+        return worldIn.getMaxLightLevel();
     }
 
     @Override
@@ -285,7 +286,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         if (world == null || pos == null)
             return null;
 
-        BlockEntity tile = world.getExistingBlockEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
 
         // Check if it exists and is valid
         if (tile instanceof ElevatorTileEntity && tile.getType().isValid(world.getBlockState(pos))) {
