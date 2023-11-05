@@ -12,7 +12,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.*;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -267,8 +270,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState otherState, @NotNull Direction side) {
-        // hack...
-        return otherState.getBlock() instanceof HalfTransparentBlock || super.skipRendering(state, otherState, side);
+        return super.skipRendering(state, otherState, side);
     }
 
     @Override
