@@ -12,10 +12,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -51,7 +48,8 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                 .sound(SoundType.WOOL)
                 .strength(0.8F)
                 .dynamicShape()
-                .noOcclusion());
+                .noOcclusion()
+        );
 
         dyeColor = color;
     }
@@ -271,7 +269,43 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         if (tile != null && tile.getHeldState() != null) {
             return tile.getHeldState().getLightBlock(worldIn, pos);
         }
-        return worldIn.getMaxLightLevel();
+
+        return 0;
+    }
+
+    @Override
+    public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState neighborState, @NotNull Direction facing) {
+        return super.skipRendering(state, neighborState, facing);
+    }
+
+    @Override
+    public boolean supportsExternalFaceHiding(BlockState state) {
+        return true;
+    }
+
+    @Override
+    public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
+        ElevatorTileEntity tile = getElevatorTile(level, pos);
+        ElevatorTileEntity neighborTile = getElevatorTile(level, pos.relative(dir));
+        if (tile != null && tile.getHeldState() != null) {
+            if (neighborTile != null && neighborTile.getHeldState() != null) {
+                return tile.getHeldState().skipRendering(neighborTile.getHeldState(), dir);
+            }
+
+            return tile.getHeldState().skipRendering(neighborState, dir);
+        }
+
+        return super.hidesNeighborFace(level, pos, state, neighborState, dir);
+    }
+
+    @Override
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState queryState, @Nullable BlockPos queryPos) {
+        ElevatorTileEntity tile = getElevatorTile(level, pos);
+        if (tile != null && tile.getHeldState() != null) {
+            return tile.getHeldState().getAppearance(level, pos, side, queryState, queryPos);
+        }
+
+        return super.getAppearance(state, level, pos, side, queryState, queryPos);
     }
 
     @Override

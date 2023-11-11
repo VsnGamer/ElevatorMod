@@ -30,7 +30,7 @@ import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_TILE_ENTITY;
 
 public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
-    private BlockState heldState;
+    private BlockState heldState = null;
 
     public ElevatorTileEntity(BlockPos pos, BlockState state) {
         super(ELEVATOR_TILE_ENTITY.get(), pos, state);
@@ -40,17 +40,20 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     public void load(@Nonnull CompoundTag tag) {
         super.load(tag);
 
-        // Get blockstate from compound, always check if it's valid
-        BlockState held_id = NbtUtils.readBlockState(tag.getCompound("held_id"));
-        heldState = isValidState(held_id) ? held_id : null;
+        if (tag.contains("held_id")) {
+            // Get blockstate from compound, always check if it's valid
+            BlockState state = NbtUtils.readBlockState(tag.getCompound("held_id"));
+            heldState = isValidState(state) ? state : null;
+        } else {
+            heldState = null;
+        }
     }
 
     @Override
     protected void saveAdditional(@Nonnull CompoundTag tag) {
         super.saveAdditional(tag);
 
-        if (heldState != null)
-            tag.put("held_id", NbtUtils.writeBlockState(heldState));
+        if (heldState != null) tag.put("held_id", NbtUtils.writeBlockState(heldState));
     }
 
     @Nonnull
@@ -59,22 +62,22 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         return ModelData.builder().with(HELD_STATE, heldState).build();
     }
 
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
-        updateClient();
-    }
-
     @Nonnull
     @Override
     public CompoundTag getUpdateTag() {
         return saveWithId();
     }
 
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+        markUpdated();
+    }
+
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this, tile -> getUpdateTag());
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -95,19 +98,16 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
     public void setHeldState(BlockState state) {
         this.heldState = state;
+        this.setChanged();
+
         markUpdated();
     }
 
     private void markUpdated() {
-        this.setChanged();
+        requestModelDataUpdate();
 
         if (level != null) {
-            level.sendBlockUpdated(
-                    getBlockPos(),
-                    getBlockState(),
-                    getBlockState(),
-                    Block.UPDATE_ALL
-            );
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_ALL);
 
             level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
             getBlockState().updateNeighbourShapes(level, worldPosition, 2);
@@ -119,25 +119,10 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         return heldState;
     }
 
-    private void updateClient() {
-        if (level != null && level.isClientSide) {
-            requestModelDataUpdate();
-            level.sendBlockUpdated(
-                    getBlockPos(),
-                    getBlockState(),
-                    getBlockState(),
-                    Block.UPDATE_ALL
-            );
-            level.getChunkSource().getLightEngine().checkBlock(getBlockPos());
-        }
-    }
-
     public boolean setCamoAndUpdate(BlockState newState) {
-        if (heldState == newState)
-            return false;
+        if (heldState == newState) return false;
 
-        if (!isValidState(newState))
-            return false;
+        if (!isValidState(newState)) return false;
 
         setHeldState(newState);
         if (getLevel() != null)
@@ -147,15 +132,12 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     }
 
     public static boolean isValidState(BlockState state) {
-        if (state == null)
-            return true;
+        if (state == null) return true;
 
-        if (state.getBlock() == Blocks.AIR)
-            return false;
+        if (state.getBlock() == Blocks.AIR) return false;
 
         // Tile entities can cause problems
-        if (state.hasBlockEntity())
-            return false;
+        if (state.hasBlockEntity()) return false;
 
         // Don't try to camouflage with itself
         if (state.getBlock() instanceof ElevatorBlock) {
@@ -170,10 +152,4 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
         // Only blocks with a collision box
         return state.getMaterial().isSolid();
     }
-
-//    public static BlockEntityType<ElevatorTileEntity> getType(Block... validBlocks) {
-//        BlockEntityType<ElevatorTileEntity> type = BlockEntityType.Builder.of(ElevatorTileEntity::new, validBlocks).build(null);
-//        type.setRegistryName("elevator_tile");
-//        return type;
-//    }
 }

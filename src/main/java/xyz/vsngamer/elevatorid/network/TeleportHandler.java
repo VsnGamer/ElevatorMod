@@ -80,8 +80,8 @@ public class TeleportHandler {
             return true;
 
         // This ensures the player is still standing on the "from" elevator
-        final double distanceSq = player.distanceToSqr(Vec3.atCenterOf(fromPos.north()));
-        if (distanceSq > 4D)
+        final double distanceSq = player.distanceToSqr(Vec3.atCenterOf(fromPos));
+        if (distanceSq > 6D)
             return true;
 
         if (fromPos.getX() != toPos.getX() || fromPos.getZ() != toPos.getZ())
