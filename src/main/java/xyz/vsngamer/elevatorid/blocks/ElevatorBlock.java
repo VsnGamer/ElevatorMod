@@ -152,19 +152,6 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                 .orElse(super.getFriction(state, world, pos, entity));
     }
 
-//    @Override
-//    public void entityInside(@Nonnull BlockState state, @Nonnull Level worldIn, @Nonnull BlockPos pos, @Nonnull Entity entityIn) {
-//        ElevatorTileEntity tile = getElevatorTile(worldIn, pos);
-//        if (tile != null && tile.getHeldState() != null) {
-//            try {
-//                tile.getHeldState().entityInside(worldIn, pos, entityIn);
-//                return;
-//            } catch (IllegalArgumentException ignored) {
-//            }
-//        }
-//        super.entityInside(state, worldIn, pos, entityIn);
-//    }
-
     // TODO soulsand and honey use this
     @Override
     public float getSpeedFactor() {

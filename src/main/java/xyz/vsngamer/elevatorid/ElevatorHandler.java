@@ -51,31 +51,6 @@ public class ElevatorHandler {
         }
     }
 
-//    @SubscribeEvent
-//    public static void onLivingUpdate(TickEvent.PlayerTickEvent event) {
-//        if (event.phase != TickEvent.Phase.END || !event.player.level().isClientSide)
-//            return;
-//
-//        LocalPlayer player = (LocalPlayer) event.player;
-//
-//        boolean jumping = (player.getDeltaMovement().y > 0 || player.input.jumping) // for 2 block gaps where the player hits the ceiling
-//                && !player.onGround();
-//        if (lastJumping != jumping) {
-//            lastJumping = jumping;
-//            if (jumping) {
-//                tryTeleport(player, Direction.UP);
-//            }
-//        }
-//
-//        boolean crouching = player.isCrouching();
-//        if (lastSneaking != crouching) {
-//            lastSneaking = crouching;
-//            if (crouching) {
-//                tryTeleport(player, Direction.DOWN);
-//            }
-//        }
-//    }
-
     private static void tryTeleport(LocalPlayer player, Direction facing) {
         BlockGetter world = player.getCommandSenderWorld();
 
