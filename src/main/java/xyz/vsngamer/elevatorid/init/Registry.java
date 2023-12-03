@@ -48,7 +48,7 @@ public class Registry {
 
     static {
         ELEVATOR_BLOCKS.forEach((color, o) ->
-                ELEVATOR_ITEMS.put(color, ITEMS.registerBlockItem(o))
+                ELEVATOR_ITEMS.put(color, ITEMS.registerSimpleBlockItem(o))
         );
     }
 
