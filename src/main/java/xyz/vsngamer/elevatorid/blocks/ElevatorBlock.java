@@ -1,5 +1,7 @@
 package xyz.vsngamer.elevatorid.blocks;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,7 +42,17 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
 
+    private static final MapCodec<ElevatorBlock> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlock::getColor))
+                    .apply(instance, ElevatorBlock::new)
+    );
+
     private final DyeColor dyeColor;
+
+    @Override
+    protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
+    }
 
     public ElevatorBlock(DyeColor color) {
         super(Block.Properties

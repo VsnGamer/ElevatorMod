@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.57'
+    id 'net.neoforged.gradle.userdev' version '7.0.64'
 
 //    id 'net.neoforged.gradle.mixin' version '[7.0.5,)'
 }
@@ -50,7 +50,7 @@ runs {
         // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
         systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
 
-        programArguments.addAll '--username', 'Dev##'
+        programArguments.addAll '--username', 'Dev####'
     }
 
     server {
