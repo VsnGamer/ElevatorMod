@@ -8,10 +8,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
-import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.network.client.RemoveCamoPacket;
 import xyz.vsngamer.elevatorid.network.client.SetArrowPacket;
 import xyz.vsngamer.elevatorid.network.client.SetDirectionalPacket;
@@ -49,22 +49,18 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
         // Toggle directional button
         Component dirLang = Component.translatable("screen.elevatorid.elevator.directional");
-        dirButton = Checkbox.builder(dirLang, font).pos(leftPos + 8, topPos + 25).selected(tile.getBlockState().getValue(DIRECTIONAL)).onValueChange(
-                (checkbox, selected) -> NetworkHandler.INSTANCE.sendToServer(new SetDirectionalPacket(selected, tile.getBlockPos()))
-        ).build();
+        dirButton = Checkbox.builder(dirLang, font).pos(leftPos + 8, topPos + 25).selected(tile.getBlockState().getValue(DIRECTIONAL)).onValueChange((checkbox, selected) -> PacketDistributor.SERVER.noArg().send(new SetDirectionalPacket(selected, tile.getBlockPos()))).build();
         addRenderableWidget(dirButton);
 
         // Toggle arrow button
         Component arrowLang = Component.translatable("screen.elevatorid.elevator.hide_arrow");
-        hideArrowButton = Checkbox.builder(arrowLang, font).pos(leftPos + 8, topPos + 50).selected(!tile.getBlockState().getValue(SHOW_ARROW)).onValueChange(
-                (checkbox, selected) -> NetworkHandler.INSTANCE.sendToServer(new SetArrowPacket(!selected, tile.getBlockPos()))
-        ).build();
+        hideArrowButton = Checkbox.builder(arrowLang, font).pos(leftPos + 8, topPos + 50).selected(!tile.getBlockState().getValue(SHOW_ARROW)).onValueChange((checkbox, selected) -> PacketDistributor.SERVER.noArg().send(new SetArrowPacket(!selected, tile.getBlockPos()))).build();
         hideArrowButton.visible = tile.getBlockState().getValue(DIRECTIONAL);
         addRenderableWidget(hideArrowButton);
 
         // Reset camouflage button
         Component resetCamoLang = Component.translatable("screen.elevatorid.elevator.reset_camo");
-        resetCamoButton = Button.builder(resetCamoLang, but -> NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getBlockPos()))).pos(leftPos + 8, topPos + 75).size(110, 20).build();
+        resetCamoButton = Button.builder(resetCamoLang, but -> PacketDistributor.SERVER.noArg().send(new RemoveCamoPacket(tile.getBlockPos()))).pos(leftPos + 8, topPos + 75).size(110, 20).build();
         addRenderableWidget(resetCamoButton);
 
         // Directional controller

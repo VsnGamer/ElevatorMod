@@ -4,15 +4,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
-import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.network.TeleportHandler;
 import xyz.vsngamer.elevatorid.network.TeleportRequest;
 
@@ -52,7 +51,7 @@ public class ElevatorHandler {
     }
 
     private static void tryTeleport(LocalPlayer player, Direction facing) {
-        BlockGetter world = player.getCommandSenderWorld();
+        Level world = player.level();
 
         BlockPos fromPos = getOriginElevator(player);
         if (fromPos == null) return;
@@ -70,7 +69,7 @@ public class ElevatorHandler {
             ElevatorBlock toElevator = TeleportHandler.getElevator(world.getBlockState(toPos));
             if (toElevator != null && TeleportHandler.isValidPos(world, toPos)) {
                 if (!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
-                    NetworkHandler.INSTANCE.sendToServer(new TeleportRequest(fromPos, toPos));
+                    PacketDistributor.SERVER.noArg().send(new TeleportRequest(fromPos, toPos));
                     break;
                 }
             }

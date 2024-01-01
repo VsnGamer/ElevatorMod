@@ -1,11 +1,12 @@
 package xyz.vsngamer.elevatorid.network;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.NetworkRegistry;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.network.client.RemoveCamoPacket;
 import xyz.vsngamer.elevatorid.network.client.SetArrowPacket;
@@ -13,25 +14,22 @@ import xyz.vsngamer.elevatorid.network.client.SetDirectionalPacket;
 import xyz.vsngamer.elevatorid.network.client.SetFacingPacket;
 import xyz.vsngamer.elevatorid.tile.ElevatorContainer;
 
+@Mod(ElevatorMod.ID)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NetworkHandler {
-    private static final String PROTOCOL_VERSION = "1";
-    public static SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
-            .named(new ResourceLocation(ElevatorMod.ID, "main_channel"))
-            .clientAcceptedVersions(PROTOCOL_VERSION::equals)
-            .serverAcceptedVersions(PROTOCOL_VERSION::equals)
-            .networkProtocolVersion(() -> PROTOCOL_VERSION)
-            .simpleChannel();
 
-    public static void init() {
-        int i = 0;
-        INSTANCE.registerMessage(i++, TeleportRequest.class, TeleportRequest::encode, TeleportRequest::decode, TeleportHandler::handle);
-        INSTANCE.registerMessage(i++, SetDirectionalPacket.class, SetDirectionalPacket::encode, SetDirectionalPacket::decode, SetDirectionalPacket::handle);
-        INSTANCE.registerMessage(i++, SetArrowPacket.class, SetArrowPacket::encode, SetArrowPacket::decode, SetArrowPacket::handle);
-        INSTANCE.registerMessage(i++, RemoveCamoPacket.class, RemoveCamoPacket::encode, RemoveCamoPacket::decode, RemoveCamoPacket::handle);
-        INSTANCE.registerMessage(i++, SetFacingPacket.class, SetFacingPacket::encode, SetFacingPacket::decode, SetFacingPacket::handle);
+    @SubscribeEvent
+    public static void register(final RegisterPayloadHandlerEvent event) {
+        final IPayloadRegistrar registrar = event.registrar(ElevatorMod.ID);
+
+        registrar.play(TeleportRequest.ID, TeleportRequest::new, handler -> handler.server(TeleportHandler.getInstance()::handle));
+        registrar.play(SetDirectionalPacket.ID, SetDirectionalPacket::new, handler -> handler.server(SetDirectionalPacket.Handler.getInstance()::handle));
+        registrar.play(SetArrowPacket.ID, SetArrowPacket::new, handler -> handler.server(SetArrowPacket.Handler.getInstance()::handle));
+        registrar.play(RemoveCamoPacket.ID, RemoveCamoPacket::new, handler -> handler.server(RemoveCamoPacket.Handler.getInstance()::handle));
+        registrar.play(SetFacingPacket.ID, SetFacingPacket::new, handler -> handler.server(SetFacingPacket.Handler.getInstance()::handle));
     }
 
-    public static boolean isBadClientPacket(ServerPlayer player, BlockPos pos) {
+    public static boolean isBadClientPacket(Player player, BlockPos pos) {
         if (player == null || player.isDeadOrDying() || player.isRemoved())
             return true;
 

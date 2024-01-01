@@ -4,7 +4,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -25,7 +24,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
@@ -114,7 +112,8 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                         return InteractionResult.SUCCESS;
                     }
 
-                    NetworkHooks.openScreen((ServerPlayer) player, tile, pos);
+                    player.openMenu(tile, pos);
+//                    NetworkHooks.openScreen((ServerPlayer) player, tile, pos);
                     return InteractionResult.SUCCESS;
                 })
                 .orElse(InteractionResult.FAIL);

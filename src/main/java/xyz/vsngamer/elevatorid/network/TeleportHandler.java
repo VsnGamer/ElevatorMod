@@ -5,22 +5,31 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.Registry;
 
+import java.util.EnumSet;
+
 public class TeleportHandler {
-    static void handle(TeleportRequest message, NetworkEvent.Context ctx) {
-        ctx.enqueueWork(() -> {
-            ServerPlayer player = ctx.getSender();
+
+    private static final TeleportHandler INSTANCE = new TeleportHandler();
+
+    public static TeleportHandler getInstance() {
+        return INSTANCE;
+    }
+
+    void handle(final TeleportRequest message, PlayPayloadContext ctx) {
+        ctx.workHandler().submitAsync(() -> {
+            Player player = ctx.player().orElse(null);
             if (isBadTeleportPacket(message, player))
                 return;
 
@@ -38,8 +47,8 @@ public class TeleportHandler {
             if (!(player.level() instanceof ServerLevel world))
                 return;
 
-            BlockPos toPos = message.getTo();
-            BlockState toState = world.getBlockState(message.getTo());
+            BlockPos toPos = message.to();
+            BlockState toState = world.getBlockState(message.to());
 
             // Check yaw and pitch
             final float yaw = toState.getValue(ElevatorBlock.DIRECTIONAL)
@@ -60,22 +69,20 @@ public class TeleportHandler {
             }
 
             double blockYOffset = toState.getBlockSupportShape(world, toPos).max(Direction.Axis.Y);
-            player.teleportTo(world, toX, Math.max(toPos.getY(), toPos.getY() + blockYOffset), toZ, yaw, pitch);
+            player.teleportTo(world, toX, Math.max(toPos.getY(), toPos.getY() + blockYOffset), toZ, EnumSet.noneOf(RelativeMovement.class), yaw, pitch);
             player.setDeltaMovement(player.getDeltaMovement().multiply(new Vec3(1D, 0D, 1D)));
 
             world.playSound(null, toPos, Registry.TELEPORT_SOUND.get(), SoundSource.BLOCKS, 1F, 1F);
         });
-
-        ctx.setPacketHandled(true);
     }
 
-    private static boolean isBadTeleportPacket(TeleportRequest msg, ServerPlayer player) {
+    private static boolean isBadTeleportPacket(TeleportRequest msg, Player player) {
         if (player == null || !player.isAlive())
             return true;
 
         Level world = player.level();
-        BlockPos fromPos = msg.getFrom();
-        BlockPos toPos = msg.getTo();
+        BlockPos fromPos = msg.from();
+        BlockPos toPos = msg.to();
 
         if (!world.isLoaded(fromPos) || !world.isLoaded(toPos))
             return true;

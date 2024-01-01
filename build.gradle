@@ -14,18 +14,17 @@ group = mod_group_id
 repositories {
     mavenLocal()
 
-//    exclusiveContent {
-//        forRepository {
-//            maven {
-//                name = "Modrinth"
-//                url = "https://api.modrinth.com/maven"
-//            }
-//        }
-//        forRepositories(fg.repository)
-//        filter {
-//            includeGroup "maven.modrinth"
-//        }
-//    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
 }
 
 base {
@@ -75,7 +74,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
-//    implementation fg.deobf("maven.modrinth:rubidium:0.7.0a")
+    implementation "maven.modrinth:embeddium:0.2.13+mc1.20.4"
 }
 
 tasks.withType(ProcessResources).configureEach {
