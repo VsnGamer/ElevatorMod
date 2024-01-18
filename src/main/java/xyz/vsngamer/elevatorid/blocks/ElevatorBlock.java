@@ -24,7 +24,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.network.NetworkHooks;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
@@ -101,7 +100,8 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
             return InteractionResult.SUCCESS;
         }
 
-        NetworkHooks.openScreen((ServerPlayer) player, tile, pos);
+        ((ServerPlayer) player).openMenu(tile, pos);
+
         return InteractionResult.SUCCESS;
     }
 
@@ -286,7 +286,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         if (world == null || pos == null)
             return null;
 
-        BlockEntity tile = world.getBlockEntity(pos);
+        BlockEntity tile = world.getExistingBlockEntity(pos);
 
         // Check if it exists and is valid
         if (tile instanceof ElevatorTileEntity && tile.getType().isValid(world.getBlockState(pos))) {

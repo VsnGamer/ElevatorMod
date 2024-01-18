@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.network.PacketDistributor;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.network.client.SetFacingPacket;
 
@@ -17,8 +18,15 @@ class FacingButton extends Button {
     final Direction direction;
 
     FacingButton(Point slot, Direction direction, BlockPos pos) {
-        super(slot.x, slot.y, 20, 20, Component.translatable("screen.elevatorid.elevator.directional_" + direction.getName()), but ->
-                NetworkHandler.INSTANCE.sendToServer(new SetFacingPacket(direction, pos)), DEFAULT_NARRATION);
+        super(
+                slot.x,
+                slot.y,
+                20,
+                20,
+                Component.translatable("screen.elevatorid.elevator.directional_" + direction.getName()),
+                but -> NetworkHandler.INSTANCE.send(new SetFacingPacket(direction, pos), PacketDistributor.SERVER.noArg()),
+                DEFAULT_NARRATION
+        );
 
         this.direction = direction;
     }

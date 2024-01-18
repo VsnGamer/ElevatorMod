@@ -8,9 +8,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
@@ -43,31 +43,6 @@ public class ElevatorHandler {
         }
     }
 
-    @SubscribeEvent
-    public static void onLivingUpdate(TickEvent.PlayerTickEvent event) {
-//        if (event.phase != TickEvent.Phase.END || !event.player.level().isClientSide)
-//            return;
-//
-//        LocalPlayer player = (LocalPlayer) event.player;
-//
-//        boolean jumping = (player.getDeltaMovement().y > 0 || player.input.jumping) // for 2 block gaps where the player hits the ceiling
-//                && !player.onGround();
-//        if (lastJumping != jumping) {
-//            lastJumping = jumping;
-//            if (jumping) {
-//                tryTeleport(player, Direction.UP);
-//            }
-//        }
-//
-//        boolean crouching = player.isCrouching();
-//        if (lastSneaking != crouching) {
-//            lastSneaking = crouching;
-//            if (crouching) {
-//                tryTeleport(player, Direction.DOWN);
-//            }
-//        }
-    }
-
     private static void tryTeleport(LocalPlayer player, Direction facing) {
         BlockGetter world = player.getCommandSenderWorld();
 
@@ -87,7 +62,7 @@ public class ElevatorHandler {
             ElevatorBlock toElevator = TeleportHandler.getElevator(world.getBlockState(toPos));
             if (toElevator != null && TeleportHandler.isValidPos(world, toPos)) {
                 if (!ModConfig.GENERAL.sameColor.get() || fromElevator.getColor() == toElevator.getColor()) {
-                    NetworkHandler.INSTANCE.sendToServer(new TeleportRequest(fromPos, toPos));
+                    NetworkHandler.INSTANCE.send(new TeleportRequest(fromPos, toPos), PacketDistributor.SERVER.noArg());
                     break;
                 }
             }

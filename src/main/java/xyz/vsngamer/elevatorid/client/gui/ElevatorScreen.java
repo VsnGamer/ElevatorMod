@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
@@ -49,19 +50,19 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
         // Toggle directional button
         Component dirLang = Component.translatable("screen.elevatorid.elevator.directional");
         dirButton = new FunctionalCheckbox(leftPos + 8, topPos + 25, 20, 20, dirLang, tile.getBlockState().getValue(DIRECTIONAL), value ->
-                NetworkHandler.INSTANCE.sendToServer(new SetDirectionalPacket(value, tile.getBlockPos())));
+                NetworkHandler.INSTANCE.send(new SetDirectionalPacket(value, tile.getBlockPos()), PacketDistributor.SERVER.noArg()));
         addRenderableWidget(dirButton);
 
         // Toggle arrow button
         Component arrowLang = Component.translatable("screen.elevatorid.elevator.hide_arrow");
         hideArrowButton = new FunctionalCheckbox(leftPos + 8, topPos + 50, 20, 20, arrowLang, !tile.getBlockState().getValue(SHOW_ARROW),
-                value -> NetworkHandler.INSTANCE.sendToServer(new SetArrowPacket(!value, tile.getBlockPos())));
+                value -> NetworkHandler.INSTANCE.send(new SetArrowPacket(!value, tile.getBlockPos()), PacketDistributor.SERVER.noArg()));
         hideArrowButton.visible = tile.getBlockState().getValue(DIRECTIONAL);
         addRenderableWidget(hideArrowButton);
 
         // Reset camouflage button
         Component resetCamoLang = Component.translatable("screen.elevatorid.elevator.reset_camo");
-        resetCamoButton = Button.builder(resetCamoLang, but -> NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getBlockPos()))).pos(leftPos + 8, topPos + 75).size(110, 20).build();
+        resetCamoButton = Button.builder(resetCamoLang, but -> NetworkHandler.INSTANCE.send(new RemoveCamoPacket(tile.getBlockPos()), PacketDistributor.SERVER.noArg())).pos(leftPos + 8, topPos + 75).size(110, 20).build();
 //        resetCamoButton = new Button(leftPos + 8, topPos + 75, 110, 20, resetCamoLang,
 //                button -> NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getBlockPos()))
 //        );
@@ -77,7 +78,7 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(guiGraphics);
+//        renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 //        renderTooltip(guiGraphics, mouseX, mouseY);
     }

@@ -4,8 +4,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.Channel;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.SimpleChannel;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.network.client.RemoveCamoPacket;
 import xyz.vsngamer.elevatorid.network.client.SetArrowPacket;
@@ -14,33 +16,52 @@ import xyz.vsngamer.elevatorid.network.client.SetFacingPacket;
 import xyz.vsngamer.elevatorid.tile.ElevatorContainer;
 
 public class NetworkHandler {
-    private static final String PROTOCOL_VERSION = "1";
-    public static SimpleChannel INSTANCE = NetworkRegistry.ChannelBuilder
-            .named(new ResourceLocation(ElevatorMod.ID, "main_channel"))
-            .clientAcceptedVersions(PROTOCOL_VERSION::equals)
-            .serverAcceptedVersions(PROTOCOL_VERSION::equals)
-            .networkProtocolVersion(() -> PROTOCOL_VERSION)
-            .simpleChannel();
+    private static final int PROTOCOL_VERSION = 1;
+    public static SimpleChannel INSTANCE =
+            ChannelBuilder.named(new ResourceLocation(ElevatorMod.ID, "main_channel"))
+                    .acceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION))
+                    .networkProtocolVersion(PROTOCOL_VERSION)
+                    .simpleChannel();
 
     public static void init() {
-        int i = 0;
-        INSTANCE.registerMessage(i++, TeleportRequest.class, TeleportRequest::encode, TeleportRequest::decode, TeleportHandler::handle);
-        INSTANCE.registerMessage(i++, SetDirectionalPacket.class, SetDirectionalPacket::encode, SetDirectionalPacket::decode, SetDirectionalPacket::handle);
-        INSTANCE.registerMessage(i++, SetArrowPacket.class, SetArrowPacket::encode, SetArrowPacket::decode, SetArrowPacket::handle);
-        INSTANCE.registerMessage(i++, RemoveCamoPacket.class, RemoveCamoPacket::encode, RemoveCamoPacket::decode, RemoveCamoPacket::handle);
-        INSTANCE.registerMessage(i++, SetFacingPacket.class, SetFacingPacket::encode, SetFacingPacket::decode, SetFacingPacket::handle);
+        INSTANCE.messageBuilder(TeleportRequest.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(TeleportRequest::encode)
+                .decoder(TeleportRequest::decode)
+                .consumerMainThread(TeleportHandler::handle)
+                .add();
+
+        INSTANCE.messageBuilder(SetDirectionalPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(SetDirectionalPacket::encode)
+                .decoder(SetDirectionalPacket::decode)
+                .consumerMainThread(SetDirectionalPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(SetArrowPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(SetArrowPacket::encode)
+                .decoder(SetArrowPacket::decode)
+                .consumerMainThread(SetArrowPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(RemoveCamoPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(RemoveCamoPacket::encode)
+                .decoder(RemoveCamoPacket::decode)
+                .consumerMainThread(RemoveCamoPacket::handle)
+                .add();
+
+        INSTANCE.messageBuilder(SetFacingPacket.class, NetworkDirection.PLAY_TO_SERVER)
+                .encoder(SetFacingPacket::encode)
+                .decoder(SetFacingPacket::decode)
+                .consumerMainThread(SetFacingPacket::handle)
+                .add();
     }
 
     public static boolean isBadClientPacket(ServerPlayer player, BlockPos pos) {
-        if (player == null || player.isDeadOrDying() || player.isRemoved())
-            return true;
+        if (player == null || player.isDeadOrDying() || player.isRemoved()) return true;
 
         Level world = player.level();
-        if (!world.isLoaded(pos))
-            return true;
+        if (!world.isLoaded(pos)) return true;
 
-        if (!(player.containerMenu instanceof ElevatorContainer container))
-            return true;
+        if (!(player.containerMenu instanceof ElevatorContainer container)) return true;
 
         return !container.getPos().equals(pos);
     }
