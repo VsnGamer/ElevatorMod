@@ -14,13 +14,12 @@ import xyz.vsngamer.elevatorid.network.client.SetDirectionalPacket;
 import xyz.vsngamer.elevatorid.network.client.SetFacingPacket;
 import xyz.vsngamer.elevatorid.tile.ElevatorContainer;
 
-@Mod(ElevatorMod.ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class NetworkHandler {
 
     @SubscribeEvent
     public static void register(final RegisterPayloadHandlerEvent event) {
-        final IPayloadRegistrar registrar = event.registrar(ElevatorMod.ID);
+        final IPayloadRegistrar registrar = event.registrar(ElevatorMod.ID).versioned("1.0.0");
 
         registrar.play(TeleportRequest.ID, TeleportRequest::new, handler -> handler.server(TeleportHandler.getInstance()::handle));
         registrar.play(SetDirectionalPacket.ID, SetDirectionalPacket::new, handler -> handler.server(SetDirectionalPacket.Handler.getInstance()::handle));

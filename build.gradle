@@ -3,9 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.64'
-
-//    id 'net.neoforged.gradle.mixin' version '[7.0.5,)'
+    id 'net.neoforged.gradle.userdev' version '7.0.88'
 }
 
 version = mod_version
@@ -74,7 +72,7 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
-    implementation "maven.modrinth:embeddium:0.2.13+mc1.20.4"
+//    implementation "maven.modrinth:embeddium:0.3.1+mc1.20.4"
 }
 
 tasks.withType(ProcessResources).configureEach {
