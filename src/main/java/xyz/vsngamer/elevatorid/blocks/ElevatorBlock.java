@@ -25,12 +25,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.Optional;
 
 import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_TILE_ENTITY;
@@ -234,9 +236,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     // Light
     @Override
     public int getLightEmission(BlockState state, BlockGetter world, BlockPos pos) {
-        return getHeldState(world, pos)
-                .map(s -> s.getLightEmission(world, pos))
-                .orElse(super.getLightEmission(state, world, pos));
+        return Optional.ofNullable(world.getAuxLightManager(pos)).map(lm -> lm.getLightAt(pos)).orElse(0);
     }
 
     @Override
@@ -278,16 +278,29 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
-        // more hacks...
-        Optional<BlockState> heldState = getHeldState(level, pos);
-        Optional<BlockState> otherHeldState = getHeldState(level, pos.relative(dir));
-        if (heldState.isPresent() && otherHeldState.isPresent()) {
-            return heldState.get().skipRendering(otherHeldState.get(), dir);
+        var modelManager = level.getModelDataManager();
+        if (modelManager == null) {
+            return super.hidesNeighborFace(level, pos, state, neighborState, dir);
         }
 
-        return heldState
-                .map(s -> s.skipRendering(neighborState, dir))
-                .orElse(super.hidesNeighborFace(level, pos, state, neighborState, dir));
+        var modelData = modelManager.getAt(pos);
+        if (modelData == null) {
+            return super.hidesNeighborFace(level, pos, state, neighborState, dir);
+        }
+
+        var heldState = modelData.get(ElevatorBakedModel.HELD_STATE);
+        if (heldState == null) {
+            return super.hidesNeighborFace(level, pos, state, neighborState, dir);
+        }
+
+        var neighborModelData = modelManager.getAt(pos.relative(dir));
+        if (neighborModelData == null) {
+            return heldState.skipRendering(neighborState, dir);
+        }
+
+        var neighborHeldState = neighborModelData.get(ElevatorBakedModel.HELD_STATE);
+        return heldState.skipRendering(Objects.requireNonNullElse(neighborHeldState, neighborState), dir);
+
     }
 
     @Override

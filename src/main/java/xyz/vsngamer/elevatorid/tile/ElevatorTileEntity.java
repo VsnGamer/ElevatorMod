@@ -26,6 +26,7 @@ import xyz.vsngamer.elevatorid.init.Registry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 import static xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel.HELD_STATE;
 import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_TILE_ENTITY;
@@ -114,6 +115,15 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
         level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
         getBlockState().updateNeighbourShapes(level, worldPosition, 2);
+
+        Optional.ofNullable(level.getAuxLightManager(worldPosition))
+                .ifPresent(lm -> lm.setLightAt(
+                        worldPosition,
+                        Optional.ofNullable(this.heldState)
+                                .map(b -> b.getLightEmission(level, worldPosition))
+                                .orElse(0)
+                ));
+
         level.getLightEngine().checkBlock(worldPosition);
     }
 
