@@ -2,6 +2,7 @@ package xyz.vsngamer.elevatorid.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -29,8 +30,8 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
     private final ElevatorTileEntity tile;
     private final Direction playerFacing;
 
-    private FunctionalCheckbox dirButton;
-    private FunctionalCheckbox hideArrowButton;
+    private Checkbox dirButton;
+    private Checkbox hideArrowButton;
     private Button resetCamoButton;
     private FacingControllerWrapper facingController;
 
@@ -48,24 +49,38 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
         super.init();
 
         // Toggle directional button
-        Component dirLang = Component.translatable("screen.elevatorid.elevator.directional");
-        dirButton = new FunctionalCheckbox(leftPos + 8, topPos + 25, 20, 20, dirLang, tile.getBlockState().getValue(DIRECTIONAL), value ->
-                NetworkHandler.INSTANCE.send(new SetDirectionalPacket(value, tile.getBlockPos()), PacketDistributor.SERVER.noArg()));
+        dirButton = Checkbox.builder(Component.translatable("screen.elevatorid.elevator.directional"), font)
+                .pos(leftPos + 8, topPos + 25)
+                .selected(tile.getBlockState().getValue(DIRECTIONAL))
+                .onValueChange((checkbox, checked) -> NetworkHandler.INSTANCE.send(
+                        new SetDirectionalPacket(checked, tile.getBlockPos()), PacketDistributor.SERVER.noArg()
+                ))
+                .build();
         addRenderableWidget(dirButton);
 
         // Toggle arrow button
-        Component arrowLang = Component.translatable("screen.elevatorid.elevator.hide_arrow");
-        hideArrowButton = new FunctionalCheckbox(leftPos + 8, topPos + 50, 20, 20, arrowLang, !tile.getBlockState().getValue(SHOW_ARROW),
-                value -> NetworkHandler.INSTANCE.send(new SetArrowPacket(!value, tile.getBlockPos()), PacketDistributor.SERVER.noArg()));
+        hideArrowButton = Checkbox.builder(
+                        Component.translatable("screen.elevatorid.elevator.hide_arrow"), font
+                )
+                .pos(leftPos + 8, topPos + 50)
+                .selected(!tile.getBlockState().getValue(SHOW_ARROW))
+                .onValueChange((checkbox, checked) -> NetworkHandler.INSTANCE.send(
+                        new SetArrowPacket(!checked, tile.getBlockPos()), PacketDistributor.SERVER.noArg()
+                ))
+                .build();
         hideArrowButton.visible = tile.getBlockState().getValue(DIRECTIONAL);
         addRenderableWidget(hideArrowButton);
 
         // Reset camouflage button
-        Component resetCamoLang = Component.translatable("screen.elevatorid.elevator.reset_camo");
-        resetCamoButton = Button.builder(resetCamoLang, but -> NetworkHandler.INSTANCE.send(new RemoveCamoPacket(tile.getBlockPos()), PacketDistributor.SERVER.noArg())).pos(leftPos + 8, topPos + 75).size(110, 20).build();
-//        resetCamoButton = new Button(leftPos + 8, topPos + 75, 110, 20, resetCamoLang,
-//                button -> NetworkHandler.INSTANCE.sendToServer(new RemoveCamoPacket(tile.getBlockPos()))
-//        );
+        resetCamoButton = Button.builder(
+                        Component.translatable("screen.elevatorid.elevator.reset_camo"),
+                        but -> NetworkHandler.INSTANCE.send(
+                                new RemoveCamoPacket(tile.getBlockPos()), PacketDistributor.SERVER.noArg()
+                        )
+                )
+                .pos(leftPos + 8, topPos + 75)
+                .size(110, 20)
+                .build();
         addRenderableWidget(resetCamoButton);
 
         // Directional controller
@@ -78,9 +93,7 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-//        renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-//        renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override

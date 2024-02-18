@@ -1,5 +1,7 @@
 package xyz.vsngamer.elevatorid.blocks;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -36,6 +38,11 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
 
+    public static final MapCodec<ElevatorBlock> CODEC = RecordCodecBuilder.mapCodec(
+            i -> i.group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlock::getColor))
+                    .apply(i, ElevatorBlock::new)
+    );
+
     //    private ElevatorBlockItem blockItem;
     private final DyeColor dyeColor;
 
@@ -51,6 +58,11 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         );
 
         dyeColor = color;
+    }
+
+    @Override
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+        return CODEC;
     }
 
     @Override
@@ -286,7 +298,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         if (world == null || pos == null)
             return null;
 
-        BlockEntity tile = world.getExistingBlockEntity(pos);
+        BlockEntity tile = world.getBlockEntity(pos);
 
         // Check if it exists and is valid
         if (tile instanceof ElevatorTileEntity && tile.getType().isValid(world.getBlockState(pos))) {
