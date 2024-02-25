@@ -24,13 +24,11 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.jetbrains.annotations.NotNull;
 import xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,15 +40,15 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
 
-    private static final MapCodec<ElevatorBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlock::getColor))
-                    .apply(instance, ElevatorBlock::new)
+    private static final MapCodec<ElevatorBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+            .group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlock::getColor))
+            .apply(instance, ElevatorBlock::new)
     );
 
     private final DyeColor dyeColor;
 
     @Override
-    protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
+    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
         return CODEC;
     }
 
@@ -85,18 +83,18 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
     @Nullable
     @Override
-    public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state) {
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ElevatorTileEntity(pos, state);
     }
 
     @Override
-    public boolean canBeReplaced(@Nonnull BlockState state, @Nonnull BlockPlaceContext useContext) {
+    public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext) {
         return false;
     }
 
-    @Nonnull
+
     @Override
-    public InteractionResult use(@Nonnull BlockState state, Level worldIn, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand handIn, @Nonnull BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (worldIn.isClientSide) {
             return InteractionResult.SUCCESS;
         }
@@ -122,14 +120,14 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, @Nullable EntityType<?> entityType) {
+    public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
         return ModConfig.GENERAL.mobSpawn.get() && super.isValidSpawn(state, world, pos, type, entityType);
     }
 
     // Collision
-    @Nonnull
+
     @Override
-    public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return getHeldState(worldIn, pos)
                 .map(s -> s.getCollisionShape(worldIn, pos, context))
                 .orElse(super.getCollisionShape(state, worldIn, pos, context));
@@ -143,23 +141,22 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public boolean isCollisionShapeFullBlock(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter world, BlockPos pos) {
         return getHeldState(world, pos)
                 .map(s -> s.isCollisionShapeFullBlock(world, pos))
                 .orElse(super.isCollisionShapeFullBlock(state, world, pos));
     }
 
     // Visual outline
-    @Nonnull
     @Override
-    public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return getHeldState(worldIn, pos)
                 .map(s -> s.getShape(worldIn, pos, context))
                 .orElse(super.getShape(state, worldIn, pos, context));
     }
 
     @Override
-    public float getFriction(@Nonnull BlockState state, @Nonnull LevelReader world, @Nonnull BlockPos pos, @Nullable Entity entity) {
+    public float getFriction(BlockState state, LevelReader world, BlockPos pos, @Nullable Entity entity) {
         return getHeldState(world, pos)
                 .map(s -> s.getFriction(world, pos, entity))
                 .orElse(super.getFriction(state, world, pos, entity));
@@ -177,9 +174,9 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         return super.getJumpFactor();
     }
 
-    @Nonnull
+
     @Override
-    public BlockState updateShape(@Nonnull BlockState stateIn, @Nonnull Direction facing, @Nonnull BlockState facingState, LevelAccessor worldIn, @Nonnull BlockPos currentPos, @Nonnull BlockPos facingPos) {
+    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos) {
         if (!worldIn.isClientSide()) {
             getElevatorTile(worldIn, currentPos)
                     .ifPresent(t -> {
@@ -201,7 +198,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
     // Redstone
     @Override
-    public boolean isSignalSource(@Nonnull BlockState state) {
+    public boolean isSignalSource(BlockState state) {
         return true;
     }
 
@@ -220,14 +217,14 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public int getSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
+    public int getSignal(BlockState state, BlockGetter reader, BlockPos pos, Direction direction) {
         return getHeldState(reader, pos)
                 .map(s -> s.getSignal(reader, pos, direction))
                 .orElse(super.getSignal(state, reader, pos, direction));
     }
 
     @Override
-    public int getDirectSignal(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos, @Nonnull Direction direction) {
+    public int getDirectSignal(BlockState state, BlockGetter reader, BlockPos pos, Direction direction) {
         return getHeldState(reader, pos)
                 .map(s -> s.getDirectSignal(reader, pos, direction))
                 .orElse(super.getDirectSignal(state, reader, pos, direction));
@@ -240,26 +237,27 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public boolean useShapeForLightOcclusion(@NotNull BlockState state) {
+    public boolean useShapeForLightOcclusion(BlockState state) {
         return true;
     }
 
     @Override
-    public boolean propagatesSkylightDown(@Nonnull BlockState state, @Nonnull BlockGetter reader, @Nonnull BlockPos pos) {
-        return getHeldState(reader, pos)
-                .map(s -> s.propagatesSkylightDown(reader, pos))
-                .orElse(false);
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+        return true;
+//        return getHeldState(reader, pos)
+//                .map(s -> s.propagatesSkylightDown(reader, pos))
+//                .orElse(false);
     }
 
     @Override
-    public int getLightBlock(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos) {
+    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
         return getHeldState(worldIn, pos)
                 .map(s -> s.getLightBlock(worldIn, pos))
                 .orElse(worldIn.getMaxLightLevel());
     }
 
     @Override
-    public @NotNull VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    public VoxelShape getOcclusionShape(BlockState state, BlockGetter world, BlockPos pos) {
         return getHeldState(world, pos)
                 .map(s -> s.getOcclusionShape(world, pos))
                 .orElse(super.getOcclusionShape(state, world, pos));
@@ -267,7 +265,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
 
     @Override
-    public boolean skipRendering(@NotNull BlockState state, @NotNull BlockState otherState, @NotNull Direction side) {
+    public boolean skipRendering(BlockState state, BlockState otherState, Direction side) {
         return super.skipRendering(state, otherState, side);
     }
 
@@ -300,7 +298,6 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
         var neighborHeldState = neighborModelData.get(ElevatorBakedModel.HELD_STATE);
         return heldState.skipRendering(Objects.requireNonNullElse(neighborHeldState, neighborState), dir);
-
     }
 
     @Override
