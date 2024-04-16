@@ -1,0 +1,34 @@
+{
+  "block.elevatorid.elevator_white": "白色のエレベーター",
+  "block.elevatorid.elevator_black": "黒色のエレベーター",
+  "block.elevatorid.elevator_blue": "青色のエレベーター",
+  "block.elevatorid.elevator_brown": "茶色のエレベーター",
+  "block.elevatorid.elevator_cyan": "青緑色のエレベーター",
+  "block.elevatorid.elevator_gray": "灰色のエレベーター",
+  "block.elevatorid.elevator_green": "緑色のエレベーター",
+  "block.elevatorid.elevator_light_blue": "空色のエレベーター",
+  "block.elevatorid.elevator_lime": "黄緑色のエレベーター",
+  "block.elevatorid.elevator_magenta": "赤紫色のエレベーター",
+  "block.elevatorid.elevator_orange": "橙色のエレベーター",
+  "block.elevatorid.elevator_pink": "桃色のエレベーター",
+  "block.elevatorid.elevator_purple": "紫色のエレベーター",
+  "block.elevatorid.elevator_red": "赤色のエレベーター",
+  "block.elevatorid.elevator_light_gray": "薄灰色のエレベーター",
+  "block.elevatorid.elevator_yellow": "黄色のエレベーター",
+
+  "elevatorid.subtitle.teleport": "エレベーターが使用される",
+  "elevatorid.subtitle.camouflage": "エレベーターがカモフラージュされる",
+
+  "screen.elevatorid.elevator": "エレベーターの設定",
+  "screen.elevatorid.elevator.directional": "方向",
+  "screen.elevatorid.elevator.directional_north": "北",
+  "screen.elevatorid.elevator.directional_east": "東",
+  "screen.elevatorid.elevator.directional_south": "南",
+  "screen.elevatorid.elevator.directional_west": "西",
+  "screen.elevatorid.elevator.hide_arrow": "矢印を隠す",
+  "screen.elevatorid.elevator.reset_camo": "カモフラージュを削除",
+
+  "elevatorid.message.missing_xp": "経験値が不足しているため、テレポートできません",
+
+  "itemGroup.elevators_tab": "エレベーター"
+}
