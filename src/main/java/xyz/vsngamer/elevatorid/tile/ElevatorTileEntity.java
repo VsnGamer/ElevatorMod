@@ -1,6 +1,7 @@
 package xyz.vsngamer.elevatorid.tile;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -22,26 +23,23 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
+import xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel;
 import xyz.vsngamer.elevatorid.init.Registry;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 
-import static xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel.HELD_STATE;
-import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_TILE_ENTITY;
 
 public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
 
     private BlockState heldState;
 
     public ElevatorTileEntity(BlockPos pos, BlockState state) {
-        super(ELEVATOR_TILE_ENTITY.get(), pos, state);
+        super(Registry.ELEVATOR_TILE_ENTITY.get(), pos, state);
     }
 
     @Override
-    public void load(@Nonnull CompoundTag tag) {
-        super.load(tag);
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider holder) {
+        super.loadAdditional(tag, holder);
         if (tag.contains("held_id")) {
             // Get blockstate from compound, always check if it's valid
             BlockState state = NbtUtils.readBlockState(this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK.asLookup(), tag.getCompound("held_id"));
@@ -52,49 +50,45 @@ public class ElevatorTileEntity extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag tag) {
-        super.saveAdditional(tag);
+    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider holder) {
+        super.saveAdditional(tag, holder);
 
         if (heldState != null) tag.put("held_id", NbtUtils.writeBlockState(heldState));
     }
 
-    @Nonnull
     @Override
     public ModelData getModelData() {
-        return ModelData.builder().with(HELD_STATE, heldState).build();
-    }
-
-    @Nonnull
-    @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithId();
+        return ModelData.builder().with(ElevatorBakedModel.HELD_STATE, heldState).build();
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
+    public CompoundTag getUpdateTag(HolderLookup.Provider holder) {
+        return saveWithId(holder);
+    }
+
+    @Override
+    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider holder) {
+        super.handleUpdateTag(tag, holder);
         markUpdated();
     }
 
-    @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        handleUpdateTag(pkt.getTag());
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider holder) {
+        handleUpdateTag(pkt.getTag(), holder);
     }
 
-    @Nonnull
     @Override
     public Component getDisplayName() {
         return Component.translatable("screen.elevatorid.elevator");
     }
 
     @Override
-    public AbstractContainerMenu createMenu(int id, @Nonnull Inventory inv, @Nonnull Player player) {
+    public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
         return new ElevatorContainer(id, worldPosition, player);
     }
 

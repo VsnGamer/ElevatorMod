@@ -1,7 +1,7 @@
 package xyz.vsngamer.elevatorid.init;
 
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.logging.log4j.LogManager;
@@ -9,7 +9,7 @@ import xyz.vsngamer.elevatorid.ElevatorMod;
 
 import static net.neoforged.fml.Logging.FORGEMOD;
 
-@Mod.EventBusSubscriber(modid = ElevatorMod.ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = ElevatorMod.ID, bus = EventBusSubscriber.Bus.MOD)
 public class ModConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final CommonGeneral GENERAL = new CommonGeneral(BUILDER);

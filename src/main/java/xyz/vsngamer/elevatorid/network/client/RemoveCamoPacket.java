@@ -1,50 +1,38 @@
 package xyz.vsngamer.elevatorid.network.client;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xyz.vsngamer.elevatorid.ElevatorMod;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 
 public record RemoveCamoPacket(BlockPos pos) implements CustomPacketPayload {
-    public static final ResourceLocation ID = new ResourceLocation(ElevatorMod.ID, "remove_camo");
+    public static final Type<RemoveCamoPacket> TYPE = new Type<>(new ResourceLocation(ElevatorMod.ID, "remove_camo"));
 
-    public RemoveCamoPacket(final FriendlyByteBuf buf) {
-        this(buf.readBlockPos());
-    }
-
-
-    @Override
-    public void write(FriendlyByteBuf buf) {
-        buf.writeBlockPos(pos);
-    }
+    public static final StreamCodec<ByteBuf, RemoveCamoPacket> STREAM_CODEC = StreamCodec.composite(
+            BlockPos.STREAM_CODEC,
+            RemoveCamoPacket::pos,
+            RemoveCamoPacket::new
+    );
 
     @Override
-    public @NotNull ResourceLocation id() {
-        return ID;
+    public Type<RemoveCamoPacket> type() {
+        return TYPE;
     }
 
-    public static class Handler {
-        private static final Handler INSTANCE = new Handler();
+    public static void handle(RemoveCamoPacket msg, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            ServerPlayer player = (ServerPlayer) ctx.player();
+            if (NetworkHandler.isBadClientPacket(player, msg.pos)) return;
 
-        public static Handler getInstance() {
-            return INSTANCE;
-        }
-
-        public void handle(RemoveCamoPacket msg, PlayPayloadContext ctx) {
-            ctx.workHandler().submitAsync(() -> {
-                Player player = ctx.player().orElse(null);
-                if (NetworkHandler.isBadClientPacket(player, msg.pos)) return;
-
-                if (player.level().getBlockEntity(msg.pos) instanceof ElevatorTileEntity tile) {
-                    tile.setCamoAndUpdate(null);
-                }
-            });
-        }
+            if (player.level().getBlockEntity(msg.pos) instanceof ElevatorTileEntity tile) {
+                tile.setCamoAndUpdate(null);
+            }
+        });
     }
 }

@@ -5,12 +5,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
@@ -24,18 +23,16 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel;
-import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
 
-import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
 import static xyz.vsngamer.elevatorid.init.Registry.ELEVATOR_TILE_ENTITY;
 
-@SuppressWarnings("deprecation")
 public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityBlock {
     public static final BooleanProperty DIRECTIONAL = BooleanProperty.create("directional");
     public static final BooleanProperty SHOW_ARROW = BooleanProperty.create("show_arrow");
@@ -60,7 +57,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                 .strength(0.8F)
                 .dynamicShape()
                 .noOcclusion()
-                .forceSolidOn()
+//                .forceSolidOn()
         );
 
         dyeColor = color;
@@ -71,7 +68,6 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         builder.add(FACING, DIRECTIONAL, SHOW_ARROW);
     }
 
-    @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return defaultBlockState()
@@ -81,7 +77,6 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
 
-    @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new ElevatorTileEntity(pos, state);
@@ -94,9 +89,9 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
 
     @Override
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
+    public ItemInteractionResult useItemOn(ItemStack itemStack, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (worldIn.isClientSide) {
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
 
         return getElevatorTile(worldIn, pos)
@@ -104,25 +99,24 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                     Block handBlock = Block.byItem(player.getItemInHand(handIn).getItem());
                     BlockState stateToApply = handBlock.getStateForPlacement(new FakeUseContext(player, handIn, hit));
                     if (stateToApply != null && tile.setCamoAndUpdate(stateToApply))
-                        return InteractionResult.SUCCESS; // If we successfully set camo, don't open the menu
+                        return ItemInteractionResult.SUCCESS; // If we successfully set camo, don't open the menu
 
                     // Remove camo
                     if (player.isCrouching() && tile.getHeldState() != null) {
                         tile.setCamoAndUpdate(null);
-                        return InteractionResult.SUCCESS;
+                        return ItemInteractionResult.SUCCESS;
                     }
 
                     player.openMenu(tile, pos);
-//                    NetworkHooks.openScreen((ServerPlayer) player, tile, pos);
-                    return InteractionResult.SUCCESS;
+                    return ItemInteractionResult.SUCCESS;
                 })
-                .orElse(InteractionResult.FAIL);
+                .orElse(ItemInteractionResult.FAIL);
     }
 
-    @Override
-    public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
-        return ModConfig.GENERAL.mobSpawn.get() && super.isValidSpawn(state, world, pos, type, entityType);
-    }
+//    @Override
+//    public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
+//        return ModConfig.GENERAL.mobSpawn.get() && super.isValidSpawn(state, world, pos, type, entityType);
+//    }
 
     // Collision
 
@@ -156,7 +150,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public float getFriction(BlockState state, LevelReader world, BlockPos pos, @Nullable Entity entity) {
+    public float getFriction(BlockState state, LevelReader world, BlockPos pos, Entity entity) {
         return getHeldState(world, pos)
                 .map(s -> s.getFriction(world, pos, entity))
                 .orElse(super.getFriction(state, world, pos, entity));
@@ -203,10 +197,10 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
+    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return getHeldState(world, pos)
                 .map(s -> s.getBlock().canConnectRedstone(s, world, pos, side))
-                .orElse(super.canConnectRedstone(state, world, pos, side));
+                .orElse(false);
     }
 
     @Override
@@ -276,13 +270,8 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
     @Override
     public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState state, BlockState neighborState, Direction dir) {
-        var modelManager = level.getModelDataManager();
-        if (modelManager == null) {
-            return super.hidesNeighborFace(level, pos, state, neighborState, dir);
-        }
-
-        var modelData = modelManager.getAt(pos);
-        if (modelData == null) {
+        var modelData = level.getModelData(pos);
+        if (modelData == ModelData.EMPTY) {
             return super.hidesNeighborFace(level, pos, state, neighborState, dir);
         }
 
@@ -291,8 +280,8 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
             return super.hidesNeighborFace(level, pos, state, neighborState, dir);
         }
 
-        var neighborModelData = modelManager.getAt(pos.relative(dir));
-        if (neighborModelData == null) {
+        var neighborModelData = level.getModelData(pos.relative(dir));
+        if (neighborModelData == ModelData.EMPTY) {
             return heldState.skipRendering(neighborState, dir);
         }
 
@@ -301,12 +290,12 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState queryState, @Nullable BlockPos queryPos) {
+    public BlockState getAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState queryState, BlockPos queryPos) {
         return getHeldState(level, pos).orElse(super.getAppearance(state, level, pos, side, queryState, queryPos));
     }
 
     @Override
-    public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, @Nullable Entity entity) {
+    public SoundType getSoundType(BlockState state, LevelReader world, BlockPos pos, Entity entity) {
         return getHeldState(world, pos)
                 .map(s -> s.getSoundType(world, pos, entity))
                 .orElse(super.getSoundType(state, world, pos, entity));

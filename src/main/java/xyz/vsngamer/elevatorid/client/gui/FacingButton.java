@@ -17,7 +17,7 @@ class FacingButton extends Button {
     final Direction direction;
 
     FacingButton(Point slot, Direction direction, BlockPos pos) {
-        super(slot.x, slot.y, 20, 20, Component.translatable("screen.elevatorid.elevator.directional_" + direction.getName()), but -> PacketDistributor.SERVER.noArg().send(new SetFacingPacket(direction, pos)), DEFAULT_NARRATION);
+        super(slot.x, slot.y, 20, 20, Component.translatable("screen.elevatorid.elevator.directional_" + direction.getName()), but -> PacketDistributor.sendToServer(new SetFacingPacket(direction, pos)), DEFAULT_NARRATION);
 
         this.direction = direction;
     }

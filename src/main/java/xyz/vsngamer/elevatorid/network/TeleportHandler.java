@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
@@ -12,7 +13,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.init.Registry;
@@ -20,16 +21,9 @@ import xyz.vsngamer.elevatorid.init.Registry;
 import java.util.EnumSet;
 
 public class TeleportHandler {
-
-    private static final TeleportHandler INSTANCE = new TeleportHandler();
-
-    public static TeleportHandler getInstance() {
-        return INSTANCE;
-    }
-
-    void handle(final TeleportRequest message, PlayPayloadContext ctx) {
-        ctx.workHandler().submitAsync(() -> {
-            Player player = ctx.player().orElse(null);
+    static void handle(final TeleportRequest message, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            ServerPlayer player = (ServerPlayer) ctx.player();
             if (isBadTeleportPacket(message, player))
                 return;
 
@@ -115,7 +109,7 @@ public class TeleportHandler {
     }
 
     public static boolean isValidPos(BlockGetter world, BlockPos pos) {
-        return world.getBlockState(pos.above()).getCollisionShape(world, pos.above()).isEmpty();
+        return !world.getBlockState(pos.above()).isSuffocating(world, pos);
     }
 
     public static ElevatorBlock getElevator(BlockState blockState) {
