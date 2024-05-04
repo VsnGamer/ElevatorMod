@@ -10,12 +10,12 @@
     "W": {
       "item": "minecraft:purple_wool"
     },
-    "E":{
+    "E": {
       "item": "minecraft:ender_pearl"
-	}
+    }
   },
   "result": {
-    "item": "elevatorid:elevator_purple"
+    "id": "elevatorid:elevator_purple"
   }
 }
 

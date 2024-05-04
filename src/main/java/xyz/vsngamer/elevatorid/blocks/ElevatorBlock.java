@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +26,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import xyz.vsngamer.elevatorid.client.render.ElevatorBakedModel;
+import xyz.vsngamer.elevatorid.init.ModConfig;
 import xyz.vsngamer.elevatorid.tile.ElevatorTileEntity;
 import xyz.vsngamer.elevatorid.util.FakeUseContext;
 
@@ -51,12 +53,13 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
 
     public ElevatorBlock(DyeColor color) {
         super(Block.Properties
-                .of()
-                .mapColor(color)
-                .sound(SoundType.WOOL)
-                .strength(0.8F)
-                .dynamicShape()
-                .noOcclusion()
+                        .of()
+                        .mapColor(color)
+                        .sound(SoundType.WOOL)
+                        .strength(0.8F)
+                        .dynamicShape()
+                        .noOcclusion()
+                        .isValidSpawn(ElevatorBlock::isValidSpawn)
 //                .forceSolidOn()
         );
 
@@ -113,10 +116,12 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
                 .orElse(ItemInteractionResult.FAIL);
     }
 
-//    @Override
-//    public boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType) {
-//        return ModConfig.GENERAL.mobSpawn.get() && super.isValidSpawn(state, world, pos, type, entityType);
-//    }
+    public static boolean isValidSpawn(BlockState state, BlockGetter world, BlockPos pos, EntityType<?> entityType) {
+        return ModConfig.GENERAL.mobSpawn.get() &&
+                getHeldState(world, pos)
+                        .map(s -> s.isValidSpawn(world, pos, entityType))
+                        .orElse(state.isFaceSturdy(world, pos, Direction.UP));
+    }
 
     // Collision
 
@@ -305,7 +310,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         return dyeColor;
     }
 
-    private Optional<ElevatorTileEntity> getElevatorTile(BlockGetter world, BlockPos pos) {
+    private static Optional<ElevatorTileEntity> getElevatorTile(BlockGetter world, BlockPos pos) {
         if (world == null || pos == null) {
             return Optional.empty();
         }
@@ -313,7 +318,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
         return world.getBlockEntity(pos, ELEVATOR_TILE_ENTITY.get());
     }
 
-    private Optional<BlockState> getHeldState(BlockGetter world, BlockPos pos) {
+    private static Optional<BlockState> getHeldState(BlockGetter world, BlockPos pos) {
         return getElevatorTile(world, pos).map(ElevatorTileEntity::getHeldState);
     }
 }

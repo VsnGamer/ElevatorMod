@@ -6,10 +6,10 @@
       "tag": "elevatorid:elevators"
     },
     {
-      "tag": "forge:dyes/green"
+      "tag": "c:dyes/green"
     }
   ],
   "result": {
-    "item": "elevatorid:elevator_green"
+    "id": "elevatorid:elevator_green"
   }
 }

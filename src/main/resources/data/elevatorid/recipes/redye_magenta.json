@@ -6,10 +6,10 @@
       "tag": "elevatorid:elevators"
     },
     {
-      "tag": "forge:dyes/magenta"
+      "tag": "c:dyes/magenta"
     }
   ],
   "result": {
-    "item": "elevatorid:elevator_magenta"
+    "id": "elevatorid:elevator_magenta"
   }
 }

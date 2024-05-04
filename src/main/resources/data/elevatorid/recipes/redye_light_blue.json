@@ -6,10 +6,10 @@
       "tag": "elevatorid:elevators"
     },
     {
-      "tag": "forge:dyes/light_blue"
+      "tag": "c:dyes/light_blue"
     }
   ],
   "result": {
-    "item": "elevatorid:elevator_light_blue"
+    "id": "elevatorid:elevator_light_blue"
   }
 }
