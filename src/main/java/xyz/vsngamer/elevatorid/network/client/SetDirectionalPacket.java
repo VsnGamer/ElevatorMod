@@ -15,7 +15,7 @@ import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 
 public record SetDirectionalPacket(boolean value, BlockPos pos) implements CustomPacketPayload {
-    public static final Type<SetDirectionalPacket> TYPE = new Type<>(new ResourceLocation(ElevatorMod.ID, "set_directional"));
+    public static final Type<SetDirectionalPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "set_directional"));
 
     public static final StreamCodec<ByteBuf, SetDirectionalPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,

@@ -1,5 +1,6 @@
 package xyz.vsngamer.elevatorid.client;
 
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -35,13 +36,13 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void onModelRegistry(ModelEvent.RegisterAdditional e) {
-        e.register(new ResourceLocation("elevatorid", "arrow"));
+        e.register(ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath("elevatorid", "arrow")));
     }
 
     @SubscribeEvent
     public static void onModelBake(ModelEvent.ModifyBakingResult e) {
         e.getModels().entrySet().stream()
-                .filter(entry -> "elevatorid".equals(entry.getKey().getNamespace()) && entry.getKey().getPath().contains("elevator_"))
+                .filter(entry -> "elevatorid".equals(entry.getKey().id().getNamespace()) && entry.getKey().id().getPath().contains("elevator_"))
                 .forEach(entry -> e.getModels().put(entry.getKey(), new ElevatorBakedModel(entry.getValue())));
     }
 }

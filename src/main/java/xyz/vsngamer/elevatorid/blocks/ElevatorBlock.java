@@ -52,6 +52,7 @@ public class ElevatorBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     public ElevatorBlock(DyeColor color) {
+
         super(Block.Properties
                         .of()
                         .mapColor(color)

@@ -62,10 +62,10 @@ public class Registry {
 
     private static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, ElevatorMod.ID);
     public static final Supplier<SoundEvent> TELEPORT_SOUND = SOUNDS.register(
-            "teleport", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ElevatorMod.ID, "teleport"))
+            "teleport", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "teleport"))
     );
     public static final Supplier<SoundEvent> CAMOUFLAGE_SOUND = SOUNDS.register(
-            "camouflage", () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(ElevatorMod.ID, "camouflage"))
+            "camouflage", () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "camouflage"))
     );
 
     private static final DeferredRegister<CreativeModeTab> CREATIVE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ElevatorMod.ID);

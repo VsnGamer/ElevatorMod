@@ -15,7 +15,7 @@ import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 
 public record SetArrowPacket(boolean value, BlockPos pos) implements CustomPacketPayload {
-    public static final Type<SetArrowPacket> TYPE = new Type<>(new ResourceLocation(ElevatorMod.ID, "set_arrow"));
+    public static final Type<SetArrowPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "set_arrow"));
 
     public static final StreamCodec<ByteBuf, SetArrowPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL,

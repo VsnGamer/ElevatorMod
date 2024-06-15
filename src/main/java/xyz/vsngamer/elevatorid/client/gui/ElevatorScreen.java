@@ -25,7 +25,7 @@ import static xyz.vsngamer.elevatorid.blocks.ElevatorBlock.SHOW_ARROW;
 
 public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
-    private final ResourceLocation GUI_TEXTURE = new ResourceLocation(ElevatorMod.ID, "textures/gui/elevator_gui.png");
+    private final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "textures/gui/elevator_gui.png");
     private final ElevatorTileEntity tile;
     private final Direction playerFacing;
 

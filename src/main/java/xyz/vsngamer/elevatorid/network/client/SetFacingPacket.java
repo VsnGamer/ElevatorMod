@@ -15,7 +15,7 @@ import xyz.vsngamer.elevatorid.blocks.ElevatorBlock;
 import xyz.vsngamer.elevatorid.network.NetworkHandler;
 
 public record SetFacingPacket(Direction direction, BlockPos pos) implements CustomPacketPayload {
-    public static final Type<SetFacingPacket> TYPE = new Type<>(new ResourceLocation(ElevatorMod.ID, "set_facing"));
+    public static final Type<SetFacingPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "set_facing"));
 
     public static final StreamCodec<ByteBuf, SetFacingPacket> STREAM_CODEC = StreamCodec.composite(
             Direction.STREAM_CODEC,
