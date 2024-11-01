@@ -10,11 +10,12 @@ public class Config {
 
     public static class CommonGeneral {
         public final ModConfigSpec.BooleanValue sameColor;
+        public final ModConfigSpec.IntValue range;
+        public final ModConfigSpec.IntValue activationRange;
         public final ModConfigSpec.BooleanValue precisionTarget;
         public final ModConfigSpec.BooleanValue mobSpawn;
         public final ModConfigSpec.BooleanValue resetPitchNormal;
         public final ModConfigSpec.BooleanValue resetPitchDirectional;
-        public final ModConfigSpec.IntValue range;
         public final ModConfigSpec.BooleanValue useXP;
         public final ModConfigSpec.IntValue XPPointsAmount;
 
@@ -28,6 +29,10 @@ public class Config {
             range = builder
                     .comment("Elevator range")
                     .defineInRange("range", 384, 3, 4064);
+
+            activationRange = builder
+                    .comment("Elevator activation range")
+                    .defineInRange("activationRange", 6, 1, 64);
 
             precisionTarget = builder
                     .comment("Realign players to the center of elevator ?")

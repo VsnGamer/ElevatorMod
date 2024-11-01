@@ -40,6 +40,10 @@ dependencies {
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
+
+//    modLocalRuntime "curse.maven:controllable-317269:6171440"
+//    api "curse.maven:controllable-317269:6171440"
+//    modLocalRuntime "curse.maven:framework-549225:5911998"
 }
 
 processResources {

@@ -105,8 +105,7 @@ public record TeleportPacket(BlockPos from, BlockPos to) implements CustomPacket
             return true;
 
         // This ensures the player is still standing on the "from" elevator
-        final double distanceSq = player.distanceToSqr(Vec3.atCenterOf(fromPos));
-        if (distanceSq > 6D)
+        if (player.blockPosition().distManhattan(fromPos) > Config.GENERAL.activationRange.getAsInt())
             return true;
 
         if (fromPos.getX() != toPos.getX() || fromPos.getZ() != toPos.getZ())
@@ -132,7 +131,7 @@ public record TeleportPacket(BlockPos from, BlockPos to) implements CustomPacket
     }
 
     public static boolean isValidPos(BlockGetter world, BlockPos pos) {
-        return !world.getBlockState(pos.above()).isSuffocating(world, pos);
+        return !world.getBlockState(pos.above()).isSuffocating(world, pos.above());
     }
 
     public static ElevatorBlockBase getElevator(BlockState blockState) {

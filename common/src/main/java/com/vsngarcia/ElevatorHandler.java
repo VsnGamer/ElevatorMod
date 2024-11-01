@@ -76,10 +76,13 @@ public class ElevatorHandler {
     private static BlockPos getOriginElevator(LocalPlayer player) {
         BlockPos pos = player.blockPosition();
 
-        // Check the player's feet and the 2 blocks under it
-        for (int i = 0; i < 3; i++) {
-            if (TeleportPacket.getElevator(player.level().getBlockState(pos)) != null)
+        for (int i = 0; i < Config.GENERAL.activationRange.getAsInt(); i++) {
+            if (TeleportPacket.getElevator(player.level().getBlockState(pos)) != null) {
+                if (!TeleportPacket.isValidPos(player.level(), pos)) {
+                    return null;
+                }
                 return pos;
+            }
             pos = pos.below();
         }
 
