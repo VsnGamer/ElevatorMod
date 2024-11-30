@@ -9,19 +9,28 @@
   "block.elevatorid.elevator_light_blue": "淺藍色電梯",
   "block.elevatorid.elevator_lime": "淺綠色電梯",
   "block.elevatorid.elevator_magenta": "洋紅色電梯",
-  "block.elevatorid.elevator_orange": "橘色電梯",
-  "block.elevatorid.elevator_pink": "粉色電梯",
+  "block.elevatorid.elevator_orange": "橙色電梯",
+  "block.elevatorid.elevator_pink": "粉紅色電梯",
   "block.elevatorid.elevator_purple": "紫色電梯",
   "block.elevatorid.elevator_red": "紅色電梯",
   "block.elevatorid.elevator_light_gray": "淺灰色電梯",
   "block.elevatorid.elevator_yellow": "黃色電梯",
 
-  "elevatorid.subtitle.teleport": "使用電梯",
+  "elevatorid.subtitle.teleport": "電梯已使用",
+  "elevatorid.subtitle.camouflage": "電梯已偽裝",
 
-  "screen.elevatorid.elevator": "電梯設定",
+  "screen.elevatorid.elevator": "電梯選項",
   "screen.elevatorid.elevator.directional": "定向",
+  "screen.elevatorid.elevator.directional_north": "北",
+  "screen.elevatorid.elevator.directional_east": "東",
+  "screen.elevatorid.elevator.directional_south": "南",
+  "screen.elevatorid.elevator.directional_west": "西",
   "screen.elevatorid.elevator.hide_arrow": "隱藏箭頭",
   "screen.elevatorid.elevator.reset_camo": "移除偽裝",
 
-  "itemGroup.elevators_tab": "Elevators"
+  "elevatorid.message.missing_xp": "你沒有足夠的經驗使用電梯",
+
+  "itemGroup.elevators_tab": "電梯",
+
+  "tag.item.elevatorid.elevators": "電梯"
 }
