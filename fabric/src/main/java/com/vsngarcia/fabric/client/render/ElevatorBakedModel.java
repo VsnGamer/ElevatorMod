@@ -3,13 +3,13 @@ package com.vsngarcia.fabric.client.render;
 import com.vsngarcia.ElevatorMod;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.DelegateBakedModel;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -27,25 +27,20 @@ import static com.vsngarcia.fabric.ElevatorBlock.SHOW_ARROW;
 import static net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING;
 
 @Environment(EnvType.CLIENT)
-public class ElevatorBakedModel extends DelegateBakedModel {
+public class ElevatorBakedModel extends WrapperBlockStateModel {
     private static final Minecraft MC = Minecraft.getInstance();
 
-    public ElevatorBakedModel(BakedModel originalModel) {
+    public ElevatorBakedModel(BlockStateModel originalModel) {
         super(originalModel);
     }
 
     @Override
-    public boolean isVanillaAdapter() {
-        return false;
-    }
-
-    @Override
-    public void emitBlockQuads(
+    public void emitQuads(
             QuadEmitter emitter,
             BlockAndTintGetter blockView,
-            BlockState state,
             BlockPos pos,
-            Supplier<RandomSource> randomSupplier,
+            BlockState state,
+            RandomSource random,
             Predicate<@Nullable Direction> cullTest
     ) {
         if (state != null && state.getValue(DIRECTIONAL) && state.getValue(SHOW_ARROW)) {
@@ -71,9 +66,9 @@ public class ElevatorBakedModel extends DelegateBakedModel {
                     }
             );
 
-            MC.getModelManager()
-                    .getModel(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"))
-                    .emitBlockQuads(emitter, blockView, state, pos, randomSupplier, cullTest);
+//            MC.getModelManager().getBlockModelShaper().
+//                    .getModel(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"))
+//                    .emitBlockQuads(emitter, blockView, state, pos, randomSupplier, cullTest);
             emitter.popTransform();
         }
 
@@ -95,14 +90,13 @@ public class ElevatorBakedModel extends DelegateBakedModel {
                     }
             );
 
-            MC.getBlockRenderer().getBlockModel(heldState)
-                    .emitBlockQuads(emitter, blockView, heldState, pos, randomSupplier, cullTest);
+            MC.getBlockRenderer().getBlockModel(heldState).emitQuads(emitter, blockView, pos, heldState, random, cullTest);
 
             emitter.popTransform();
             return;
         }
 
 //        ElevatorMod.LOGGER.warn("No held state found for elevator at {}", pos);
-        super.emitBlockQuads(emitter, blockView, state, pos, randomSupplier, cullTest);
+        super.emitQuads(emitter, blockView, pos, state, random, cullTest);
     }
 }

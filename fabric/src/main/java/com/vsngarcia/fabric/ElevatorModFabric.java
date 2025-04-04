@@ -3,8 +3,8 @@ package com.vsngarcia.fabric;
 import com.vsngarcia.Config;
 import com.vsngarcia.ElevatorMod;
 import com.vsngarcia.fabric.network.NetworkHandler;
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeModConfigEvents;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
 import net.fabricmc.api.ModInitializer;
 import net.neoforged.fml.config.ModConfig;
 
@@ -20,7 +20,7 @@ public final class ElevatorModFabric implements ModInitializer {
         FabricRegistry.init();
         NetworkHandler.init();
 
-        NeoForgeConfigRegistry.INSTANCE.register(ElevatorMod.ID, ModConfig.Type.SERVER, Config.SPEC);
-        NeoForgeModConfigEvents.reloading(ElevatorMod.ID).register(cfg -> ElevatorMod.LOGGER.info("Config reloaded"));
+        ConfigRegistry.INSTANCE.register(ElevatorMod.ID, ModConfig.Type.SERVER, Config.SPEC);
+        ModConfigEvents.reloading(ElevatorMod.ID).register(cfg -> ElevatorMod.LOGGER.info("Config reloaded"));
     }
 }

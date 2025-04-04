@@ -1,118 +1,74 @@
 package com.vsngarcia.neoforge.client.render;
 
-import com.vsngarcia.ElevatorMod;
 import com.vsngarcia.neoforge.ElevatorBlock;
+import com.vsngarcia.neoforge.client.ClientRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.DelegateBakedModel;
-import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
-import net.neoforged.neoforge.client.model.IQuadTransformer;
-import net.neoforged.neoforge.client.model.QuadTransformers;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.client.model.DelegateBlockStateModel;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 
 
-public class ElevatorBakedModel extends DelegateBakedModel {
+public class ElevatorBakedModel extends DelegateBlockStateModel {
 
     public static final ModelProperty<BlockState> HELD_STATE = new ModelProperty<>();
 
-    public ElevatorBakedModel(BakedModel originalModel) {
+    public ElevatorBakedModel(BlockStateModel originalModel) {
         super(originalModel);
     }
 
+
     @Nonnull
     @Override
-    public TextureAtlasSprite getParticleIcon(@Nonnull ModelData data) {
-        BlockState state = data.get(HELD_STATE);
+    public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState elevator) {
+        BlockState state = level.getModelData(pos).get(HELD_STATE);
         if (state != null) {
-            return Minecraft.getInstance().getBlockRenderer().getBlockModel(state).getParticleIcon(data);
+            return Minecraft.getInstance().getBlockRenderer().getBlockModel(state).particleIcon(level, pos, state);
         }
 
-        return super.getParticleIcon(data);
+        return super.particleIcon(level, pos, elevator);
     }
 
-    @NotNull
-    @Override
-    public ChunkRenderTypeSet getRenderTypes(
-            @NotNull BlockState state,
-            @NotNull RandomSource rand,
-            @NotNull ModelData data
-    ) {
-        BlockState heldState = data.get(HELD_STATE);
-        ChunkRenderTypeSet types;
-        if (heldState != null)
-            types = Minecraft.getInstance().getBlockRenderer().getBlockModel(heldState).getRenderTypes(
-                    heldState,
-                    rand,
-                    data
-            );
-        else
-            types = super.getRenderTypes(state, rand, data);
-
-        return ChunkRenderTypeSet.union(types, ChunkRenderTypeSet.of(RenderType.cutoutMipped()));
-    }
 
     @Nonnull
     @Override
-    public List<BakedQuad> getQuads(
+    public void collectParts(
+            BlockAndTintGetter level,
+            BlockPos pos,
             BlockState state,
-            @Nullable Direction side,
-            @Nonnull RandomSource rand,
-            @Nonnull ModelData extraData,
-            RenderType renderType
+            RandomSource random,
+            List<BlockModelPart> parts
     ) {
-        List<BakedQuad> result = new ArrayList<>();
-        BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
-
         // Directional arrow
-        if (renderType == RenderType.cutoutMipped()) {
-            if (state.getValue(ElevatorBlock.DIRECTIONAL) && state.getValue(ElevatorBlock.SHOW_ARROW)) {
-                BakedModel arrowModel = Minecraft.getInstance().getModelManager().getStandaloneModel(
-                        ResourceLocation.fromNamespaceAndPath(
-                                ElevatorMod.ID,
-                                "arrow"
-                        )
-                );
-                BlockModelRotation rot = BlockModelRotation.by(0, (int) state.getValue(ElevatorBlock.FACING).toYRot());
-                IQuadTransformer transformer = QuadTransformers.applying(rot.getRotation().blockCenterToCorner());
+        if (state.getValue(ElevatorBlock.DIRECTIONAL) && state.getValue(ElevatorBlock.SHOW_ARROW)) {
+            var arrowModels = Minecraft.getInstance()
+                    .getModelManager()
+                    .getStandaloneModel(ClientRegistry.ARROW_MODEL_KEY);
 
-
-                result.addAll(transformer.process(arrowModel.getQuads(state, null, rand, extraData, renderType)));
+            if (arrowModels != null) {
+                arrowModels.get(state.getValue(ElevatorBlock.FACING)).collectParts(level, pos, state, random, parts);
             }
         }
 
-        BlockState heldState = extraData.get(HELD_STATE);
+
+        BlockState heldState = level.getModelData(pos).get(HELD_STATE);
         if (heldState != null) {
-            var types = Minecraft.getInstance()
-                    .getBlockRenderer()
-                    .getBlockModel(heldState)
-                    .getRenderTypes(heldState, rand, ModelData.EMPTY);
+            BlockStateModel blockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(heldState);
 
-            if (renderType == null || types.contains(renderType)) {
-                BakedModel model = dispatcher.getBlockModel(heldState);
-                result.addAll(model.getQuads(heldState, side, rand, extraData, renderType));
-            }
+            blockModel.collectParts(level, pos, heldState, random, parts);
 
-            return result;
+            return;
         }
 
         // Fallback / original model
-        result.addAll(parent.getQuads(state, side, rand, extraData, renderType));
-        return result;
+        super.collectParts(level, pos, state, random, parts);
     }
 }

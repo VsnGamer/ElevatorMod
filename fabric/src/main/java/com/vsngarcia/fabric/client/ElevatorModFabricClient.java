@@ -4,6 +4,7 @@ import com.vsngarcia.ElevatorHandler;
 import com.vsngarcia.ElevatorMod;
 import com.vsngarcia.client.ColorCamoElevator;
 import com.vsngarcia.client.gui.ElevatorScreen;
+import com.vsngarcia.fabric.ElevatorBlock;
 import com.vsngarcia.fabric.client.render.ElevatorBakedModel;
 import com.vsngarcia.level.ElevatorContainer;
 import net.fabricmc.api.ClientModInitializer;
@@ -12,17 +13,17 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
-import net.fabricmc.fabric.api.client.model.loading.v1.WrapperGroupableModel;
+import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperUnbakedGroupedBlockStateModel;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 import static com.vsngarcia.fabric.FabricRegistry.ELEVATOR_BLOCKS;
 import static com.vsngarcia.fabric.FabricRegistry.ELEVATOR_CONTAINER;
@@ -52,35 +53,22 @@ public final class ElevatorModFabricClient implements ClientModInitializer {
             ctx.modifyBlockModelOnLoad().register(
                     ModelModifier.WRAP_PHASE,
                     (model, context) -> {
-                        ModelResourceLocation location = context.id();
-                        if (location == null || "inventory".equals(location.variant())) {
+                        if (!(context.state().getBlock() instanceof ElevatorBlock)) {
                             return model;
                         }
 
-                        var modelId = location.id();
-                        if (!ElevatorMod.ID.equals(modelId.getNamespace()) ||
-                                !modelId.getPath().startsWith("elevator_")) {
-                            return model;
-                        }
-
-                        ElevatorMod.LOGGER.debug("Wrapping elevator model: {}", modelId);
-                        return new WrapperGroupableModel(model) {
-
-//                            @Override
-//                            public void resolveDependencies(Resolver resolver) {
-//                                super.resolveDependencies(resolver);
-//                                resolver.resolve(location.id());
-//                            }
-
+                        ElevatorMod.LOGGER.debug("Wrapping elevator model: {}", context.state());
+                        return new WrapperUnbakedGroupedBlockStateModel(model) {
                             @Override
-                            public BakedModel bake(ModelBaker baker) {
-                                return new ElevatorBakedModel(model.bake(baker));
+                            public BlockStateModel bake(BlockState state, ModelBaker baker) {
+                                return new ElevatorBakedModel(model.bake(context.state(),baker));
                             }
                         };
                     }
             );
 
-            ctx.addModels(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"));
+
+//            ctx.addModels(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"));
         }
     }
 }

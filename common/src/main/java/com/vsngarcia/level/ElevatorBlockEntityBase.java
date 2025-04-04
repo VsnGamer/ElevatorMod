@@ -35,11 +35,11 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
     @Override
     public void loadAdditional(CompoundTag tag, HolderLookup.Provider holder) {
         super.loadAdditional(tag, holder);
-        if (tag.contains("held_id", Tag.TAG_COMPOUND)) {
+        if (tag.contains("held_id")) {
             // Get blockstate from compound, always check if it's valid
             BlockState state = NbtUtils.readBlockState(
                     this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK,
-                    tag.getCompound("held_id")
+                    tag.getCompoundOrEmpty("held_id")
             );
             heldState = isValidState(state) ? state : null;
         } else {
@@ -80,6 +80,10 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
 
 
     public void setHeldState(BlockState state) {
+        if (!isValidState(state)) {
+            return;
+        }
+
         this.heldState = state;
         setChanged();
     }
@@ -135,7 +139,7 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
     public boolean isValidState(BlockState state) {
         if (state == null) return true;
 
-        if (state.getBlock() == Blocks.AIR) return false;
+        if (state.isAir()) return false;
 
         // Tile entities can cause problems
 //        if (state.hasBlockEntity()) return false;
