@@ -1,18 +1,17 @@
 package com.vsngarcia.fabric.client.render;
 
-import com.vsngarcia.ElevatorMod;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,7 +19,6 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 import static com.vsngarcia.fabric.ElevatorBlock.DIRECTIONAL;
 import static com.vsngarcia.fabric.ElevatorBlock.SHOW_ARROW;
@@ -30,8 +28,12 @@ import static net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING;
 public class ElevatorBakedModel extends WrapperBlockStateModel {
     private static final Minecraft MC = Minecraft.getInstance();
 
-    public ElevatorBakedModel(BlockStateModel originalModel) {
+    private final Mesh arrowMesh;
+
+    public ElevatorBakedModel(BlockStateModel originalModel, Mesh arrow) {
         super(originalModel);
+
+        arrowMesh = arrow;
     }
 
     @Override
@@ -44,59 +46,41 @@ public class ElevatorBakedModel extends WrapperBlockStateModel {
             Predicate<@Nullable Direction> cullTest
     ) {
         if (state != null && state.getValue(DIRECTIONAL) && state.getValue(SHOW_ARROW)) {
-            emitter.pushTransform(
-                    quad -> {
-                        quad.material(
-                                Renderer.get()
-                                        .materialFinder()
-                                        .blendMode(BlendMode.CUTOUT)
-                                        .find()
-                        );
+            emitter.pushTransform(quad -> {
+                Vector3f vec = null;
+                for (int i = 0; i < 4; i++) {
+                    vec = quad.copyPos(i, vec);
+                    vec.sub(.5f, 0, .5f);
+                    vec.rotateY((float) Math.toRadians(-state.getValue(FACING).toYRot()));
+                    vec.add(.5f, 0, .5f);
 
-                        Vector3f vec = null;
-                        for (int i = 0; i < 4; i++) {
-                            vec = quad.copyPos(i, vec);
-                            vec.sub(.5f, 0, .5f);
-                            vec.rotateY((float) Math.toRadians(-state.getValue(FACING).toYRot()));
-                            vec.add(.5f, 0, .5f);
+                    quad.pos(i, vec);
+                }
+                return true;
+            });
 
-                            quad.pos(i, vec);
-                        }
-                        return true;
-                    }
-            );
-
-//            MC.getModelManager().getBlockModelShaper().
-//                    .getModel(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"))
-//                    .emitBlockQuads(emitter, blockView, state, pos, randomSupplier, cullTest);
+            arrowMesh.outputTo(emitter);
             emitter.popTransform();
         }
 
         if (blockView.getBlockEntityRenderData(pos) instanceof BlockState heldState) {
-//            ElevatorMod.LOGGER.warn("Found held state for elevator at {}", pos);
+            emitter.pushTransform(quad -> {
+                quad.material(Renderer.get()
+                        .materialFinder()
+                        .blendMode(BlendMode.fromRenderLayer(ItemBlockRenderTypes.getChunkRenderType(heldState)))
+                        .find());
 
-            emitter.pushTransform(
-                    quad -> {
-                        quad.material(
-                                Renderer.get()
-                                        .materialFinder()
-                                        .blendMode(BlendMode.fromRenderLayer(
-                                                ItemBlockRenderTypes.getChunkRenderType(heldState)
-                                        ))
-                                        .find()
-                        );
+                return true;
+            });
 
-                        return true;
-                    }
-            );
-
-            MC.getBlockRenderer().getBlockModel(heldState).emitQuads(emitter, blockView, pos, heldState, random, cullTest);
+            MC.getBlockRenderer()
+                    .getBlockModel(heldState)
+                    .emitQuads(emitter, blockView, pos, heldState, random, cullTest);
 
             emitter.popTransform();
             return;
         }
 
-//        ElevatorMod.LOGGER.warn("No held state found for elevator at {}", pos);
         super.emitQuads(emitter, blockView, pos, state, random, cullTest);
     }
 }
