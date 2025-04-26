@@ -1,11 +1,11 @@
 package com.vsngarcia.fabric.client.render;
 
+import com.vsngarcia.fabric.client.ElevatorModFabricClient;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -28,12 +28,8 @@ import static net.minecraft.world.level.block.HorizontalDirectionalBlock.FACING;
 public class ElevatorBakedModel extends WrapperBlockStateModel {
     private static final Minecraft MC = Minecraft.getInstance();
 
-    private final Mesh arrowMesh;
-
-    public ElevatorBakedModel(BlockStateModel originalModel, Mesh arrow) {
+    public ElevatorBakedModel(BlockStateModel originalModel) {
         super(originalModel);
-
-        arrowMesh = arrow;
     }
 
     @Override
@@ -56,10 +52,18 @@ public class ElevatorBakedModel extends WrapperBlockStateModel {
 
                     quad.pos(i, vec);
                 }
+
+                quad.material(Renderer.get().materialFinder().blendMode(BlendMode.CUTOUT_MIPPED).find());
+
                 return true;
             });
 
-            arrowMesh.outputTo(emitter);
+
+            var arrow = MC.getModelManager().getModel(ElevatorModFabricClient.ElevatorModelLoadingPlugin.ARROW_MODEL_KEY);
+            if (arrow != null) {
+                arrow.emitQuads(emitter, blockView, pos, state, random, cullTest);
+            }
+
             emitter.popTransform();
         }
 

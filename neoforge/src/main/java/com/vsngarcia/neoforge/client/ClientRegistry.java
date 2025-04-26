@@ -29,25 +29,18 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.EnumMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 @EventBusSubscriber(modid = ElevatorMod.ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientRegistry {
 
-    public static final StandaloneModelKey<EnumMap<Direction, SingleVariant>> ARROW_MODEL_KEY = new StandaloneModelKey<>(
-            ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"));
+    public static final StandaloneModelKey<EnumMap<Direction, SingleVariant>> ARROW_MODEL_KEY = new StandaloneModelKey<>(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"));
 
     @SubscribeEvent
     public static void onMenuScreensRegistry(RegisterMenuScreensEvent e) {
-        e.register(
-                Registry.ELEVATOR_CONTAINER.get(),
-                (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(
-                        container,
-                        inv,
-                        title,
-                        PacketDistributor::sendToServer
-                )
-        );
+        e.register(Registry.ELEVATOR_CONTAINER.get(), (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(container, inv, title, PacketDistributor::sendToServer));
     }
 
     @SubscribeEvent
@@ -55,50 +48,38 @@ public class ClientRegistry {
         // HACK: As far as I was able to understand, vanilla blocks use a specific logic for determining render types
         //  I think that for now it can't detect mimics getAppearance
         //  For now we just use TRANSLUCENT, which is not ideal but covers most cases
-        Registry.ELEVATOR_BLOCKS.values()
-                .forEach(b -> ItemBlockRenderTypes.setRenderLayer(b.get(), RenderType.TRANSLUCENT));
-
+        Registry.ELEVATOR_BLOCKS.values().forEach(b -> ItemBlockRenderTypes.setRenderLayer(b.get(), RenderType.TRANSLUCENT));
     }
 
 
     @SubscribeEvent
     public static void onBlockColorHandlersRegistry(RegisterColorHandlersEvent.Block e) {
-        e.register(
-                new ColorCamoElevator(),
-                Registry.ELEVATOR_BLOCKS.values().stream().map(DeferredHolder::get).toArray(ElevatorBlock[]::new)
-        );
+        e.register(new ColorCamoElevator(), Registry.ELEVATOR_BLOCKS.values().stream().map(DeferredHolder::get).toArray(ElevatorBlock[]::new));
     }
 
     @SubscribeEvent
     public static void onModelRegistry(ModelEvent.RegisterStandalone e) {
         // HACK: Pre-bake all rotations
         e.register(
-                ARROW_MODEL_KEY, (model, baker) -> {
-                    EnumMap<Direction, SingleVariant> quads = new EnumMap<>(Direction.class);
-                    for (Direction d : Direction.Plane.HORIZONTAL) {
-                        quads.put(
-                                d, new SingleVariant(SimpleModelWrapper.bake(
-                                        baker,
-                                        model,
-                                        BlockModelRotation.by(Quadrant.R0, Quadrant.parseJson((int) d.toYRot()))
-                                ))
-                        );
-                    }
-
-                    return quads;
-                }
+                ARROW_MODEL_KEY,
+                (model, baker) -> Direction.Plane.HORIZONTAL
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Function.identity(), d -> new SingleVariant(
+                                        SimpleModelWrapper.bake(
+                                                baker,
+                                                model,
+                                                BlockModelRotation.by(Quadrant.R0, Quadrant.parseJson((int) d.toYRot()))
+                                        )
+                                ),
+                                (o1, o2) -> o1,
+                                () -> new EnumMap<>(Direction.class)
+                        ))
         );
     }
 
     @SubscribeEvent
     public static void onModelBake(ModelEvent.ModifyBakingResult e) {
-        e.getBakingResult()
-                .blockStateModels()
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().getBlock() instanceof ElevatorBlock)
-                .forEach(entry -> e.getBakingResult()
-                        .blockStateModels()
-                        .put(entry.getKey(), new ElevatorBakedModel(entry.getValue())));
+        e.getBakingResult().blockStateModels().entrySet().stream().filter(entry -> entry.getKey().getBlock() instanceof ElevatorBlock).forEach(entry -> e.getBakingResult().blockStateModels().put(entry.getKey(), new ElevatorBakedModel(entry.getValue())));
     }
 }
