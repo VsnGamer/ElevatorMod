@@ -25,8 +25,9 @@ public class ElevatorHandler {
     @SubscribeEvent
     public static void onInput(InputEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
-        if (player == null || player.isSpectator() || !player.isAlive())
+        if (player == null || player.isSpectator() || !player.isAlive() || player.input == null) {
             return;
+        }
 
         boolean sneaking = player.input.shiftKeyDown;
         if (lastSneaking != sneaking) {
