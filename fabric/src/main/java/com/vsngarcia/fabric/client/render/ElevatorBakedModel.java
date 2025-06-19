@@ -4,18 +4,16 @@ import com.vsngarcia.fabric.client.ElevatorModFabricClient;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.model.loading.v1.wrapper.WrapperBlockStateModel;
-import net.fabricmc.fabric.api.renderer.v1.Renderer;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.function.Predicate;
@@ -39,7 +37,7 @@ public class ElevatorBakedModel extends WrapperBlockStateModel {
             BlockPos pos,
             BlockState state,
             RandomSource random,
-            Predicate<@Nullable Direction> cullTest
+            Predicate<Direction> cullTest
     ) {
         if (state != null && state.getValue(DIRECTIONAL) && state.getValue(SHOW_ARROW)) {
             emitter.pushTransform(quad -> {
@@ -53,7 +51,7 @@ public class ElevatorBakedModel extends WrapperBlockStateModel {
                     quad.pos(i, vec);
                 }
 
-                quad.material(Renderer.get().materialFinder().blendMode(BlendMode.CUTOUT_MIPPED).find());
+                quad.renderLayer(ChunkSectionLayer.CUTOUT_MIPPED);
 
                 return true;
             });
@@ -69,10 +67,7 @@ public class ElevatorBakedModel extends WrapperBlockStateModel {
 
         if (blockView.getBlockEntityRenderData(pos) instanceof BlockState heldState) {
             emitter.pushTransform(quad -> {
-                quad.material(Renderer.get()
-                        .materialFinder()
-                        .blendMode(BlendMode.fromRenderLayer(ItemBlockRenderTypes.getChunkRenderType(heldState)))
-                        .find());
+                quad.renderLayer(ItemBlockRenderTypes.getChunkRenderType(heldState));
 
                 return true;
             });

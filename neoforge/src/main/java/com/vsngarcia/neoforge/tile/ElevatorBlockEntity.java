@@ -5,17 +5,14 @@ import com.vsngarcia.level.ElevatorContainer;
 import com.vsngarcia.neoforge.client.render.ElevatorBakedModel;
 import com.vsngarcia.neoforge.init.Registry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
 
 public class ElevatorBlockEntity extends ElevatorBlockEntityBase {
     public ElevatorBlockEntity(BlockPos pos, BlockState state) {
@@ -27,7 +24,6 @@ public class ElevatorBlockEntity extends ElevatorBlockEntityBase {
         return Registry.CAMOUFLAGE_SOUND.get();
     }
 
-    @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inv, Player player) {
         return new ElevatorContainer(Registry.ELEVATOR_CONTAINER.get(), id, worldPosition, player);
@@ -56,13 +52,13 @@ public class ElevatorBlockEntity extends ElevatorBlockEntityBase {
     }
 
     @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        super.handleUpdateTag(tag, lookupProvider);
+    public void handleUpdateTag(ValueInput in) {
+        super.handleUpdateTag(in);
         setChanged();
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider provider) {
-        handleUpdateTag(pkt.getTag(), provider);
+    public void onDataPacket(Connection net, ValueInput in) {
+        handleUpdateTag(in);
     }
 }

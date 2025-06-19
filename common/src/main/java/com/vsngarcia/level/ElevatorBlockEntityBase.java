@@ -4,11 +4,7 @@ import com.vsngarcia.ElevatorBlockBase;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -17,11 +13,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 
 public abstract class ElevatorBlockEntityBase extends BlockEntity implements MenuProvider {
@@ -32,19 +29,12 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
         super(type, pos, state);
     }
 
+
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider holder) {
-        super.loadAdditional(tag, holder);
-        if (tag.contains("held_id")) {
-            // Get blockstate from compound, always check if it's valid
-            BlockState state = NbtUtils.readBlockState(
-                    this.level != null ? this.level.holderLookup(Registries.BLOCK) : BuiltInRegistries.BLOCK,
-                    tag.getCompoundOrEmpty("held_id")
-            );
-            heldState = isValidState(state) ? state : null;
-        } else {
-            heldState = null;
-        }
+    public void loadAdditional(ValueInput valueInput) {
+        super.loadAdditional(valueInput);
+
+        heldState = valueInput.read("held_id", BlockState.CODEC).orElse(null);
 
         if (level != null && level.isClientSide()) {
             level.sendBlockUpdated(getBlockPos(), null, null, 0);
@@ -53,14 +43,10 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider holder) {
-        super.saveAdditional(tag, holder);
+    protected void saveAdditional(ValueOutput out) {
+        super.saveAdditional(out);
 
-        if (heldState != null) {
-            tag.put("held_id", NbtUtils.writeBlockState(heldState));
-        } else {
-            tag.putBoolean("held_id", false);
-        }
+        out.storeNullable("held_id", BlockState.CODEC, heldState);
     }
 
     @Override

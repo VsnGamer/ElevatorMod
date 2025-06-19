@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.block.model.SingleVariant;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -48,7 +49,7 @@ public class ClientRegistry {
         // HACK: As far as I was able to understand, vanilla blocks use a specific logic for determining render types
         //  I think that for now it can't detect mimics getAppearance
         //  For now we just use TRANSLUCENT, which is not ideal but covers most cases
-        Registry.ELEVATOR_BLOCKS.values().forEach(b -> ItemBlockRenderTypes.setRenderLayer(b.get(), RenderType.TRANSLUCENT));
+        Registry.ELEVATOR_BLOCKS.values().forEach(b -> ItemBlockRenderTypes.setRenderLayer(b.get(), ChunkSectionLayer.TRANSLUCENT));
     }
 
 

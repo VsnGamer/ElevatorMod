@@ -12,7 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -123,7 +123,7 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float v, int mouseX, int mouseY) {
         guiGraphics.blit(
-                RenderType::guiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 GUI_TEXTURE,
                 (this.width - this.imageWidth) / 2,
                 (this.height - this.imageHeight) / 2,
@@ -138,6 +138,6 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, title, 8, 8, 14737632);
+        guiGraphics.drawString(font, title, 8, 8, 0xFFE0E0E0);
     }
 }

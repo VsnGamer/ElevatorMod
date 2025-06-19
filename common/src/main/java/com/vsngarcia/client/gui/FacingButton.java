@@ -35,9 +35,8 @@ class FacingButton extends Button {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
-        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         if (isHoveredOrFocused() && active) {
-            guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, -2130706433);
+            guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, 0x80FFFFFF);
         }
 
         guiGraphics.drawCenteredString(
@@ -45,7 +44,7 @@ class FacingButton extends Button {
                 getMessage().getString(),
                 getX() + this.width / 2,
                 getY() + (this.height - 8) / 2,
-                active ? 16777215 : 65280
+                active ? 0xFFE0E0E0 : 0xFF00FF00
         );
     }
 }
