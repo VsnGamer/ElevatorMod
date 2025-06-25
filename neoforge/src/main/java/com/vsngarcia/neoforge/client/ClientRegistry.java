@@ -9,7 +9,7 @@ import com.vsngarcia.neoforge.ElevatorBlock;
 import com.vsngarcia.neoforge.client.render.ElevatorBakedModel;
 import com.vsngarcia.neoforge.init.Registry;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.block.model.SingleVariant;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
@@ -25,6 +25,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -34,10 +35,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
-@EventBusSubscriber(modid = ElevatorMod.ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = ElevatorMod.ID, value = Dist.CLIENT)
 public class ClientRegistry {
 
-    public static final StandaloneModelKey<EnumMap<Direction, SingleVariant>> ARROW_MODEL_KEY = new StandaloneModelKey<>(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"));
+    public static final StandaloneModelKey<EnumMap<Direction, BlockStateModel>> ARROW_MODEL_KEY = new StandaloneModelKey<>(() -> "arrow");
 
     @SubscribeEvent
     public static void onMenuScreensRegistry(RegisterMenuScreensEvent e) {
@@ -61,21 +62,24 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void onModelRegistry(ModelEvent.RegisterStandalone e) {
         // HACK: Pre-bake all rotations
+        // Surely there's a better way to do this, but I'm not seeing it
         e.register(
-                ARROW_MODEL_KEY,
-                (model, baker) -> Direction.Plane.HORIZONTAL
+            ARROW_MODEL_KEY,
+            new SimpleUnbakedStandaloneModel<>(
+                ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"),
+                (model, baker) ->
+                    Direction.Plane.HORIZONTAL
                         .stream()
                         .collect(Collectors.toMap(
-                                Function.identity(), d -> new SingleVariant(
-                                        SimpleModelWrapper.bake(
-                                                baker,
-                                                model,
-                                                BlockModelRotation.by(Quadrant.R0, Quadrant.parseJson((int) d.toYRot()))
-                                        )
-                                ),
-                                (o1, o2) -> o1,
-                                () -> new EnumMap<>(Direction.class)
+                            Function.identity(),
+                            dir -> new SingleVariant(
+                                SimpleModelWrapper.bake(baker, model,
+                                    BlockModelRotation.by(Quadrant.R0, Quadrant.parseJson((int) dir.toYRot())))
+                            ),
+                            (o1, o2) -> o1,
+                            () -> new EnumMap<>(Direction.class)
                         ))
+            )
         );
     }
 
