@@ -10,6 +10,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -22,10 +23,10 @@ public final class ElevatorModNeoForge {
         eventBus.addListener((ModConfigEvent.Reloading event) -> ElevatorMod.LOGGER.info("Config reloaded"));
 
         NeoForge.EVENT_BUS.addListener(
-                (InputEvent.Key e) -> ElevatorHandler.handleInput(PacketDistributor::sendToServer)
+                (InputEvent.Key e) -> ElevatorHandler.handleInput(ClientPacketDistributor::sendToServer)
         );
         NeoForge.EVENT_BUS.addListener(
-                (InputEvent.MouseButton.Post e) -> ElevatorHandler.handleInput(PacketDistributor::sendToServer)
+                (InputEvent.MouseButton.Post e) -> ElevatorHandler.handleInput(ClientPacketDistributor::sendToServer)
         );
 
         container.registerConfig(ModConfig.Type.SERVER, Config.SPEC);

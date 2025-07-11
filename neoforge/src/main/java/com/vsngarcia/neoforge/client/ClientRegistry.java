@@ -27,7 +27,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.EnumMap;
@@ -42,7 +42,7 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void onMenuScreensRegistry(RegisterMenuScreensEvent e) {
-        e.register(Registry.ELEVATOR_CONTAINER.get(), (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(container, inv, title, PacketDistributor::sendToServer));
+        e.register(Registry.ELEVATOR_CONTAINER.get(), (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(container, inv, title, ClientPacketDistributor::sendToServer));
     }
 
     @SubscribeEvent
@@ -64,27 +64,36 @@ public class ClientRegistry {
         // HACK: Pre-bake all rotations
         // Surely there's a better way to do this, but I'm not seeing it
         e.register(
-            ARROW_MODEL_KEY,
-            new SimpleUnbakedStandaloneModel<>(
-                ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"),
-                (model, baker) ->
-                    Direction.Plane.HORIZONTAL
-                        .stream()
-                        .collect(Collectors.toMap(
-                            Function.identity(),
-                            dir -> new SingleVariant(
-                                SimpleModelWrapper.bake(baker, model,
-                                    BlockModelRotation.by(Quadrant.R0, Quadrant.parseJson((int) dir.toYRot())))
-                            ),
-                            (o1, o2) -> o1,
-                            () -> new EnumMap<>(Direction.class)
-                        ))
-            )
+                ARROW_MODEL_KEY,
+                new SimpleUnbakedStandaloneModel<>(
+                        ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"),
+                        (model, baker) ->
+                                Direction.Plane.HORIZONTAL
+                                        .stream()
+                                        .collect(Collectors.toMap(
+                                                Function.identity(),
+                                                dir -> new SingleVariant(
+                                                        SimpleModelWrapper.bake(baker, model,
+                                                                BlockModelRotation.by(Quadrant.R0, Quadrant.parseJson((int) dir.toYRot())))
+                                                ),
+                                                (o1, o2) -> o1,
+                                                () -> new EnumMap<>(Direction.class)
+                                        ))
+                )
         );
     }
 
     @SubscribeEvent
     public static void onModelBake(ModelEvent.ModifyBakingResult e) {
-        e.getBakingResult().blockStateModels().entrySet().stream().filter(entry -> entry.getKey().getBlock() instanceof ElevatorBlock).forEach(entry -> e.getBakingResult().blockStateModels().put(entry.getKey(), new ElevatorBakedModel(entry.getValue())));
+        e.getBakingResult()
+                .blockStateModels()
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().getBlock() instanceof ElevatorBlock)
+                .forEach(
+                        entry -> e.getBakingResult()
+                                .blockStateModels()
+                                .put(entry.getKey(), new ElevatorBakedModel(entry.getValue()))
+                );
     }
 }
