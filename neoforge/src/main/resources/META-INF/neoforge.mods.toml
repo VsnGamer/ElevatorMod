@@ -16,14 +16,14 @@ description = '''Simple port of the elevator from OpenBlocks to 1.8+'''
 [[dependencies.elevatorid]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.6.0-beta,)"
+versionRange = "[21.7.2-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.elevatorid]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.6,)"
+versionRange = "[1.21.7,)"
 ordering = "NONE"
 side = "BOTH"
 
