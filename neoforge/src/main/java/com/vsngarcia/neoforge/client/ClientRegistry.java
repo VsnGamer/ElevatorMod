@@ -8,6 +8,7 @@ import com.vsngarcia.level.ElevatorContainer;
 import com.vsngarcia.neoforge.ElevatorBlock;
 import com.vsngarcia.neoforge.client.render.ElevatorBakedModel;
 import com.vsngarcia.neoforge.init.Registry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
@@ -27,7 +28,6 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.EnumMap;
@@ -42,7 +42,12 @@ public class ClientRegistry {
 
     @SubscribeEvent
     public static void onMenuScreensRegistry(RegisterMenuScreensEvent e) {
-        e.register(Registry.ELEVATOR_CONTAINER.get(), (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(container, inv, title, PacketDistributor::sendToServer));
+        // Korrigiert: Verwende Connection.send() anstatt PacketDistributor::sendToServer
+        e.register(Registry.ELEVATOR_CONTAINER.get(), (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(container, inv, title, payload -> {
+            if (Minecraft.getInstance().getConnection() != null) {
+                Minecraft.getInstance().getConnection().send(payload);
+            }
+        }));
     }
 
     @SubscribeEvent
