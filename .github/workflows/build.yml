@@ -17,11 +17,20 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - run: ./gradlew build
 
-      - uses: actions/upload-artifact@v4
+      - name: Create nightly for commit
+        uses: softprops/action-gh-release@v2
         with:
-          path: |
+          tag_name: ci-${{ github.sha }}
+          name: CI ${{ github.sha }}
+          prerelease: true
+          generate_release_notes: false
+          files: |
             **/fabric/build/libs/*.jar
             **/neoforge/build/libs/*.jar
+          fail_on_unmatched_files: true
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
