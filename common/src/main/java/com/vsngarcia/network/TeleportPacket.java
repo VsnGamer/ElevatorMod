@@ -61,23 +61,13 @@ public record TeleportPacket(BlockPos from, BlockPos to) implements CustomPacket
             }
         }
 
-        if (!(player.level() instanceof ServerLevel world))
-            return;
+        ServerLevel world = player.level();
 
         BlockPos toPos = message.to();
         BlockState toState = world.getBlockState(message.to());
 
-        // Check yaw and pitch
-        final float yaw = toState.getValue(ElevatorBlockBase.DIRECTIONAL)
-                ? toState.getValue(ElevatorBlockBase.FACING).toYRot() : player.getYRot();
-
-        final float pitch =
-                (toState.getValue(ElevatorBlockBase.DIRECTIONAL) && Config.GENERAL.resetPitchDirectional.get())
-                        || (!toState.getValue(ElevatorBlockBase.DIRECTIONAL) && Config.GENERAL.resetPitchNormal.get())
-                        ? 0F : player.getXRot();
-
         // Check X and Z
-        final double toX, toZ;
+        double toX, toZ;
         if (Config.GENERAL.precisionTarget.get()) {
             toX = toPos.getX() + .5D;
             toZ = toPos.getZ() + .5D;
@@ -87,16 +77,27 @@ public record TeleportPacket(BlockPos from, BlockPos to) implements CustomPacket
         }
 
         double blockYOffset = toState.getBlockSupportShape(world, toPos).max(Direction.Axis.Y);
-        player.teleportTo(
-                world,
-                toX,
-                Math.max(toPos.getY(), toPos.getY() + blockYOffset),
-                toZ,
-                Set.of(),
-                yaw,
-                pitch,
-                true
-        );
+        double toY = Math.max(toPos.getY(), toPos.getY() + blockYOffset);
+
+        // Check yaw and pitch
+        var directional = toState.getValue(ElevatorBlockBase.DIRECTIONAL);
+        var resetPitch = directional ? Config.GENERAL.resetPitchDirectional.get() : Config.GENERAL.resetPitchNormal.get();
+
+        if (!directional && !resetPitch) {
+            player.teleportTo(toX, toY, toZ);
+        } else {
+            player.teleportTo(
+                    world,
+                    toX,
+                    toY,
+                    toZ,
+                    Set.of(),
+                    directional ? toState.getValue(ElevatorBlockBase.FACING).toYRot() : player.getYRot(),
+                    resetPitch ? 0 : player.getXRot(),
+                    true
+            );
+        }
+
         player.setDeltaMovement(player.getDeltaMovement().multiply(new Vec3(1D, 0D, 1D)));
 
         world.playSound(null, toPos, soundEvent, SoundSource.BLOCKS, 1F, 1F);
