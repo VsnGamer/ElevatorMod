@@ -107,7 +107,7 @@ public abstract class ElevatorBlockBase extends HorizontalDirectionalBlock imple
             InteractionHand handIn,
             BlockHitResult hit
     ) {
-        if (worldIn.isClientSide) {
+        if (worldIn.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
 
