@@ -34,7 +34,7 @@ class FacingButton extends Button {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
         if (isHoveredOrFocused() && active) {
             guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, 0x80FFFFFF);
         }

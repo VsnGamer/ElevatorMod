@@ -1,6 +1,5 @@
 package com.vsngarcia.neoforge.client;
 
-import com.mojang.math.Quadrant;
 import com.vsngarcia.ElevatorMod;
 import com.vsngarcia.client.ColorCamoElevator;
 import com.vsngarcia.client.gui.ElevatorScreen;
@@ -10,14 +9,13 @@ import com.vsngarcia.neoforge.client.render.ElevatorBakedModel;
 import com.vsngarcia.neoforge.init.Registry;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
-import net.minecraft.client.renderer.block.model.SingleVariant;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.block.Rotation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -30,15 +28,18 @@ import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-import java.util.EnumMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
 @EventBusSubscriber(modid = ElevatorMod.ID, value = Dist.CLIENT)
 public class ClientRegistry {
-
-    public static final StandaloneModelKey<EnumMap<Direction, BlockStateModel>> ARROW_MODEL_KEY = new StandaloneModelKey<>(() -> "arrow");
+    public static final Map<Direction, StandaloneModelKey<BlockStateModel>> ARROW_MODEL_KEYS =
+            Direction.Plane.HORIZONTAL.stream().collect(Collectors.toUnmodifiableMap(
+                    Function.identity(),
+                    dir -> new StandaloneModelKey<>(() -> "arrow_" + dir.getSerializedName())
+            ));
 
     @SubscribeEvent
     public static void onMenuScreensRegistry(RegisterMenuScreensEvent e) {
@@ -62,23 +63,13 @@ public class ClientRegistry {
     @SubscribeEvent
     public static void onModelRegistry(ModelEvent.RegisterStandalone e) {
         // HACK: Pre-bake all rotations
-        // Surely there's a better way to do this, but I'm not seeing it
-        e.register(
-                ARROW_MODEL_KEY,
-                new SimpleUnbakedStandaloneModel<>(
-                        ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow"),
-                        (model, baker) ->
-                                Direction.Plane.HORIZONTAL
-                                        .stream()
-                                        .collect(Collectors.toMap(
-                                                Function.identity(),
-                                                dir -> new SingleVariant(
-                                                        SimpleModelWrapper.bake(baker, model,
-                                                                BlockModelRotation.by(Quadrant.R0, Quadrant.parseJson((int) dir.toYRot())))
-                                                ),
-                                                (o1, o2) -> o1,
-                                                () -> new EnumMap<>(Direction.class)
-                                        ))
+        Direction.Plane.HORIZONTAL.forEach(dir ->
+                e.register(
+                        ARROW_MODEL_KEYS.get(dir),
+                        SimpleUnbakedStandaloneModel.blockStateModel(
+                                Identifier.fromNamespaceAndPath(ElevatorMod.ID, "arrow"),
+                                BlockModelRotation.get(Rotation.values()[(int) dir.toYRot() / 90].rotation())
+                        )
                 )
         );
     }

@@ -13,7 +13,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -60,7 +60,7 @@ public class FabricRegistry {
 
     public static final BlockEntityType<ElevatorBlockEntity> ELEVATOR_BLOCK_ENTITY_TYPE = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
-            ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "elevator_tile"),
+            Identifier.fromNamespaceAndPath(ElevatorMod.ID, "elevator_tile"),
             new BlockEntityType<>(ElevatorBlockEntity::new, new HashSet<>(ELEVATOR_BLOCKS.values()))
     );
 
@@ -79,27 +79,27 @@ public class FabricRegistry {
 
         Registry.register(
                 BuiltInRegistries.MENU,
-                ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "elevator_container"),
+                Identifier.fromNamespaceAndPath(ElevatorMod.ID, "elevator_container"),
                 ELEVATOR_CONTAINER
         );
     }
 
     public static final SoundEvent TELEPORT_SOUND = Registry.register(
             BuiltInRegistries.SOUND_EVENT,
-            ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "teleport"),
-            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "teleport"))
+            Identifier.fromNamespaceAndPath(ElevatorMod.ID, "teleport"),
+            SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(ElevatorMod.ID, "teleport"))
     );
 
     public static final SoundEvent CAMOUFLAGE_SOUND = Registry.register(
             BuiltInRegistries.SOUND_EVENT,
-            ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "camouflage"),
-            SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "camouflage"))
+            Identifier.fromNamespaceAndPath(ElevatorMod.ID, "camouflage"),
+            SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(ElevatorMod.ID, "camouflage"))
     );
 
     static {
         Registry.register(
                 BuiltInRegistries.CREATIVE_MODE_TAB,
-                ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "elevators_tab"),
+                Identifier.fromNamespaceAndPath(ElevatorMod.ID, "elevators_tab"),
                 FabricItemGroup.builder()
                         .icon(() -> ELEVATOR_BLOCKS.get(DyeColor.WHITE).asItem().getDefaultInstance())
                         .displayItems((params, output) -> ELEVATOR_ITEMS.values().forEach(output::accept))

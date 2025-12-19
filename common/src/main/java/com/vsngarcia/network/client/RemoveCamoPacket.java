@@ -7,12 +7,12 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 
 public record RemoveCamoPacket(BlockPos pos) implements CustomPacketPayload {
-    public static final Type<RemoveCamoPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(
+    public static final Type<RemoveCamoPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(
             ElevatorMod.ID,
             "remove_camo"
     ));

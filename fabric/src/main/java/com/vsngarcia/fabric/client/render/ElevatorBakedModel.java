@@ -51,7 +51,7 @@ public class ElevatorBakedModel extends WrapperBlockStateModel {
                     quad.pos(i, vec);
                 }
 
-                quad.renderLayer(ChunkSectionLayer.CUTOUT_MIPPED);
+                quad.renderLayer(ChunkSectionLayer.CUTOUT);
 
                 return true;
             });

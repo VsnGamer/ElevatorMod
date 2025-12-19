@@ -6,7 +6,7 @@ import com.vsngarcia.neoforge.ElevatorBlock;
 import com.vsngarcia.neoforge.tile.ElevatorBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
@@ -84,11 +84,11 @@ public class Registry {
     );
     public static final Supplier<SoundEvent> TELEPORT_SOUND = SOUNDS.register(
             "teleport",
-            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "teleport"))
+            () -> SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(ElevatorMod.ID, "teleport"))
     );
     public static final Supplier<SoundEvent> CAMOUFLAGE_SOUND = SOUNDS.register(
             "camouflage",
-            () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(
+            () -> SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(
                     ElevatorMod.ID,
                     "camouflage"
             ))

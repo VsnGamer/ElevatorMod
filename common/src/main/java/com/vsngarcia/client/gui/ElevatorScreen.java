@@ -15,13 +15,13 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 
 public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
-    private final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(
+    private final Identifier GUI_TEXTURE = Identifier.fromNamespaceAndPath(
             ElevatorMod.ID,
             "textures/gui/elevator_gui.png"
     );

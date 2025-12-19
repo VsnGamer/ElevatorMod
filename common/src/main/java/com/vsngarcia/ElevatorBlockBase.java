@@ -6,8 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -80,8 +80,8 @@ public abstract class ElevatorBlockBase extends HorizontalDirectionalBlock imple
         );
     }
 
-    public static ResourceLocation getResourceLocation(DyeColor color) {
-        return ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "elevator_" + color.getName());
+    public static Identifier getResourceLocation(DyeColor color) {
+        return Identifier.fromNamespaceAndPath(ElevatorMod.ID, "elevator_" + color.getName());
     }
 
     @Override

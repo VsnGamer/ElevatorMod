@@ -18,7 +18,6 @@ import java.util.List;
 
 
 public class ElevatorBakedModel extends DelegateBlockStateModel {
-
     public static final ModelProperty<BlockState> HELD_STATE = new ModelProperty<>();
 
     public ElevatorBakedModel(BlockStateModel originalModel) {
@@ -37,18 +36,17 @@ public class ElevatorBakedModel extends DelegateBlockStateModel {
         return super.particleIcon(level, pos, elevator);
     }
 
-
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
         // Directional arrow
         if (state.getValue(ElevatorBlock.DIRECTIONAL) && state.getValue(ElevatorBlock.SHOW_ARROW)) {
-            var arrowModels = Minecraft.getInstance().getModelManager().getStandaloneModel(ClientRegistry.ARROW_MODEL_KEY);
-
-            if (arrowModels != null) {
-                arrowModels.get(state.getValue(ElevatorBlock.FACING)).collectParts(level, pos, state, random, parts);
+            var arrowModel = Minecraft.getInstance()
+                    .getModelManager()
+                    .getStandaloneModel(ClientRegistry.ARROW_MODEL_KEYS.get(state.getValue(ElevatorBlock.FACING)));
+            if (arrowModel != null) {
+                arrowModel.collectParts(level, pos, state, random, parts);
             }
         }
-
 
         BlockState heldState = level.getModelData(pos).get(HELD_STATE);
         if (heldState != null) {

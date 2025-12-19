@@ -11,7 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -27,7 +27,7 @@ import java.util.EnumSet;
 
 public record TeleportPacket(BlockPos from, BlockPos to) implements CustomPacketPayload {
     public static final Type<TeleportPacket> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "teleport_request")
+            Identifier.fromNamespaceAndPath(ElevatorMod.ID, "teleport_request")
     );
 
     public static final StreamCodec<ByteBuf, TeleportPacket> STREAM_CODEC = StreamCodec.composite(

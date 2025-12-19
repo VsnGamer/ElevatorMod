@@ -20,7 +20,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.Block;
 
@@ -50,7 +50,7 @@ public final class ElevatorModFabricClient implements ClientModInitializer {
     public static class ElevatorModelLoadingPlugin implements ModelLoadingPlugin {
 
         public static final ExtraModelKey<BlockStateModel> ARROW_MODEL_KEY = ExtraModelKey.create();
-        private static final ResourceLocation ARROW_MODEL_ID = ResourceLocation.fromNamespaceAndPath(ElevatorMod.ID, "arrow");
+        private static final Identifier ARROW_MODEL_ID = Identifier.fromNamespaceAndPath(ElevatorMod.ID, "arrow");
 
         @Override
         public void initialize(Context ctx) {
