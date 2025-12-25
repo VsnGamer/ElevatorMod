@@ -1,6 +1,7 @@
 package com.vsngarcia.level;
 
 import com.vsngarcia.ElevatorBlockBase;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 
 public abstract class ElevatorBlockEntityBase extends BlockEntity implements MenuProvider {
@@ -141,6 +143,6 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
         }
 
         // Only blocks with a collision box
-        return !state.getCollisionShape(level, worldPosition).isEmpty();
+        return !state.getCollisionShape(level, worldPosition, CollisionContext.placementContext(null)).isEmpty();
     }
 }

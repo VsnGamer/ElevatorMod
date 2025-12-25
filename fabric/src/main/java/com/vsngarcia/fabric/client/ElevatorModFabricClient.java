@@ -49,7 +49,7 @@ public final class ElevatorModFabricClient implements ClientModInitializer {
 
     public static class ElevatorModelLoadingPlugin implements ModelLoadingPlugin {
 
-        public static final ExtraModelKey<BlockStateModel> ARROW_MODEL_KEY = ExtraModelKey.create();
+        public static final ExtraModelKey<BlockStateModel> ARROW_MODEL_KEY = ExtraModelKey.create(() -> "arrow");
         private static final Identifier ARROW_MODEL_ID = Identifier.fromNamespaceAndPath(ElevatorMod.ID, "arrow");
 
         @Override
