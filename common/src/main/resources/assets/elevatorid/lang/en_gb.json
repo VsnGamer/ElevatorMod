@@ -1,0 +1,35 @@
+{
+  "block.Liftid.elevator_white": "White Lift",
+  "block.elevatorid.elevator_black": "Black Lift",
+  "block.elevatorid.elevator_blue": "Blue Lift",
+  "block.elevatorid.elevator_brown": "Brown Lift",
+  "block.elevatorid.elevator_cyan": "Cyan Lift",
+  "block.elevatorid.elevator_gray": "Grey Lift",
+  "block.elevatorid.elevator_green": "Green Lift",
+  "block.elevatorid.elevator_light_blue": "Light Blue Lift",
+  "block.elevatorid.elevator_lime": "Lime Lift",
+  "block.elevatorid.elevator_magenta": "Magenta Lift",
+  "block.elevatorid.elevator_orange": "Orange Lift",
+  "block.elevatorid.elevator_pink": "Pink Lift",
+  "block.elevatorid.elevator_purple": "Purple Lift",
+  "block.elevatorid.elevator_red": "Red Lift",
+  "block.elevatorid.elevator_light_gray": "Light Grey Lift",
+  "block.elevatorid.elevator_yellow": "Yellow Lift",
+
+  "elevatorid.subtitle.teleport": "Lift used",
+  "elevatorid.subtitle.camouflage": "Lift camouflaged",
+
+  "screen.elevatorid.elevator": "Lift Options",
+  "screen.elevatorid.elevator.directional": "Directional",
+  "screen.elevatorid.elevator.directional_north": "N",
+  "screen.elevatorid.elevator.directional_east": "E",
+  "screen.elevatorid.elevator.directional_south": "S",
+  "screen.elevatorid.elevator.directional_west": "W",
+  "screen.elevatorid.elevator.hide_arrow": "Hide arrow",
+  "screen.elevatorid.elevator.reset_camo": "Remove camouflage",
+
+  "elevatorid.message.missing_xp": "You do not have enough XP to use lifts",
+
+  "itemGroup.elevators_tab": "Lifts",
+
+  "tag.item.elevatorid.elevators": "Lifts"
