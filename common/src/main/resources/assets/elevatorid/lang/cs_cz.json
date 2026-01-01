@@ -1,0 +1,35 @@
+{
+  "block.elevatorid.elevator_white": "Bílý výtah",
+  "block.elevatorid.elevator_black": "Černý výtah",
+  "block.elevatorid.elevator_blue": "Modrý výtah",
+  "block.elevatorid.elevator_brown": "Hnědý výtah",
+  "block.elevatorid.elevator_cyan": "Azurový výtah",
+  "block.elevatorid.elevator_gray": "Šedý výtah",
+  "block.elevatorid.elevator_green": "Zelený výtah",
+  "block.elevatorid.elevator_light_blue": "Světle modrý výtah",
+  "block.elevatorid.elevator_lime": "Světle zelený výtah",
+  "block.elevatorid.elevator_magenta": "Purpurový výtah",
+  "block.elevatorid.elevator_orange": "Oranžový výtah",
+  "block.elevatorid.elevator_pink": "Růžový výtah",
+  "block.elevatorid.elevator_purple": "Fialový výtah",
+  "block.elevatorid.elevator_red": "Červený výtah",
+  "block.elevatorid.elevator_light_gray": "Světle šedý výtah",
+  "block.elevatorid.elevator_yellow": "Žlutý výtah",
+
+  "elevatorid.subtitle.teleport": "Výtah byl použit",
+  "elevatorid.subtitle.camouflage": "Výtah byl zamaskován",
+
+  "screen.elevatorid.elevator": "Možnosti výtahů",
+  "screen.elevatorid.elevator.directional": "Směry",
+  "screen.elevatorid.elevator.directional_north": "S",
+  "screen.elevatorid.elevator.directional_east": "V",
+  "screen.elevatorid.elevator.directional_south": "J",
+  "screen.elevatorid.elevator.directional_west": "Z",
+  "screen.elevatorid.elevator.hide_arrow": "Skrýt šipku",
+  "screen.elevatorid.elevator.reset_camo": "Odstranit maskování",
+
+  "elevatorid.message.missing_xp": "Nemáš dostatek zkušenosti pro použití tohoto výtahu",
+
+  "itemGroup.elevators_tab": "Elevators",
+
+  "tag.item.elevatorid.elevators": "Elevators"
