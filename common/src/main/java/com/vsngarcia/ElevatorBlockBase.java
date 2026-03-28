@@ -266,12 +266,12 @@ public abstract class ElevatorBlockBase extends HorizontalDirectionalBlock imple
     }
 
     @Override
-    protected int getLightBlock(BlockState blockState) {
+    protected int getLightDampening(BlockState state) {
         // TODO: Not dynamic
-        return super.getLightBlock(blockState);
+        return super.getLightDampening(state);
     }
 
-//    @Override
+    //    @Override
 //    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
 //        return getHeldState(worldIn, pos)
 //                .map(s -> s.getLightBlock(worldIn, pos))

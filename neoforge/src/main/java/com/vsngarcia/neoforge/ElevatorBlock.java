@@ -13,7 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.SignalGetter;
@@ -73,7 +73,7 @@ public class ElevatorBlock extends ElevatorBlockBase {
     @Override
     public BlockState getAppearance(
             BlockState state,
-            BlockAndTintGetter level,
+            BlockAndLightGetter level,
             BlockPos pos,
             Direction side,
             BlockState queryState,

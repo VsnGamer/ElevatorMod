@@ -3,17 +3,16 @@ package com.vsngarcia.neoforge.client.render;
 import com.vsngarcia.neoforge.ElevatorBlock;
 import com.vsngarcia.neoforge.client.ClientRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DelegateBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelProperty;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 
 
@@ -25,19 +24,20 @@ public class ElevatorBakedModel extends DelegateBlockStateModel {
     }
 
 
-    @Nonnull
     @Override
-    public TextureAtlasSprite particleIcon(BlockAndTintGetter level, BlockPos pos, BlockState elevator) {
-        BlockState state = level.getModelData(pos).get(HELD_STATE);
-        if (state != null) {
-            return Minecraft.getInstance().getBlockRenderer().getBlockModel(state).particleIcon(level, pos, state);
+    public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+        BlockState heldState = level.getModelData(pos).get(HELD_STATE);
+
+        if (heldState != null) {
+            return Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(heldState).particleMaterial(level, pos, heldState);
         }
 
-        return super.particleIcon(level, pos, elevator);
+        return super.particleMaterial(level, pos, state);
     }
 
+
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
         // Directional arrow
         if (state.getValue(ElevatorBlock.DIRECTIONAL) && state.getValue(ElevatorBlock.SHOW_ARROW)) {
             var arrowModel = Minecraft.getInstance()
@@ -50,7 +50,7 @@ public class ElevatorBakedModel extends DelegateBlockStateModel {
 
         BlockState heldState = level.getModelData(pos).get(HELD_STATE);
         if (heldState != null) {
-            BlockStateModel blockModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(heldState);
+            BlockStateModel blockModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(heldState);
 
             blockModel.collectParts(level, pos, heldState, random, parts);
 

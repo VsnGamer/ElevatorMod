@@ -4,8 +4,9 @@ import com.vsngarcia.ElevatorBlockBase;
 import com.vsngarcia.ElevatorMod;
 import com.vsngarcia.fabric.tile.ElevatorBlockEntity;
 import com.vsngarcia.level.ElevatorContainer;
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuType;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -61,13 +62,13 @@ public class FabricRegistry {
     public static final BlockEntityType<ElevatorBlockEntity> ELEVATOR_BLOCK_ENTITY_TYPE = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(ElevatorMod.ID, "elevator_tile"),
-            new BlockEntityType<>(ElevatorBlockEntity::new, new HashSet<>(ELEVATOR_BLOCKS.values()))
+            FabricBlockEntityTypeBuilder.create(ElevatorBlockEntity::new, ELEVATOR_BLOCKS.values().toArray(Block[]::new)).build()
     );
 
-    public static ExtendedScreenHandlerType<ElevatorContainer, ElevatorContainerData> ELEVATOR_CONTAINER = null;
+    public static ExtendedMenuType<ElevatorContainer, ElevatorContainerData> ELEVATOR_CONTAINER = null;
 
     static {
-        ELEVATOR_CONTAINER = new ExtendedScreenHandlerType<>(
+        ELEVATOR_CONTAINER = new ExtendedMenuType<>(
                 (syncId, inventory, data) -> new ElevatorContainer(
                         ELEVATOR_CONTAINER,
                         syncId,
@@ -100,7 +101,7 @@ public class FabricRegistry {
         Registry.register(
                 BuiltInRegistries.CREATIVE_MODE_TAB,
                 Identifier.fromNamespaceAndPath(ElevatorMod.ID, "elevators_tab"),
-                FabricItemGroup.builder()
+                FabricCreativeModeTab.builder()
                         .icon(() -> ELEVATOR_BLOCKS.get(DyeColor.WHITE).asItem().getDefaultInstance())
                         .displayItems((params, output) -> ELEVATOR_ITEMS.values().forEach(output::accept))
                         .title(Component.translatable("itemGroup.elevators_tab"))

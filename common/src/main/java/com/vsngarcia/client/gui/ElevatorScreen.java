@@ -8,7 +8,7 @@ import com.vsngarcia.network.ClientPacketSender;
 import com.vsngarcia.network.client.RemoveCamoPacket;
 import com.vsngarcia.network.client.SetArrowPacket;
 import com.vsngarcia.network.client.SetDirectionalPacket;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -35,9 +35,7 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
     private FacingControllerWrapper facingController;
 
     public ElevatorScreen(ElevatorContainer container, Inventory inv, Component titleIn, ClientPacketSender pktSender) {
-        super(container, inv, titleIn);
-        imageWidth = 200;
-        imageHeight = 100;
+        super(container, inv, titleIn, 200, 100);
 
         tile = container.getTile();
         playerFacing = container.getPlayerFacing();
@@ -99,11 +97,6 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-    }
-
-    @Override
     public void containerTick() {
         super.containerTick();
 
@@ -121,23 +114,25 @@ public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float v, int mouseX, int mouseY) {
-        guiGraphics.blit(
-                RenderPipelines.GUI_TEXTURED,
-                GUI_TEXTURE,
-                (this.width - this.imageWidth) / 2,
-                (this.height - this.imageHeight) / 2,
-                0,
-                0,
-                this.imageWidth,
-                this.imageHeight,
-                256,
-                256
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
+
+        graphics.blit(
+            RenderPipelines.GUI_TEXTURED,
+            GUI_TEXTURE,
+            (this.width - this.imageWidth) / 2,
+            (this.height - this.imageHeight) / 2,
+            0,
+            0,
+            this.imageWidth,
+            this.imageHeight,
+            256,
+            256
         );
     }
 
     @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.drawString(font, title, 8, 8, 0xFFE0E0E0);
+    protected void extractLabels(GuiGraphicsExtractor graphics, int xm, int ym) {
+        graphics.text(font, title, 8, 8, 0xFFE0E0E0);
     }
 }
