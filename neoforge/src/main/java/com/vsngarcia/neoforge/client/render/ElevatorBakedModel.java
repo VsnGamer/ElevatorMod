@@ -38,6 +38,11 @@ public class ElevatorBakedModel extends DelegateBlockStateModel {
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
+        if (!(state.getBlock() instanceof ElevatorBlock)) {
+            super.collectParts(level, pos, state, random, parts);
+            return;
+        }
+
         // Directional arrow
         if (state.getValue(ElevatorBlock.DIRECTIONAL) && state.getValue(ElevatorBlock.SHOW_ARROW)) {
             var arrowModel = Minecraft.getInstance()
