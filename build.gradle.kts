@@ -23,11 +23,8 @@ subprojects {
     }
 
     repositories {
-        // Add repositories to retrieve artifacts from in here.
         // You should only use this when depending on other mods because
         // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-        // for more information about repositories.
 
         exclusiveContent {
             forRepository {
@@ -51,18 +48,39 @@ subprojects {
         "minecraft"("net.minecraft:minecraft:${property("minecraft_version")}")
     }
 
-//    tasks.java {
-//        // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-//        // if it is present.
-//        // If you remove this line, sources will not be generated.
-//        withSourcesJar()
-//
-//        sourceCompatibility = JavaVersion.VERSION_21
-//        targetCompatibility = JavaVersion.VERSION_21
-//    }
-
     tasks.withType<JavaCompile>().configureEach {
         options.release = 25
+    }
+
+    if (project.name != "common") {
+        apply(plugin = "com.gradleup.shadow")
+
+        val common by configurations.creating { isCanBeResolved = true; isCanBeConsumed = false }
+        val shadowBundle by configurations.creating { isCanBeResolved = true; isCanBeConsumed = false }
+
+        configurations {
+            getByName("compileClasspath").extendsFrom(common)
+            getByName("runtimeClasspath").extendsFrom(common)
+        }
+
+        tasks.named<Jar>("jar") {
+            archiveClassifier = "raw"
+        }
+
+
+        tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
+            dependsOn(tasks.named("jar"))
+            from(zipTree(tasks.named<Jar>("jar").get().archiveFile))
+            configurations = listOf(shadowBundle)
+            archiveClassifier = null
+
+            val sourceSets = project.extensions.getByType<SourceSetContainer>()
+            val mainOutput = sourceSets.getByName("main").output
+            exclude { element ->
+                mainOutput.classesDirs.any { element.file.startsWith(it) } ||
+                        element.file.startsWith(mainOutput.resourcesDir!!)
+            }
+        }
     }
 
     // Configure Maven publishing.

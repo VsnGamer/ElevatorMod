@@ -1,7 +1,4 @@
-plugins {
-    id("com.gradleup.shadow")
-}
-
+// TODO: Maintaining AT for now
 //loom {
 //    accessWidenerPath = project(":common").loom.accessWidenerPath
 //}
@@ -11,20 +8,8 @@ architectury {
     neoForge()
 }
 
-val common by configurations.creating {
-    isCanBeResolved = true
-    isCanBeConsumed = false
-}
-
-val shadowBundle by configurations.creating {
-    isCanBeResolved = true
-    isCanBeConsumed = false
-}
-
 configurations {
-    compileClasspath.get().extendsFrom(common)
-    runtimeClasspath.get().extendsFrom(common)
-    getByName("developmentNeoForge").extendsFrom(common)
+    named("developmentNeoForge") { extendsFrom(configurations.getByName("common")) }
 }
 
 repositories {
@@ -37,8 +22,8 @@ repositories {
 dependencies {
     neoForge("net.neoforged:neoforge:${property("neoforge_version")}")
 
-    common(project(path = ":common")) { isTransitive = false }
-    shadowBundle(project(path = ":common", configuration = "transformProductionNeoForge"))
+    "common"(project(path = ":common")) { isTransitive = false }
+    "shadowBundle"(project(path = ":common", configuration = "transformProductionNeoForge"))
 }
 
 tasks.processResources {
@@ -48,20 +33,3 @@ tasks.processResources {
         expand("version" to project.version)
     }
 }
-
-tasks.jar {
-    archiveClassifier = "raw"
-}
-
-tasks.shadowJar {
-    dependsOn(tasks.jar)
-    //mainSpec.sourcePaths.clear()
-    from(zipTree(tasks.jar.get().archiveFile))
-    configurations = listOf(shadowBundle)
-    archiveClassifier = null
-}
-
-//remapJar {
-//    atAccessWideners.add "elevatormod.accesswidener"
-//    input.set shadowJar.archiveFile
-//}
