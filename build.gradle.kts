@@ -67,15 +67,12 @@ subprojects {
             archiveClassifier = "raw"
         }
 
-
         tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-            dependsOn(tasks.named("jar"))
             from(zipTree(tasks.named<Jar>("jar").get().archiveFile))
             configurations = listOf(shadowBundle)
-            archiveClassifier = null
+            archiveClassifier = ""
 
-            val sourceSets = project.extensions.getByType<SourceSetContainer>()
-            val mainOutput = sourceSets.getByName("main").output
+            val mainOutput = project.the<SourceSetContainer>()["main"].output
             exclude { element ->
                 mainOutput.classesDirs.any { element.file.startsWith(it) } ||
                         element.file.startsWith(mainOutput.resourcesDir!!)

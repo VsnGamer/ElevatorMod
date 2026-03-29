@@ -44,15 +44,6 @@ public class ClientRegistry {
         e.register(Registry.ELEVATOR_CONTAINER.get(), (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(container, inv, title, ClientPacketDistributor::sendToServer));
     }
 
-//    @SubscribeEvent
-//    public static void onFMLClientSetup(FMLClientSetupEvent event) {
-//        // HACK: As far as I was able to understand, vanilla blocks use a specific logic for determining render types
-//        //  I think that for now it can't detect mimics getAppearance
-//        //  For now we just use TRANSLUCENT, which is not ideal but covers most cases
-//        Registry.ELEVATOR_BLOCKS.values().forEach(b -> ItemBlockRenderTypes.setRenderLayer(b.get(), ChunkSectionLayer.TRANSLUCENT));
-//    }
-
-
     @SubscribeEvent
     public static void onBlockColorHandlersRegistry(RegisterColorHandlersEvent.BlockTintSources e) {
         e.register(Collections.singletonList(new ColorCamoElevator()), Registry.ELEVATOR_BLOCKS.values().stream().map(DeferredHolder::get).toArray(ElevatorBlock[]::new));

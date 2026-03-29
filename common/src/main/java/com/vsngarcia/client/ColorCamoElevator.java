@@ -26,6 +26,7 @@ public class ColorCamoElevator implements BlockTintSource {
             return color(state);
         }
 
+        // TODO: Use just layer 0 for now
         BlockTintSource tintSource = Minecraft.getInstance().getBlockColors().getTintSource(heldState, 0);
         if (tintSource != null) {
             return tintSource.colorInWorld(heldState, level, pos);

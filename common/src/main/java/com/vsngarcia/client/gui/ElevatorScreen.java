@@ -22,8 +22,8 @@ import net.minecraft.world.entity.player.Inventory;
 public class ElevatorScreen extends AbstractContainerScreen<ElevatorContainer> {
 
     private final Identifier GUI_TEXTURE = Identifier.fromNamespaceAndPath(
-            ElevatorMod.ID,
-            "textures/gui/elevator_gui.png"
+        ElevatorMod.ID,
+        "textures/gui/elevator_gui.png"
     );
     private final ElevatorBlockEntityBase tile;
     private final Direction playerFacing;
