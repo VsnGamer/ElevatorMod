@@ -1,6 +1,5 @@
 package com.vsngarcia.client;
 
-import com.vsngarcia.ElevatorBlockBase;
 import com.vsngarcia.level.ElevatorBlockEntityBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockTintSource;

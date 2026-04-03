@@ -33,47 +33,53 @@ import java.util.stream.Collectors;
 
 @EventBusSubscriber(modid = ElevatorMod.ID, value = Dist.CLIENT)
 public class ClientRegistry {
-    public static final Map<Direction, StandaloneModelKey<BlockStateModel>> ARROW_MODEL_KEYS =
-            Direction.Plane.HORIZONTAL.stream().collect(Collectors.toUnmodifiableMap(
-                    Function.identity(),
-                    dir -> new StandaloneModelKey<>(() -> "arrow_" + dir.getSerializedName())
-            ));
+    public static final Map<Direction, StandaloneModelKey<BlockStateModel>> ARROW_MODEL_KEYS = Direction.Plane.HORIZONTAL.stream()
+        .collect(Collectors.toUnmodifiableMap(
+            Function.identity(),
+            dir -> new StandaloneModelKey<>(() -> "arrow_" + dir.getSerializedName())
+        ));
 
     @SubscribeEvent
     public static void onMenuScreensRegistry(RegisterMenuScreensEvent e) {
-        e.register(Registry.ELEVATOR_CONTAINER.get(), (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(container, inv, title, ClientPacketDistributor::sendToServer));
+        e.register(
+            Registry.ELEVATOR_CONTAINER.get(),
+            (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(
+                container,
+                inv,
+                title,
+                ClientPacketDistributor::sendToServer
+            )
+        );
     }
 
     @SubscribeEvent
     public static void onBlockColorHandlersRegistry(RegisterColorHandlersEvent.BlockTintSources e) {
-        e.register(Collections.singletonList(new ColorCamoElevator()), Registry.ELEVATOR_BLOCKS.values().stream().map(DeferredHolder::get).toArray(ElevatorBlock[]::new));
+        e.register(
+            Collections.singletonList(new ColorCamoElevator()),
+            Registry.ELEVATOR_BLOCKS.values().stream().map(DeferredHolder::get).toArray(ElevatorBlock[]::new)
+        );
     }
 
     @SubscribeEvent
     public static void onModelRegistry(ModelEvent.RegisterStandalone e) {
-        // HACK: Pre-bake all rotations
-        Direction.Plane.HORIZONTAL.forEach(dir ->
-                e.register(
-                        ARROW_MODEL_KEYS.get(dir),
-                        SimpleUnbakedStandaloneModel.blockStateModel(
-                                Identifier.fromNamespaceAndPath(ElevatorMod.ID, "arrow"),
-                                BlockModelRotation.get(Rotation.values()[(int) dir.toYRot() / 90].rotation())
-                        )
-                )
-        );
+        Direction.Plane.HORIZONTAL.forEach(dir -> e.register(
+            ARROW_MODEL_KEYS.get(dir),
+            SimpleUnbakedStandaloneModel.blockStateModel(
+                Identifier.fromNamespaceAndPath(ElevatorMod.ID, "arrow"),
+                BlockModelRotation.get(Rotation.values()[(int) dir.toYRot() / 90].rotation())
+            )
+        ));
     }
 
     @SubscribeEvent
     public static void onModelBake(ModelEvent.ModifyBakingResult e) {
         e.getBakingResult()
+            .blockStateModels()
+            .entrySet()
+            .stream()
+            .filter(entry -> entry.getKey().getBlock() instanceof ElevatorBlock)
+            .forEach(entry -> e.getBakingResult()
                 .blockStateModels()
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().getBlock() instanceof ElevatorBlock)
-                .forEach(
-                        entry -> e.getBakingResult()
-                                .blockStateModels()
-                                .put(entry.getKey(), new ElevatorBakedModel(entry.getValue()))
-                );
+                .put(entry.getKey(), new ElevatorBakedModel(entry.getValue())));
     }
 }

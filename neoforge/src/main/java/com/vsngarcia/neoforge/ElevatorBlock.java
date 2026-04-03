@@ -28,9 +28,8 @@ import java.util.Optional;
 public class ElevatorBlock extends ElevatorBlockBase {
 
     private final MapCodec<ElevatorBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-            .group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlockBase::getColor))
-            .apply(instance, ElevatorBlock::new)
-    );
+        .group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlockBase::getColor))
+        .apply(instance, ElevatorBlock::new));
 
     public ElevatorBlock(DyeColor color) {
         super(color, Registry.ELEVATOR_TILE_ENTITY::get);
@@ -53,36 +52,36 @@ public class ElevatorBlock extends ElevatorBlockBase {
 
     @Override
     public boolean collisionExtendsVertically(
-            BlockState state,
-            BlockGetter level,
-            BlockPos pos,
-            Entity collidingEntity
+        BlockState state,
+        BlockGetter level,
+        BlockPos pos,
+        Entity collidingEntity
     ) {
         return getHeldState(level, pos)
-                .map(s -> s.collisionExtendsVertically(level, pos, collidingEntity))
-                .orElse(super.collisionExtendsVertically(state, level, pos, collidingEntity));
+            .map(s -> s.collisionExtendsVertically(level, pos, collidingEntity))
+            .orElse(super.collisionExtendsVertically(state, level, pos, collidingEntity));
     }
 
     @Override
     public float getFriction(BlockState state, LevelReader level, BlockPos pos, Entity entity) {
         return getHeldState(level, pos)
-                .map(s -> s.getFriction(level, pos, entity))
-                .orElse(super.getFriction(state, level, pos, entity));
+            .map(s -> s.getFriction(level, pos, entity))
+            .orElse(super.getFriction(state, level, pos, entity));
     }
 
     @Override
     public BlockState getAppearance(
-            BlockState state,
-            BlockAndLightGetter level,
-            BlockPos pos,
-            Direction side,
-            BlockState queryState,
-            BlockPos queryPos
+        BlockState state,
+        BlockAndLightGetter level,
+        BlockPos pos,
+        Direction side,
+        BlockState queryState,
+        BlockPos queryPos
     ) {
         if (level instanceof ServerLevel) {
             return getHeldState(level, pos)
-                    .map(s -> s.getAppearance(level, pos, side, queryState, queryPos))
-                    .orElse(super.getAppearance(state, level, pos, side, queryState, queryPos));
+                .map(s -> s.getAppearance(level, pos, side, queryState, queryPos))
+                .orElse(super.getAppearance(state, level, pos, side, queryState, queryPos));
         }
 
         var data = level.getModelData(pos);
@@ -101,12 +100,12 @@ public class ElevatorBlock extends ElevatorBlockBase {
 
     @Override
     protected BlockState getAppearance(
-            BlockState facingState,
-            LevelReader worldIn,
-            BlockPos facingPos,
-            Direction opposite,
-            BlockState heldState,
-            BlockPos currentPos
+        BlockState facingState,
+        LevelReader worldIn,
+        BlockPos facingPos,
+        Direction opposite,
+        BlockState heldState,
+        BlockPos currentPos
     ) {
         return facingState.getAppearance(worldIn, facingPos, opposite, heldState, currentPos);
     }
@@ -118,11 +117,11 @@ public class ElevatorBlock extends ElevatorBlockBase {
 
     @Override
     public boolean hidesNeighborFace(
-            BlockGetter level,
-            BlockPos pos,
-            BlockState state,
-            BlockState neighborState,
-            Direction dir
+        BlockGetter level,
+        BlockPos pos,
+        BlockState state,
+        BlockState neighborState,
+        Direction dir
     ) {
         var modelData = level.getModelData(pos);
         if (modelData == ModelData.EMPTY) {
@@ -156,21 +155,21 @@ public class ElevatorBlock extends ElevatorBlockBase {
     @Override
     public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
         return getHeldState(level, pos)
-                .map(s -> s.getBlock().canConnectRedstone(s, level, pos, direction))
-                .orElse(super.canConnectRedstone(state, level, pos, direction));
+            .map(s -> s.getBlock().canConnectRedstone(s, level, pos, direction))
+            .orElse(super.canConnectRedstone(state, level, pos, direction));
     }
 
     @Override
     public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
         return getHeldState(level, pos)
-                .map(s -> s.shouldCheckWeakPower(level, pos, side))
-                .orElse(super.shouldCheckWeakPower(state, level, pos, side));
+            .map(s -> s.shouldCheckWeakPower(level, pos, side))
+            .orElse(super.shouldCheckWeakPower(state, level, pos, side));
     }
 
     @Override
     public SoundType getSoundType(BlockState state, LevelReader level, BlockPos pos, Entity entity) {
         return getHeldState(level, pos)
-                .map(s -> s.getSoundType(level, pos, entity))
-                .orElse(super.getSoundType(state, level, pos, entity));
+            .map(s -> s.getSoundType(level, pos, entity))
+            .orElse(super.getSoundType(state, level, pos, entity));
     }
 }

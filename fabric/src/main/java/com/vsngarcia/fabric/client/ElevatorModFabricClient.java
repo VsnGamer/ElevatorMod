@@ -18,13 +18,19 @@ import net.fabricmc.fabric.api.client.model.loading.v1.SimpleUnbakedExtraModel;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockColorRegistry;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.vsngarcia.fabric.FabricRegistry.ELEVATOR_BLOCKS;
 import static com.vsngarcia.fabric.FabricRegistry.ELEVATOR_CONTAINER;
@@ -39,35 +45,46 @@ public final class ElevatorModFabricClient implements ClientModInitializer {
         ModelLoadingPlugin.register(new ElevatorModelLoadingPlugin());
 
         MenuScreens.register(
-                ELEVATOR_CONTAINER,
-                (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(
-                        container,
-                        inv,
-                        title,
-                        ClientPlayNetworking::send
-                )
+            ELEVATOR_CONTAINER,
+            (ElevatorContainer container, Inventory inv, Component title) -> new ElevatorScreen(
+                container,
+                inv,
+                title,
+                ClientPlayNetworking::send
+            )
         );
     }
 
     public static class ElevatorModelLoadingPlugin implements ModelLoadingPlugin {
+        public static final Map<Direction, ExtraModelKey<BlockStateModel>> ARROW_MODEL_KEYS = Direction.Plane.HORIZONTAL
+            .stream()
+            .collect(Collectors.toUnmodifiableMap(
+                Function.identity(),
+                dir -> ExtraModelKey.create(() -> "arrow_" + dir.getSerializedName())
+            ));
 
-        public static final ExtraModelKey<BlockStateModel> ARROW_MODEL_KEY = ExtraModelKey.create(() -> "arrow");
         private static final Identifier ARROW_MODEL_ID = Identifier.fromNamespaceAndPath(ElevatorMod.ID, "arrow");
 
         @Override
         public void initialize(Context ctx) {
+            Direction.Plane.HORIZONTAL.forEach(dir -> ctx.addModel(
+                ARROW_MODEL_KEYS.get(dir),
+                SimpleUnbakedExtraModel.blockStateModel(
+                    ARROW_MODEL_ID,
+                    BlockModelRotation.get(Rotation.values()[(int) dir.toYRot() / 90].rotation())
+                )
+            ));
+
             ctx.modifyBlockModelAfterBake().register(
-                    ModelModifier.WRAP_PHASE, (model, context) -> {
-                        if (!(context.state().getBlock() instanceof ElevatorBlock)) {
-                            return model;
-                        }
-
-                        ElevatorMod.LOGGER.debug("Wrapping elevator model: {}", context.state());
-                        return new ElevatorBakedModel(model);
+                ModelModifier.WRAP_PHASE, (model, context) -> {
+                    if (!(context.state().getBlock() instanceof ElevatorBlock)) {
+                        return model;
                     }
-            );
 
-            ctx.addModel(ARROW_MODEL_KEY, SimpleUnbakedExtraModel.blockStateModel(ARROW_MODEL_ID));
+                    ElevatorMod.LOGGER.debug("Wrapping elevator model: {}", context.state());
+                    return new ElevatorBakedModel(model);
+                }
+            );
         }
     }
 }

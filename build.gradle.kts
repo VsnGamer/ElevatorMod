@@ -75,7 +75,7 @@ subprojects {
             val mainOutput = project.the<SourceSetContainer>()["main"].output
             exclude { element ->
                 mainOutput.classesDirs.any { element.file.startsWith(it) } ||
-                        element.file.startsWith(mainOutput.resourcesDir!!)
+                    element.file.startsWith(mainOutput.resourcesDir!!)
             }
         }
     }
