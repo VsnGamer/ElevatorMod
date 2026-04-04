@@ -3,7 +3,7 @@ package com.vsngarcia.client.gui;
 import com.vsngarcia.network.ClientPacketSender;
 import com.vsngarcia.network.client.SetFacingPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,17 +34,17 @@ class FacingButton extends Button {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partial) {
+    protected void extractContents(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         if (isHoveredOrFocused() && active) {
-            guiGraphics.fill(getX(), getY(), getX() + width, getY() + height, 0x80FFFFFF);
+            graphics.fill(getX(), getY(), getX() + width, getY() + height, 0x80FFFFFF);
         }
 
-        guiGraphics.drawCenteredString(
-                Minecraft.getInstance().font,
-                getMessage().getString(),
-                getX() + this.width / 2,
-                getY() + (this.height - 8) / 2,
-                active ? 0xFFE0E0E0 : 0xFF00FF00
+        graphics.centeredText(
+            Minecraft.getInstance().font,
+            getMessage().getString(),
+            getX() + this.width / 2,
+            getY() + (this.height - 8) / 2,
+            active ? 0xFF_E0_E0_E0 : 0xFF_00_FF_00
         );
     }
 }

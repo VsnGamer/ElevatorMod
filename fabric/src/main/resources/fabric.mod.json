@@ -21,14 +21,15 @@
       "com.vsngarcia.fabric.client.ElevatorModFabricClient"
     ]
   },
+  "accessWidener": "elevatormod.classtweaker",
   "mixins": [
     "elevatorid.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.18.0",
-    "minecraft": "~1.21.11",
-    "java": ">=21",
+    "minecraft": "~26.1",
+    "java": ">=25",
     "fabric-api": "*",
-    "forgeconfigapiport": ">=21.11.0"
+    "forgeconfigapiport": ">=26.1.0.0"
   }
 }

@@ -98,7 +98,7 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
                             direction,
                             getBlockPos().relative(direction),
                             level.getBlockState(getBlockPos().relative(direction)),
-                            level.random
+                            level.getRandom()
                     );
                 }
             }

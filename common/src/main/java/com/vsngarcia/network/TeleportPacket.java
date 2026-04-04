@@ -54,9 +54,8 @@ public record TeleportPacket(BlockPos from, BlockPos to) implements CustomPacket
             if (getPlayerExperienceProgress(player) - xpCost >= 0 || player.experienceLevel > 0) {
                 player.giveExperiencePoints(-xpCost);
             } else {
-                player.displayClientMessage(
-                        Component.translatable("elevatorid.message.missing_xp").withStyle(ChatFormatting.RED),
-                        true
+                player.sendOverlayMessage(
+                    Component.translatable("elevatorid.message.missing_xp").withStyle(ChatFormatting.RED)
                 );
                 return;
             }

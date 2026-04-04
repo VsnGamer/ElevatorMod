@@ -4,8 +4,8 @@ import com.vsngarcia.fabric.ElevatorBlock;
 import com.vsngarcia.fabric.FabricRegistry;
 import com.vsngarcia.level.ElevatorBlockEntityBase;
 import com.vsngarcia.level.ElevatorContainer;
-import net.fabricmc.fabric.api.blockview.v2.RenderDataBlockEntity;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.blockgetter.v2.RenderDataBlockEntity;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 
-public class ElevatorBlockEntity extends ElevatorBlockEntityBase implements RenderDataBlockEntity, ExtendedScreenHandlerFactory<FabricRegistry.ElevatorContainerData> {
+public class ElevatorBlockEntity extends ElevatorBlockEntityBase implements RenderDataBlockEntity, ExtendedMenuProvider<FabricRegistry.ElevatorContainerData> {
     public ElevatorBlockEntity(BlockPos pos, BlockState state) {
         super(FabricRegistry.ELEVATOR_BLOCK_ENTITY_TYPE, pos, state);
     }

@@ -10,7 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -75,7 +75,7 @@ public class ElevatorBlock extends ElevatorBlockBase {
     @Override
     public BlockState getAppearance(
             BlockState state,
-            BlockAndTintGetter renderView,
+            BlockAndLightGetter renderView,
             BlockPos pos,
             Direction side,
             @Nullable BlockState sourceState,

@@ -1,32 +1,36 @@
 package com.vsngarcia.client;
 
-import com.vsngarcia.ElevatorBlockBase;
 import com.vsngarcia.level.ElevatorBlockEntityBase;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class ColorCamoElevator implements BlockColor {
+public class ColorCamoElevator implements BlockTintSource {
 
     @Override
-    public int getColor(BlockState state, BlockAndTintGetter lightReader, BlockPos pos, int tintIndex) {
-        if (lightReader == null || pos == null) {
-            return -1;
+    public int color(BlockState state) {
+        return 0;
+    }
+
+    @Override
+    public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+        if (!(level.getBlockEntity(pos) instanceof ElevatorBlockEntityBase tile)) {
+            return color(state);
         }
 
-        if (state.getBlock() instanceof ElevatorBlockBase &&
-                lightReader.getBlockEntity(pos) instanceof ElevatorBlockEntityBase tile) {
-            if (tile.getHeldState() != null) {
-                return Minecraft.getInstance().getBlockColors().getColor(
-                        tile.getHeldState(),
-                        lightReader,
-                        pos,
-                        tintIndex
-                );
-            }
+        var heldState = tile.getHeldState();
+        if (heldState == null) {
+            return color(state);
         }
-        return -1;
+
+        // TODO: Use just layer 0 for now
+        BlockTintSource tintSource = Minecraft.getInstance().getBlockColors().getTintSource(heldState, 0);
+        if (tintSource != null) {
+            return tintSource.colorInWorld(heldState, level, pos);
+        }
+
+        return color(state);
     }
 }
