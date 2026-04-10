@@ -1,48 +1,18 @@
 name: Publish
 
 on:
-  workflow_dispatch:
-    inputs:
-      version-type:
-        description: Release type
-        required: true
-        type: choice
-        options:
-          - release
-          - beta
-      targets:
-        description: Publish targets
-        required: true
-        type: choice
-        options:
-          - all
-          - fabric
-          - neoforge
+  release:
+    types: [ published ]
+
+env:
+  MODRINTH_ID: hi2dSXTu
+  CURSEFORGE_ID: 250832
 
 jobs:
-  publish:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: Read version
-        id: version
-        run: |
-          VERSION=$(grep --max-count=1 '^mod_version' gradle.properties | cut --delimiter='=' --fields=2 | tr --delete=' ')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Version: $VERSION"
-
-      - name: Check tag doesn't already exist
-        if: inputs.targets == 'all'
-        run: |
-          if git rev-parse "refs/tags/${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
-            echo "::error::Tag '${{ steps.version.outputs.version }}' already exists."
-            exit 1
-          fi
 
       - uses: actions/setup-java@v5
         with:
@@ -51,36 +21,55 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v6
 
-      - run: gradle clean build
+      - run: ./gradlew build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            fabric/build/libs/
+            neoforge/build/libs/
+
+  publish-fabric:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
 
       - name: Publish Fabric
-        if: inputs.targets == 'all' || inputs.targets == 'fabric'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          modrinth-id: hi2dSXTu
+          modrinth-id: ${{ env.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-id: 250832
+          curseforge-id: ${{ env.CURSEFORGE_ID }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-tag: ${{ steps.version.outputs.version }}
-          files: fabric/build/libs/!(*-@(dev|sources|javadoc|shadow|raw)*).jar
-          name: "[Fabric] ElevatorMod ${{ steps.version.outputs.version }}"
-          version: fabric-${{ steps.version.outputs.version }}
-          version-type: ${{ inputs.version-type }}
+          files: fabric/build/libs/!(*-raw).jar
+          name: "[Fabric] ElevatorMod ${{ github.event.release.tag_name }}"
+          version: fabric-${{ github.event.release.tag_name }}
+          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
+          changelog: ${{ github.event.release.body }}
           loaders: fabric
 
+  publish-neoforge:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+
       - name: Publish NeoForge
-        if: inputs.targets == 'all' || inputs.targets == 'neoforge'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          modrinth-id: hi2dSXTu
+          modrinth-id: ${{ env.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-id: 250832
+          curseforge-id: ${{ env.CURSEFORGE_ID }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          github-tag: ${{ steps.version.outputs.version }}
-          files: neoforge/build/libs/!(*-@(dev|sources|javadoc|shadow|raw)*).jar
-          name: "[Neo] ElevatorMod ${{ steps.version.outputs.version }}"
-          version: neoforge-${{ steps.version.outputs.version }}
-          version-type: ${{ inputs.version-type }}
+          files: neoforge/build/libs/!(*-raw).jar
+          name: "[Neo] ElevatorMod ${{ github.event.release.tag_name }}"
+          version: neoforge-${{ github.event.release.tag_name }}
+          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
+          changelog: ${{ github.event.release.body }}
           loaders: neoforge
