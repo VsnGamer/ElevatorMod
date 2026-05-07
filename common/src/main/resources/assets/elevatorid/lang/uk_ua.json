@@ -3,27 +3,34 @@
   "block.elevatorid.elevator_black": "Чорний ліфт",
   "block.elevatorid.elevator_blue": "Синій ліфт",
   "block.elevatorid.elevator_brown": "Коричневий ліфт",
-  "block.elevatorid.elevator_cyan": "Блакитний ліфт",
+  "block.elevatorid.elevator_cyan": "Бірюзовий ліфт",
   "block.elevatorid.elevator_gray": "Сірий ліфт",
   "block.elevatorid.elevator_green": "Зелений ліфт",
-  "block.elevatorid.elevator_light_blue": "Світло-синій ліфт",
+  "block.elevatorid.elevator_light_blue": "Блакитний ліфт",
   "block.elevatorid.elevator_lime": "Лаймовий ліфт",
-  "block.elevatorid.elevator_magenta": "Малиновий ліфт",
+  "block.elevatorid.elevator_magenta": "Пурпурний ліфт",
   "block.elevatorid.elevator_orange": "Помаранчевий ліфт",
   "block.elevatorid.elevator_pink": "Рожевий ліфт",
   "block.elevatorid.elevator_purple": "Фіолетовий ліфт",
   "block.elevatorid.elevator_red": "Червоний ліфт",
-  "block.elevatorid.elevator_light_gray": "Срібний ліфт",
+  "block.elevatorid.elevator_light_gray": "Світло-сірий ліфт",
   "block.elevatorid.elevator_yellow": "Жовтий ліфт",
 
-  "elevatorid.subtitle.teleport": "Використовування ліфту",
+  "elevatorid.subtitle.teleport": "Ліфт використано",
+  "elevatorid.subtitle.camouflage": "Ліфт замасковано",
 
   "screen.elevatorid.elevator": "Параметри ліфта",
   "screen.elevatorid.elevator.directional": "Спрямований",
+  "screen.elevatorid.elevator.directional_north": "ПН",
+  "screen.elevatorid.elevator.directional_east": "СХ",
+  "screen.elevatorid.elevator.directional_south": "ПД",
+  "screen.elevatorid.elevator.directional_west": "ЗХ",
   "screen.elevatorid.elevator.hide_arrow": "Сховати стрілку",
   "screen.elevatorid.elevator.reset_camo": "Зняти камуфляж",
 
   "elevatorid.message.missing_xp": "У вас недостатньо досвіду для телепортації",
 
-  "itemGroup.elevators_tab": "Elevator Mod"
+  "itemGroup.elevators_tab": "Elevators",
+
+  "tag.item.elevatorid.elevators": "Elevators"
 }
