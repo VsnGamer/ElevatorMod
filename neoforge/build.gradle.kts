@@ -1,7 +1,6 @@
-// TODO: Maintaining AT for now
-//loom {
-//    accessWidenerPath = project(":common").loom.accessWidenerPath
-//}
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+}
 
 architectury {
     platformSetupLoomIde()
@@ -33,3 +32,8 @@ tasks.processResources {
         expand("version" to project.version)
     }
 }
+
+loom.neoForge.convertAccessWideners(
+    tasks.named<Jar>("shadowJar"),
+    project(":common").loom.accessWidenerPath.get().asFile.name
+)
