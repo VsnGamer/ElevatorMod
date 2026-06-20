@@ -1,5 +1,5 @@
 plugins {
-    id("dev.architectury.loom-no-remap") version "1.14-SNAPSHOT" apply false
+    id("dev.architectury.loom-no-remap") version "1.17-SNAPSHOT" apply false
     id("architectury-plugin") version "3.5-SNAPSHOT"
     id("com.gradleup.shadow") version "9.4.1" apply false
 }
@@ -48,8 +48,8 @@ subprojects {
         "minecraft"("net.minecraft:minecraft:${property("minecraft_version")}")
     }
 
-    tasks.withType<JavaCompile>().configureEach {
-        options.release = 25
+    configure<JavaPluginExtension> {
+        toolchain.languageVersion = JavaLanguageVersion.of(25)
     }
 
     if (project.name != "common") {

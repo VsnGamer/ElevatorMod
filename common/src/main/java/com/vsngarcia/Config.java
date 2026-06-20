@@ -23,7 +23,7 @@ public class Config {
             builder.push("General");
 
             sameColor = builder
-                    .comment("Should elevators have the same color in order to teleport ?")
+                    .comment("Should elevators have the same color in order to teleport?")
                     .define("sameColor", false);
 
             range = builder
@@ -35,24 +35,24 @@ public class Config {
                     .defineInRange("activationRange", 6, 1, 64);
 
             precisionTarget = builder
-                    .comment("Realign players to the center of elevator ?")
+                    .comment("Realign players to the center of elevator?")
                     .define("precisionTarget", true);
 
             mobSpawn = builder
                     .worldRestart()
-                    .comment("Can mobs spawn on elevators ?")
+                    .comment("Can mobs spawn on elevators?")
                     .define("mobSpawn", false);
 
             resetPitchNormal = builder
-                    .comment("Reset pitch to 0 when teleporting to normal elevators ?")
+                    .comment("Reset pitch to 0 when teleporting to normal elevators?")
                     .define("resetPitchNormal", false);
 
             resetPitchDirectional = builder
-                    .comment("Reset pitch to 0 when teleporting to directional elevators ?")
+                    .comment("Reset pitch to 0 when teleporting to directional elevators?")
                     .define("resetPitchDirectional", true);
 
             useXP = builder
-                    .comment("Should teleporting require XP ?")
+                    .comment("Should teleporting require XP?")
                     .define("useXP", false);
 
             XPPointsAmount = builder
