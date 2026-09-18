@@ -1,7 +1,7 @@
 package com.vsngarcia.level;
 
+import com.mojang.serialization.Codec;
 import com.vsngarcia.ElevatorBlockBase;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -27,6 +27,16 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
 
     protected BlockState heldState;
 
+    private static final Codec<BlockState> HELD_STATE_CODEC = Codec.withAlternative(
+        BlockState.CODEC, Codec.PASSTHROUGH.comapFlatMap(
+            dynamic -> BlockState.CODEC.parse(dynamic
+                .renameField("Name", "id")
+                .renameField("Properties", "properties")), blockState -> {
+                throw new UnsupportedOperationException("decode-only");
+            }
+        )
+    );
+
     public ElevatorBlockEntityBase(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -36,7 +46,7 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
     public void loadAdditional(ValueInput valueInput) {
         super.loadAdditional(valueInput);
 
-        heldState = valueInput.read("held_id", BlockState.CODEC).orElse(null);
+        heldState = valueInput.read("held_id", HELD_STATE_CODEC).orElse(null);
 
         if (level != null && level.isClientSide()) {
             level.sendBlockUpdated(getBlockPos(), null, null, 0);
@@ -92,13 +102,13 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
             if (heldState != null) {
                 for (Direction direction : Direction.values()) {
                     getBlockState().updateShape(
-                            level,
-                            level,
-                            getBlockPos(),
-                            direction,
-                            getBlockPos().relative(direction),
-                            level.getBlockState(getBlockPos().relative(direction)),
-                            level.getRandom()
+                        level,
+                        level,
+                        getBlockPos(),
+                        direction,
+                        getBlockPos().relative(direction),
+                        level.getBlockState(getBlockPos().relative(direction)),
+                        level.getRandom()
                     );
                 }
             }
@@ -110,9 +120,13 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
     }
 
     public boolean setCamoAndUpdate(BlockState newState) {
-        if (heldState == newState) return false;
+        if (heldState == newState) {
+            return false;
+        }
 
-        if (!isValidState(newState)) return false;
+        if (!isValidState(newState)) {
+            return false;
+        }
 
         setHeldState(newState);
         if (getLevel() != null) {
@@ -125,12 +139,16 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
     protected abstract SoundEvent camouflageSound();
 
     public boolean isValidState(BlockState state) {
-        if (state == null) return true;
+        if (state == null) {
+            return true;
+        }
 
-        if (state.isAir()) return false;
+        if (state.isAir()) {
+            return false;
+        }
 
         // Tile entities can cause problems
-//        if (state.hasBlockEntity()) return false;
+        //        if (state.hasBlockEntity()) return false;
 
         // Don't try to camouflage with itself
         if (state.getBlock() instanceof ElevatorBlockBase) {

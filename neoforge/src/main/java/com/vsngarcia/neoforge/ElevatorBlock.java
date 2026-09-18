@@ -27,18 +27,18 @@ import java.util.Optional;
 
 public class ElevatorBlock extends ElevatorBlockBase {
 
-    private final MapCodec<ElevatorBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-        .group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlockBase::getColor))
-        .apply(instance, ElevatorBlock::new));
+//    private final MapCodec<ElevatorBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+//        .group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlockBase::getColor))
+//        .apply(instance, ElevatorBlock::new));
 
     public ElevatorBlock(DyeColor color) {
         super(color, Registry.ELEVATOR_TILE_ENTITY::get);
     }
 
-    @Override
-    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return CODEC;
-    }
+//    @Override
+//    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
+//        return CODEC;
+//    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -152,12 +152,12 @@ public class ElevatorBlock extends ElevatorBlockBase {
         return Optional.ofNullable(level.getAuxLightManager(pos)).map(lm -> lm.getLightAt(pos)).orElse(0);
     }
 
-    @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-        return getHeldState(level, pos)
-            .map(s -> s.getBlock().canConnectRedstone(s, level, pos, direction))
-            .orElse(super.canConnectRedstone(state, level, pos, direction));
-    }
+//    @Override
+//    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
+//        return getHeldState(level, pos)
+//            .map(s -> s.getBlock().canConnectRedstone(s, level, pos, direction))
+//            .orElse(super.canConnectRedstone(state, level, pos, direction));
+//    }
 
     @Override
     public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {
