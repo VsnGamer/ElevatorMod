@@ -1,7 +1,5 @@
 package com.vsngarcia.neoforge;
 
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.vsngarcia.ElevatorBlockBase;
 import com.vsngarcia.level.ElevatorBlockEntityBase;
 import com.vsngarcia.neoforge.client.render.ElevatorBakedModel;
@@ -17,7 +15,6 @@ import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.SignalGetter;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,19 +23,9 @@ import net.neoforged.neoforge.model.data.ModelData;
 import java.util.Optional;
 
 public class ElevatorBlock extends ElevatorBlockBase {
-
-//    private final MapCodec<ElevatorBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-//        .group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlockBase::getColor))
-//        .apply(instance, ElevatorBlock::new));
-
     public ElevatorBlock(DyeColor color) {
         super(color, Registry.ELEVATOR_TILE_ENTITY::get);
     }
-
-//    @Override
-//    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-//        return CODEC;
-//    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -151,13 +138,6 @@ public class ElevatorBlock extends ElevatorBlockBase {
     public int getLightEmission(BlockState state, BlockGetter level, BlockPos pos) {
         return Optional.ofNullable(level.getAuxLightManager(pos)).map(lm -> lm.getLightAt(pos)).orElse(0);
     }
-
-//    @Override
-//    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, Direction direction) {
-//        return getHeldState(level, pos)
-//            .map(s -> s.getBlock().canConnectRedstone(s, level, pos, direction))
-//            .orElse(super.canConnectRedstone(state, level, pos, direction));
-//    }
 
     @Override
     public boolean shouldCheckWeakPower(BlockState state, SignalGetter level, BlockPos pos, Direction side) {

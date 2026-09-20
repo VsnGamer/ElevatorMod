@@ -18,11 +18,6 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.jetbrains.annotations.Nullable;
 
 public class ElevatorBlock extends ElevatorBlockBase {
-    //    private final MapCodec<ElevatorBlock> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
-    //            .group(DyeColor.CODEC.fieldOf("color").forGetter(ElevatorBlockBase::getColor))
-    //            .apply(instance, ElevatorBlock::new)
-    //    );
-
     public static final IntegerProperty LIGHT = IntegerProperty.create("light", 0, 15);
 
     public ElevatorBlock(DyeColor color) {
@@ -57,11 +52,6 @@ public class ElevatorBlock extends ElevatorBlockBase {
     ) {
         return facingState.getAppearance(worldIn, facingPos, opposite, heldState, currentPos);
     }
-
-    //    @Override
-    //    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-    //        return CODEC;
-    //    }
 
     @Nullable
     @Override
