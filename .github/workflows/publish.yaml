@@ -9,67 +9,34 @@ env:
   CURSEFORGE_ID: 250832
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - loader: fabric
+            display: Fabric
+          - loader: neoforge
+            display: Neo
     steps:
-      - uses: actions/checkout@v6
+      - name: Download release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download "${{ github.event.release.tag_name }}" --repo "${{ github.repository }}" --pattern "*-${{ matrix.loader }}-*.jar" --dir files
 
-      - uses: actions/setup-java@v5
-        with:
-          java-version: 25
-          distribution: temurin
-
-      - uses: gradle/actions/setup-gradle@v6
-
-      - run: ./gradlew build
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: |
-            fabric/build/libs/
-            neoforge/build/libs/
-
-  publish-fabric:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-
-      - name: Publish Fabric
+      - name: Publish ${{ matrix.display }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: ${{ env.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           curseforge-id: ${{ env.CURSEFORGE_ID }}
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          files: fabric/build/libs/!(*-raw).jar
-          name: "[Fabric] ElevatorMod ${{ github.event.release.tag_name }}"
-          version: fabric-${{ github.event.release.tag_name }}
+          files: files/*.jar
+          name: "[${{ matrix.display }}] ElevatorMod ${{ github.event.release.tag_name }}"
+          version: ${{ matrix.loader }}-${{ github.event.release.tag_name }}
           version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
           changelog: ${{ github.event.release.body }}
-          loaders: fabric
-
-  publish-neoforge:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
-
-      - name: Publish NeoForge
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: ${{ env.MODRINTH_ID }}
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          curseforge-id: ${{ env.CURSEFORGE_ID }}
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-          files: neoforge/build/libs/!(*-raw).jar
-          name: "[Neo] ElevatorMod ${{ github.event.release.tag_name }}"
-          version: neoforge-${{ github.event.release.tag_name }}
-          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
-          changelog: ${{ github.event.release.body }}
-          loaders: neoforge
+          loaders: ${{ matrix.loader }}
