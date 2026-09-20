@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -251,6 +252,18 @@ public abstract class ElevatorBlockBase extends HorizontalDirectionalBlock imple
         return getHeldState(reader, pos)
                 .map(s -> s.getDirectSignal(reader, pos, direction))
                 .orElse(super.getDirectSignal(state, reader, pos, direction));
+    }
+
+    @Override
+    protected boolean shouldRedstoneWireConnectTo(
+        BlockState state,
+        BlockGetter level,
+        BlockPos pos,
+        @Nullable Direction direction
+    ) {
+        return getHeldState(level, pos)
+            .map(s -> s.shouldRedstoneWireConnectTo(level, pos, direction))
+            .orElse(super.shouldRedstoneWireConnectTo(state, level, pos, direction));
     }
 
     // Light
