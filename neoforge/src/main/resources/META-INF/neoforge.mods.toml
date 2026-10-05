@@ -15,7 +15,7 @@ description = '''Simple port of the elevator from OpenBlocks to 1.8+'''
 [[dependencies.elevatorid]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.3.0.0-beta,)"
+versionRange = "[26.3.0.37-beta,)"
 ordering = "NONE"
 side = "BOTH"
 
