@@ -11,7 +11,31 @@ public class ColorCamoElevator implements BlockTintSource {
 
     @Override
     public int color(BlockState state) {
-        return 0;
+        return -1;
+    }
+
+    @Override
+    public int colorAsTerrainParticle(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+        var be = level.getBlockEntity(pos);
+        if (!(be instanceof ElevatorBlockEntityBase)) {
+            be = level.getBlockEntity(pos.below());
+        }
+        
+        if (!(be instanceof ElevatorBlockEntityBase tile)) {
+            return color(state);
+        }
+
+        var heldState = tile.getHeldState();
+        if (heldState == null) {
+            return color(state);
+        }
+
+        var tintSource = Minecraft.getInstance().getBlockColors().getTintSource(heldState, 0);
+        if (tintSource != null) {
+            return tintSource.colorAsTerrainParticle(heldState, level, tile.getBlockPos());
+        }
+
+        return color(state);
     }
 
     @Override
