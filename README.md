@@ -73,42 +73,48 @@ work[^lithium].
 
 ## Configuration
 
-The configuration file is per-world and is located at `<world-directory>/serverconfig/elevatorid-server.toml`.
+The configuration file is located at `config/elevatorid-synced.toml` with per-world overrides possible at
+`<world-directory>/syncedconfig/elevatorid-synced.toml`.
 
-**Note for _Fabric_ users:** By default it is located at `.minecraft/config/elevatorid-server.toml` but per-world
-overrides are possible,
-see [FCAP Wiki](https://github.com/Fuzss/forgeconfigapiport/wiki/Understanding-ModConfig-Types#server-config-type)
+For fabric users it should be `serverconfig`/`-server` instead of `syncedconfig`/`-synced`.
 
 <details>
 <summary>Here are the default values:</summary>
 
 ```toml
 [General]
-#Should elevators have the same color in order to teleport ?
+#Should elevators have the same color in order to teleport?
 sameColor = false
 
 #Elevator range
-#Range: 3 ~ 4064
+# Default: 384
+# Range: 3 ~ 4064
 range = 384
 
-#Realign players to the center of elevator ?
+#Elevator activation range, increasing it can help with jump boost effects
+# Default: 6
+# Range: 1 ~ 64
+activationRange = 6
+
+#Realign players to the center of elevator?
 precisionTarget = true
 
-#Can mobs spawn on elevators ?
+#Can mobs spawn on elevators?
 mobSpawn = false
 
-#Reset pitch to 0 when teleporting to normal elevators ?
+#Reset pitch to 0 when teleporting to normal elevators?
 resetPitchNormal = false
 
-#Reset pitch to 0 when teleporting to directional elevators ?
+#Reset pitch to 0 when teleporting to directional elevators?
 resetPitchDirectional = true
 
-#Should teleporting require XP ?
+#Should teleporting require XP?
 useXP = false
 
 #Amount of XP points to use when useXP is enabled
 #Note this is NOT experience levels
-#Range: > 1
+# Default: 1
+# Range: > 1
 XPPointsAmount = 1
 ```
 

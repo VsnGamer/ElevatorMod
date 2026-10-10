@@ -26,10 +26,10 @@
     "elevatorid.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.19.0",
+    "fabricloader": ">=0.19.4",
     "minecraft": "~26.3",
     "java": ">=25",
-    "fabric-api": "*",
-    "forgeconfigapiport": ">=26.3.0.0"
+    "fabric-api": ">=0.160.6",
+    "forgeconfigapiport": ">=26.3.1.0"
   }
 }

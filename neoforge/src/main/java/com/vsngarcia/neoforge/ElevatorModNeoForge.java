@@ -29,6 +29,6 @@ public final class ElevatorModNeoForge {
                 (InputEvent.MouseButton.Post e) -> ElevatorHandler.handleInput(ClientPacketDistributor::sendToServer)
         );
 
-        container.registerConfig(ModConfig.Type.SERVER, Config.SPEC);
+        container.registerConfig(ModConfig.Type.SYNCED, Config.SPEC);
     }
 }
