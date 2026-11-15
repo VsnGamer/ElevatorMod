@@ -56,6 +56,7 @@ public abstract class ElevatorBlockBase extends HorizontalDirectionalBlock imple
                 .dynamicShape()
                 .noOcclusion()
                 .isValidSpawn(isValidSpawn(type))
+                .forceSolidOn() // prevents rain/snow from falling through
                 .setId(getResourceKey(Registries.BLOCK, color)));
 
         registerDefaultState(
