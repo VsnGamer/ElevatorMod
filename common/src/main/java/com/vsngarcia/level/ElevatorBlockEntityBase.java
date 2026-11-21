@@ -39,7 +39,7 @@ public abstract class ElevatorBlockEntityBase extends BlockEntity implements Men
         heldState = valueInput.read("held_id", BlockState.CODEC).orElse(null);
 
         if (level != null && level.isClientSide()) {
-            level.sendBlockUpdated(getBlockPos(), null, null, 0);
+            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 0);
             level.getLightEngine().checkBlock(getBlockPos());
         }
     }
